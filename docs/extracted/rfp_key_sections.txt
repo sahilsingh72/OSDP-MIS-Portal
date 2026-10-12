@@ -1,0 +1,2466 @@
+
+=== PAGE 1 (Matched: ['State Data Policy', 'OCAC']) ===
+ 
+ 
+Request for Proposal (RFP) for Selection of 
+Service Provider for Capacity Building and 
+Training on  
+Odisha State Data Policy 2.0  
+ 
+(Floated through GeM Portal) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ODISHA COMPUTER APPLICATION CENTRE 
+[TECHNICAL DIRECTORATE OF E&IT DEPARTMENT, GOVERNMENT OF ODISHA] 
+OCAC Building, Acharya Vihar Square, Bhubaneswar-751013, Odisha, India 
+W: www.ocac.in | T: 0674-2567295/2567283 | F: 0674-2567842 
+
+=== PAGE 2 (Matched: ['MIS']) ===
+ 
+KEY EVENTS 
+ 
+Sl. No. Events Date, Time 
+1. Start date of issue  07.07.2026 
+2. Last date and time for Submission of Queries 14.07.2026 by 5 PM 
+3. Pre‐Bid Conference in VC mode 15.07.2026 at 12:00 Noon 
+4 Last date and time for Submission of Bid in GeM portal 30.07.2026  by 12 Noon 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+=== PAGE 3 (Matched: ['MIS', 'State Data Policy']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 3 of 65 
+Table of Contents 
+1. Request for Proposal ................................ ................................ ............... 6 
+2. Structure of the RFP ................................ ................................ ................ 6 
+3. Summary Information ................................ ................................ ............... 7 
+3.1 About the Engagement ................................ ................................ ............ 7 
+3.2.1 Context ................................ ................................ ................................ .... 7 
+3.2.1.1 Odisha State Data Policy (OSDP) ................................ ............................ 7 
+3.3 Need for the Assignment ................................ ................................ .......... 8 
+3.4 Purpose of the RFP ................................ ................................ ................. 8 
+3.5 Expected Outcomes ................................ ................................ ................. 9 
+4. Instructions to the Bidders ................................ ................................ ...... 10 
+4.1 General ................................ ................................ ................................ .. 10 
+4.2 Compliant Proposals/ Completeness of Response ................................ . 10 
+4.3 Code of integrity ................................ ................................ ..................... 10 
+4.4 Pre‐Bid Meeting & Clarifications ................................ ............................. 11 
+4.4.1 Pre‐bid Conference ................................ ................................ ................ 11 
+4.4.2 Responses to Pre‐Bid Queries and Issue of Corrigendum ..................... 12 
+4.5 Key Requirements of the Bid ................................ ................................ .. 12 
+4.5.1 Right to Terminate the Process ................................ .............................. 12 
+4.5.2 RFP Document Fees................................ . Error! Bookmark not defined. 
+4.5.3 Earnest Money Deposit (EMD) ................................ ...............................  12 
+4.6 Submission of proposal ............................. Error! Bookmark not defined. 
+4.6.1 Instruction to Bidders for Online Bid SubmissionError! Bookmark not 
+defined. 
+4.6.2 Guidelines for Registration ........................ Error! Bookmark not defined. 
+4.6.3 Searching for Tender Documents.............. Error! Bookmark not defined. 
+4.6.4 Preparation of Bids ................................ ... Error! Bookmark not defined. 
+4.6.5 Submission of Bids ................................ ... Error! Bookmark not defined. 
+4.6.6 Clarifications on using e-Nivida Portal ....... Error! Bookmark not defined. 
+4.6.7 Tender Validity ................................ ................................ ....................... 13 
+4.6.8 Submission and Opening of Proposals ................................ .................. 13 
+4.6.9 Proposal Preparation Costs ................................ ................................ ... 14 
+4.6.10 Language ................................ ................................ ...............................  14 
+4.6.11 Acceptance and Rejection of Bids ................................ .......................... 14 
+4.7 Evaluation Process ................................ ................................ ................ 14 
+4.7.1 Deviations ................................ ................................ .............................. 15 
+4.7.2 Tender Evaluation ................................ ................................ .................. 15 
+5. Criteria for Evaluation ................................ ................................ ............. 16 
+5.1 Prequalification Criteria (General Bid) ................................ .................... 17 
+=== PAGE 4 (Matched: ['Scope of Work', 'Monitoring', 'State Data Policy', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 4 of 65 
+5.2 Technical Evaluation Criteria ................................ ................................ .. 19 
+5.3 Evaluation of Financial Bid ................................ ................................ ..... 22 
+5.4 Combined Evaluation of Technical & Financial Bid ................................  22 
+5.5 Special Conditions for Evaluation ................................ ........................... 23 
+6. Appointment of System Integrator or Service Provider ........................... 24 
+6.1 Award Criteria ................................ ................................ ........................ 24 
+6.2 Right to Accept Any Proposal and To Reject Any or All Proposal(s) ....... 24 
+6.3 Purchaser’s Procurement Rights ................................ ............................ 24 
+6.4 Notification of Award ................................ ................................ .............. 24 
+6.5 Contract Finalization and Award ................................ ............................ 25 
+6.6 Performance Guarantee ................................ ................................ ......... 25 
+6.7 Signing of Contract ................................ ................................ ................ 25 
+6.8 Failure to Agree with the Terms and Conditions of the RFP ................... 25 
+7. Contractual Clauses ................................ ................................ ............... 25 
+7.1 Term of Contract ................................ ................................ .................... 25 
+7.2 Termination ................................ ................................ ............................ 26 
+7.3 Effects of Termination ................................ ................................ ............ 26 
+7.4 Scope of Work and Deliverables ................................ ............................ 26 
+7.5 Norms Governing Service Delivery ................................ ........................ 26 
+7.6 Fees and Payments ................................ ................................ ............... 27 
+7.7 Audit ................................ ................................ ................................ ...... 27 
+7.8 Confidentiality ................................ ................................ ........................ 27 
+7.9 Force Majeure ................................ ................................ ........................ 27 
+7.10 Dispute Resolution ................................ ................................ ................. 28 
+7.11 Governing Law and Jurisdiction ................................ ............................. 28 
+7.12 Change Request Management ................................ .............................. 28 
+7.13 Intellectual Property Rights ................................ ................................ .... 29 
+7.14 Data Ownership and Data Confidentiality ................................ ............... 30 
+7.15 Knowledge Transfer and Handover ................................ ........................ 30 
+7.16 Liquidated Damages ................................ ................................ .............. 31 
+7.17 Limitation of Liability ................................ ................................ ............... 31 
+8. Terms of Reference ................................ ................................ ............... 31 
+8.1 Scope of Work for Training & Capacity Building on Odisha State Data Policy 
+(OSDP) 31 
+8.1.1 Detailed Objectives of the Assignment ................................ ................... 32 
+8.1.2 Development of Training Material ................................ .......................... 33 
+8.1.3 Training of Government Officials ................................ ............................ 33 
+8.1.4 Awareness Programme for Citizens ................................ ....................... 34 
+8.1.5 Monitoring, Reporting & Evaluation ................................ ........................ 34 
+8.1.6 Training Structure & Duration (Full Multi-Tier Model).............................. 35 
+=== PAGE 5 (Matched: ['MIS', 'Monitoring', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 5 of 65 
+8.1.6.1 Tier 1 – Directorate Level Executive Orientation (Level 1) ...................... 35 
+8.1.6.2 Tier 2 – District-Level Training Programme ................................ ............ 35 
+8.1.6.3 Tier 3 – Block-Level Training Programme ................................ .............. 36 
+8.1.6.4 Tier 4 – Gram Panchayat-Level Training Programme ............................ 36 
+8.1.7 Detailed Training Module Development ................................ ................. 37 
+8.1.8 Training Delivery Mechanism ................................ ................................ . 39 
+8.1.9 Monitoring & Evidence Capture Framework ................................ ........... 39 
+8.1.10 Directorate-Level ToT Structure ................................ ............................. 40 
+8.1.11 District/Block/GP Training Structure ................................ ....................... 41 
+8.1.12 Timelines for Deliverables ................................ ................................ ...... 41 
+8.2 Deliverables under Scope for OSDP Training programme ..................... 41 
+8.2.1 Directorate Level Training – Level 1 (Senior Officials) ............................ 41 
+8.2.2 District Level Training Programmes ................................ ....................... 42 
+8.2.3 Block Level Training Programmes................................ .......................... 42 
+8.2.4 Gram Panchayat (GP) Level Training Programmes ...............................  42 
+8.2.5 Awareness Campaign Activities ................................ ............................. 42 
+8.2.6 Digital IEC ................................ ................................ .............................. 43 
+8.2.7 MIS Development for OSDP Training Program: ................................ ..... 43 
+8.2.8 Central Project Management Team Structure ................................ ........ 43 
+9 Payment Terms ................................ ................................ ...................... 45 
+10 Penalty ................................ ................................ ................................ ... 46 
+11. Formats for Submission of Proposal ................................ ...................... 48 
+11.1 Pre-Qualification Bid Formats ................................ ................................  48 
+11.1.1 FORM PQ-1: Cover Letter ................................ ................................ ..... 48 
+11.1.2 FORM PQ-2: Bidder’s Organization (General Details) ............................ 49 
+11.1.3 FORM PQ-3 [Acceptance of Terms and Conditions] .............................. 50 
+11.1.4 FORM PQ-4: Project Citation Format ................................ ..................... 51 
+11.2 Technical Bid Formats ................................ ................................ ........... 52 
+11.2.1 FORM TECH-1Technical Bid Cover Letter ................................ ............. 52 
+11.2.2 FORM TECH-2: Approach and Methodology ................................ ......... 53 
+11.2.3 FORM TECH-4: Detailed Work Plan with Activities, Duration, Sequencing, 
+Interrelations, Milestones and Dependencies ................................ ................................ .. 54 
+11.2.4 FORM TECH-5: Curriculum Vitae (CV) of Key Personnel ...................... 55 
+11.2.5 FORM TECH-6: Team Composition ................................ ....................... 56 
+11.3 Financial Bid ................................ ................................ .......................... 57 
+11.3.1 FORM FIN-1: Financial Bid Covering Letter ................................ ........... 57 
+11.3.2 FORM FIN-2: Financial Bid ................................ ................................ .... 58 
+11.4 Format for Bank Guarantee for Earnest Money Deposit ......................... 62 
+ 
+ 
+=== PAGE 6 (Matched: ['MIS', 'Scope of Work', 'State Data Policy', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 6 of 65 
+1. Request for Proposal  
+Sealed proposals are invited from eligible, reputed, qualified Service Provider(s) for Capacity Building, 
+Training, and Awareness on the Odisha State Data Policy(OSDP v2.0). This invitation to bid is open to 
+all bidders meeting the minimum eligibility criteria as mentioned in this RFP Document.  
+ 
+2. Structure of the RFP  
+This RFP document for Service Provider(s) for Capacity Building, Training, and Awareness on the 
+Odisha State Data Policy(OSDP v2.0) comprises of the following. 
+a) Instructions on the Bid process for the purpose of responding to this RFP. This broadly covers:   
+i) General instructions for bidding process   
+ii) Bid evaluation process including the parameters for Pre‐qualification, Technical Evaluation 
+and Commercial Evaluation for determining bidder’s suitability as the Service Provider   
+iii) Commercial bid and other formats  
+b) Terms of Reference of the project. The contents of the document broadly cover the following areas:   
+i) About the project and its objectives   
+ii) Scope of work  
+iii) Requirements  
+iv) Project Schedule 
+v) Service levels for the implementation partner  
+vi) Timeline of Project implementation 
+The bidders are expected to respond to the requirements as completely and in as much relevant detail 
+as possible and focus on demonstrating bidder’s suitability to become the Service Provider of OCAC 
+for this project. 
+ 
+The bidders are expected to examine all instructions, forms, terms, project requirements and other 
+information in the RFP documents. Failure to furnish all information required as mentioned in the RFP 
+documents or submission of a proposal not substantially  responsive to the RFP documents in every 
+respect will be at the bidder's risk and may result in rejection of the proposal.  
+ 
+=== PAGE 7 (Matched: ['Scope of Work', 'State Data Policy', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 7 of 65 
+3. Summary  Information  
+3.1 About the Engagement  
+OCAC, the Technical Directorate of the E&IT Department, Government of Odisha, on behalf of the 
+Department of Health & Family Welfare, Government of Odisha, invites proposals (“Tenders”) in 
+response to this Request for Proposal (“RFP”) from eligible Service  Provider firms (“Bidders”) for 
+undertaking Capacity Building, Training, and Awareness on the Odisha State Data Policy (OSDP v2.0), 
+as detailed in the Terms of Reference of this RFP. 
+ 
+Proposals must be submitted within the time, date, and venue specified in the Fact Sheet. Any proposal 
+received after the prescribed deadline will be rejected and will not be considered under this procurement 
+process. 
+ 
+OCAC will award the Contract to the successful Bidder whose proposal is evaluated as the best value 
+based on the prescribed Technical and Financial evaluation criteria and is approved by the Tender 
+Accepting Authority. OCAC also reserves the right to select more than one firm to undertake the required 
+scope of work. 
+ 
+3.2 Background & Objective 
+ 
+OCAC, leads and supports key digital governance initiatives across the State. As Odisha advances its 
+digital transformation agenda, strengthening data governance and improving technology -enabled 
+service delivery have become central priorities. Building the  capacities of government officials and 
+frontline functionaries is critical to achieving these goals. 
+Odisha State Data Policy  2.0 aims to establish standardized data governance practices, safeguard 
+privacy, enable interoperability, and enhance transparency and efficiency in the delivery of welfare 
+schemes. 
+To ensure effective implementation and sustained utilization of these initiatives, OCAC intends to 
+engage a competent agency to design and deliver structured training, capacity-building, and awareness 
+programmes at the Directorate, District, Block, and Gram Panchayat levels. 
+3.2.1 Context 
+3.2.1.1 Odisha State Data Policy (OSDP) 2.0 
+Government departments generate and manage significant volumes of citizen and scheme -related 
+data. The Odisha State Data Policy  2.0 provides a structured framework to ensure that such data is 
+collected, stored, shared, and used in a secure, ethical, and standardized manner.  
+The Policy lays down guidelines covering: 
+• Data collection and storage 
+• Data quality and standardization 
+=== PAGE 8 (Matched: ['MIS', 'Monitoring', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 8 of 65 
+• Data sharing and interoperability 
+• Privacy protection and ethical use 
+• Access control and approvals 
+• Risk mitigation 
+• Retention and disposal 
+It also defines roles and responsibilities of officials at different administrative levels and prescribes 
+processes to ensure accountability and compliance. Effective implementation requires that officers and 
+data handlers understand data governance principles, follow prescribed procedures, and integrate them 
+into routine operations. 
+Capacity building on OSDP is therefore essential to promote responsible data management, improve 
+data quality, and strengthen service delivery outcomes across departments.  
+ 
+3.3 Need for the Assignment 
+Successful policy adoption and platform utilization depend on structured, large -scale training and 
+awareness efforts covering: 
+• Directorate level senior officials 
+• District administrators 
+• Block-level officers and data handlers 
+• Gram Panchayat-level frontline staff 
+• Citizens accessing welfare schemes 
+This RFP seeks to establish a standardized, scalable training framework to ensure consistent 
+messaging, measurable improvements in knowledge and system usage, and sustainable long -term 
+adoption across Odisha. 
+3.4 Purpose of the RFP 
+Through this RFP, OCAC aims to select a qualified agency to: 
+a. Design and deliver a comprehensive Statewide Training Programme on the Odisha State Data 
+Policy 2.0, including practical exercises and implementation support. 
+b. Develop bilingual training modules, SOPs, reference materials, and digital learning resources.  
+c. Establish a monitoring, MIS, and reporting framework to track training coverage, effectiveness, 
+and outcomes. 
+d. Provide end-to-end support to ensure quality delivery, operational readiness, and field -level 
+adoption. 
+=== PAGE 9 (Matched: ['Monitoring']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 9 of 65 
+3.5 Expected Outcomes 
+The assignment is expected to contribute to: 
+• Strengthened data governance practices across departments 
+• Improved understanding of data privacy, quality, and security 
+• Adoption of standardized processes and documentation 
+• Enhanced utilization of OSDP for scheme delivery and monitoring 
+• Greater citizen awareness and participation in welfare programmes 
+• A more transparent, efficient, and data-driven governance framework across the State. 
+=== PAGE 10 (Matched: ['MIS', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 10 of 65 
+4. Instructions to the Bidders  
+4.1 General  
+a) While every effort has been made to provide comprehensive and accurate background 
+information and requirements and specifications, Bidders must form their own conclusions 
+about the solution needed to meet the requirements. Bidders and recipients of this RFP may 
+consult their own legal advisers regarding this RFP.   
+b) All information supplied by Bidders may be treated as contractually binding on the Bidders, on 
+successful award of the assignment by OCAC based on this RFP.  
+c) No commitment of any kind, contractual or otherwise shall exist unless and until a formal written 
+contract has been executed by or on behalf of the OCAC. Any notification of preferred bidder 
+status by OCAC shall not give rise to any enforceable rights by t he Bidder. OCAC may cancel 
+this public procurement at any time prior to a formal written contract being executed by or on 
+behalf of the OCAC.   
+d) This RFP supersedes and replaces any previous public documentation & communications, and 
+Bidders should place no reliance on such communications.   
+ 
+4.2 Compliant Proposals/ Completeness of Response  
+a) Bidders are advised to study all instructions, forms, terms, requirements, and other information 
+in the RFP documents carefully. Submission of the bid shall be deemed to have been done 
+after careful study and examination of the RFP document with full understanding of its 
+implications.   
+b) Failure to comply with the requirements set out in this RFP  may render the Proposal 
+noncompliant and the Proposal may be rejected. Bidders must:   
+i. Include all documentation specified in this RFP.   
+ii. Follow the format of this RFP and respond to each element in the order as set out in 
+this RFP  
+iii. Comply with all requirements as set out within this RFP.   
+4.3 Code of integrity 
+No official of a procuring entity or a bidder shall act in contravention of the codes which includes  
+a. prohibition of 
+i. Making offer, solicitation or acceptance of bribe, reward or gift or any material benefit, either 
+directly or indirectly, in exchange for an unfair advantage in the procurement process or to 
+otherwise influence the procurement process. 
+ii. Any omission, or misrepresentation that may mislead or attempt to mislead so that financial 
+or other benefit may be obtained or an obligation avoided. 
+=== PAGE 11 (Matched: ['OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 11 of 65 
+iii. Any collusion, bid rigging or anticompetitive behaviour that may impair the transparency, 
+fairness and the progress of the procurement process. 
+iv. Improper use of information provided by the procuring entity to the bidder with an intent to 
+gain unfair advantage in the procurement process or for personal gain.  
+v. Any financial or business transactions between the bidder and any official of the procuring 
+entity related to tender or execution process of contract; which can affect the decision of the 
+procuring entity directly or indirectly. 
+vi. Any coercion or any threat to impair or harm, directly or indirectly, any party or its property 
+to influence the procurement process. 
+vii. Obstruction of any investigation or auditing of a procurement process.  
+viii. making false declaration or providing false information for participation in a tender process 
+or to secure a contract; 
+b. Disclosure of conflict of interest. 
+c. Disclosure by the bidder of any previous transgressions made in respect of the  provisions of 
+sub-clause (a) with any entity in any country during the last three years or of being debarred by 
+any other procuring entity. 
+In case of any reported violations, the procuring entity, after giving a reasonable opportunity of being 
+heard, comes to the conclusion  that a bidder or prospective bidder, as the case may be, has 
+contravened the code of integrity, may take appropriate measures. 
+ 
+4.4 Pre‐Bid Meeting & Clarifications  
+4.4.1 Pre‐bid Conference  
+a) OCAC shall hold a pre-bid meeting with the prospective bidders on 15.07.2026 at 12 Noon. 
+b) The representatives of Bidders (restricted to two  persons) may attend the Pre -bid meeting. 
+c) The Bidders will have to ensure that their queries for Pre‐Bid meeting should reach to General 
+Manager (Admin) only by email ( gm_ocac@ocac.in ) (with a copy to osdp@odisha.gov.in  )  
+by 5 PM of 14.07.2026.  
+d) The queries should necessarily be submitted in the following format ( Soft copy in MS Word 
+or MS Excel file to be attached): 
+Sl# RFP Document Reference(s) 
+(Section & Page Number(s)) 
+Content of RFP requiring 
+Clarification(s) 
+Points of 
+clarification 
+    
+    
+    
+e) OCAC shall not be responsible for ensuring receipt of the bidders’ queries. Any requests for 
+clarifications post the indicated date and time may not be entertained by OCAC.   
+f) The Procuring Authority reserves the right to: 
+=== PAGE 12 (Matched: ['MIS', 'Scope of Work', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 12 of 65 
+• Restrict discussion during the pre-bid meeting only to the queries received within time; 
+• Decline responses to vague, generic, or irrelevant queries not related to the scope of work;  
+• Limit participation to a maximum of two authorised representatives per bidder.  
+4.4.2 Responses to Pre‐Bid Queries and Issue of Corrigendum  
+a. The Nodal Officer notified by the OCAC will Endeavour to provide timely response to all queries. 
+However, OCAC neither makes representation or warranty as to the completeness or accuracy 
+of any response made in good faith, nor does OCAC undertake to answer  all the queries that 
+have been posed by the bidders 
+b. At any time prior to the last date for receipt of bids, OCAC may, for any reason, whether at its 
+own initiative or in response to a clarification requested by a prospective Bidder, modify the 
+RFP Document by a corrigendum. 
+c. The Corrigendum (if any) and clarifications to the queries from all Bidders will be posted on 
+www.enivida.odisha.gov.in , www.ocac.in or www.odisha.gov.in Any such corrigendum shall 
+be deemed to be incorporated into this RFP. 
+d. In order to provide prospective Bidders  reasonable time for taking the corrigendum into 
+account, OCAC may, at its discretion, extend the last date for the receipt of Proposals.  
+ 
+4.5 Key Requirements of the Bid  
+4.5.1 Right to Terminate the Process  
+a. OCAC may terminate the RFP process at any time and without assigning any reason. OCAC 
+makes no commitments, express or implied, that this process will result in a business 
+transaction with anyone.   
+b. This RFP does not constitute an offer by OCAC. The bidder's participation in this process may 
+result OCAC selecting the bidder to engage towards execution of the contract.    
+4.5.2 Earnest Money Deposit (EMD)  
+a. Bidders shall submit, along with their Bids, EMD of INR. 9,00,000/- in the shape of  Demand 
+Draft OR Bank Guarantee (in the format specified in Clause 9.7) issued by any scheduled bank 
+in favor of Odisha Computer Application Centre”  payable at Bhubaneswar, and should be valid 
+for 90 days from the due date of the tender / RFP.  The EMD should be submitted in the General 
+Bid. 
+b. EMD may also paid through e-Nivida Portal. 
+c. EMD of all unsuccessful bidders would be refunded by OCAC within 60 days of the bidder 
+being notified as being unsuccessful. The EMD, for the amount mentioned above, of successful 
+bidder would be returned upon submission of Performance Bank Guarantee. 
+d. The EMD amount is interest free and will be refundable to the unsuccessful bidders without 
+any accrued interest on it.   
+=== PAGE 13 (Matched: ['MIS', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 13 of 65 
+e. The bid / proposal submitted without EMD, mentioned above, will be summarily rejected.   
+f. The EMD may be forfeited:  
+• If a bidder withdraws its bid during the period of bid validity.   
+• In case of a successful bidder, if the bidder fails to sign the contract in accordance with 
+this RFP.   
+• If found to have a record of poor performance such as having abandoned work, having 
+been blacklisted, having inordinately delayed completion and having faced Commercial 
+failures etc.  
+• The Bidder being found to have indulged in any suppression of facts, furnishing of 
+fraudulent statement, misconduct, or other dishonest or other ethically improper activity, in 
+relation to this RFP 
+g. EMD exemption is not allowed for MSE bidders.   
+4.5.3 Tender Validity 
+Proposals shall remain valid for a period of 180 Days from the date of opening of the pre -qualification 
+and technical proposals. OCAC reserves the rights to reject a proposal valid for a shorter period as non- 
+responsive and will make the best efforts to finalize the selection process and award of the contract 
+within the bid validity period. The bid validity period may be extended on mutual consent.  
+ 
+4.5.4 Submission and Opening of Proposals 
+a) The bidders should submit their responses as per format given in this RFP in the following manner: 
+─ Response to Pre‐Qualification Criterion 
+─ Technical Proposal 
+─ Commercial Proposal 
+b) Please Note that Prices should not be indicated in the Pre -Qualification Response or Technical 
+Proposal but should only be indicated in the Commercial Proposal. 
+c) The Response to Pre ‐Qualification criterion, Technical Proposal and Commercial Proposal (as 
+mentioned in previous paragraph) should be submitted through online mode in e -Nivida Portal. 
+ 
+The Proposals submitted up to 30.07.2026  by 12 Noon  will be opened on 30.07.2026  by 12:30 PM 
+by Proposal Evaluation Committee, in presence of those Bidders or their representatives who may be 
+authorized by the bidder to be present at the time of opening. The representatives of the bidders should 
+be advised to carry the identity card or a letter o f authority from the tendering firms to be identified as 
+bona-fide for attending the opening of the proposal. 
+ 
+d) The bids submitted in hard copy or by post/e ‐mail etc. shall not be considered and no 
+correspondence will be entertained on this matter. 
+=== PAGE 14 (Matched: ['OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 14 of 65 
+e) OCAC reserves the right to modify and amend any of the above ‐stipulated condition/criterion 
+depending upon project priorities vis‐à‐vis urgent commitments. 
+ 
+4.5.5 Proposal Preparation Costs 
+The bidder shall be responsible for all costs incurred in connection with participation in the RFP process, 
+including, but not limited to, costs incurred in conduct of informative and other diligence activities, 
+participation in meetings or discussions or presentations, preparation of Proposal, in providing any 
+additional information required by OCAC to facilitate the evaluation process, and in negotiating a 
+definitive contract or all such activities related to the bid process. 
+ 
+OCAC will in no case be responsible or liable for those costs, regardless of the conduct or outcome of 
+the bidding process. 
+ 
+4.5.6 Language 
+The Proposal should be filled by the Bidder in English language only. If any supporting documents 
+submitted are in any language other than English, translation of the same in English language is to be 
+duly attested by Bidders. For purposes of interpretation of the Proposal, English translation shall govern. 
+ 
+4.5.7 Acceptance and Rejection of Bids 
+OCAC reserves the right to reject in full or part, any or all bids without assigning any reason thereof. 
+OCAC reserves the right to assess the Bidder’s capability and capacity. The decision of OCAC shall be 
+final and binding. Bid should be free of overwriting. All measures, correction or addition must be clearly 
+written both in words and figures and attested. Offers not submitted in prescribed manner or submitted 
+after due date and time are liable to rejection. 
+ 
+4.6 Evaluation Process  
+a. OCAC will constitute a Proposal Evaluation Committee to evaluate the responses of the bidders   
+b. The Proposal Evaluation Committee constituted by OCAC shall evaluate the responses to the 
+RFP and all supporting documents / documentary evidence. Inability to submit requisite 
+supporting documents / documentary evidence, may lead to rejection of the bid.   
+c. The decision of the Proposal Evaluation Committee in the evaluation of responses to the RFP 
+shall be final. No correspondence will be entertained outside the process of negotiation/ 
+discussion with the Committee.   
+d. The Proposal Evaluation Committee may ask for meetings with the Bidders to seek 
+clarifications on their proposals, if required.  
+e. Each of the responses shall be evaluated as per the criteria and requirements specified in this 
+RFP.  
+=== PAGE 15 (Matched: ['OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 15 of 65 
+4.6.1 Deviations 
+a. No technical deviation is allowed. 
+b. The Bidder may provide deviation to the contents of the RFP document as per prescribed format. 
+c. The proposal evaluation committee would evaluate and classify them as “material deviation” or 
+“non material deviation”. In case of material deviation, the committee may decide to “monetize” 
+the value of the deviations, which will be added to the price bid submitted by the Bidder OR 
+declare the bid as non-responsive. 
+d. The Bidders would be informed in writing on the committee’s decision on the deviation, prior to 
+the announcement of technical scores. The Bidders would not be allowed to withdraw the 
+deviations at this stage. The Bidder would not be allowed to withdraw the  deviations submitted 
+without the prior consent of the Purchaser.  
+e. OCAC have the right to accept or reject any deviation(s) furnished by the bidder. The decision of 
+OCAC in such case is final. 
+4.6.2 Tender Evaluation  
+a. Initial Bid scrutiny will be held, and incomplete details as given below will be treated as 
+nonresponsive if Proposals: 
+▪ are not submitted as specified in the RFP document   
+▪ received without the Letter of Authorization   
+▪ are found with suppression of details   
+▪ with incomplete information, subjective, conditional offers and partial offers 
+submitted  
+▪ submitted without the documents requested in the checklist   
+▪ with lesser validity period   
+b. All responsive Bids will be considered for further processing as below:   
+OCAC will prepare a list of responsive bidders, who comply with all the Terms and Conditions 
+of the Tender. All eligible bids will be considered for further evaluation by a committee 
+according to the Evaluation process defined in this RFP document. The decision of the 
+Committee will be final in this regard.   
+ 
+=== PAGE 16 (Matched: ['OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 16 of 65 
+5. Criteria for Evaluation  
+Tenders for this contract will be assessed in accordance with Quality and Cost ‐based Selection 
+(QCBS) system. All bids will primarily be evaluated based on Prequalification Criteria. The Proposal 
+Evaluation Committee will carry out a detailed evaluation of the Proposals, only those who qualify all 
+Prequalification criteria, in order to determine whether the technical aspects are in accordance with the 
+requirements set forth in the RFP Documents. In order to reach such a determination, the Proposal 
+Evaluation Committee will examine and compare the technical aspect of the Proposals based on  
+information provided by the bidder, taking into account the following factors:  
+a. Overall completeness and compliance with the requirement  
+b. Proposed solution, work‐plan and methodology to demonstrate that the bidder will achieve the 
+performance standards within the time frame described in RFP documents  
+c. Any other relevant factors, if any, listed in RFP document or the OCAC deems necessary or 
+prudent to take into consideration  
+In order to facilitate the technical proposal evaluation, the technical criteria laid down along with the 
+assigned weights have been presented in subsequent section. The marking scheme presented here 
+is an indication of the relative importance of the evaluation criteria. Bidders securing a more than  70% 
+marks in the technical evaluation will only be considered for further financial bid evaluation. Bids of 
+Tenders which don’t secure the minimum specified technical score will be considered technically non‐
+responsive and hence debarred from being considered for financial evaluation.  
+ 
+ 
+=== PAGE 17 (Matched: ['MIS']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 17 of 65 
+5.1 Prequalification Criteria (General Bid)  
+Keeping in view the complexity & volume of the work involved, following criteria are prescribed as pre‐
+qualification criteria for the Bidder interested in undertaking the project. Consortium is not allowed. 
+Technical Bids of only the successful pre‐qualifiers will be opened for evaluation.  
+Sl# Basic 
+Requirement 
+Specific Qualification Criteria Document/ Information 
+to be submitted with 
+proposal 
+a)  Legal Entity Responding Firm/ Company should be:  
+• Registered as a Company/LLP under 
+Companies Act, 1956/2013 OR Partnerships 
+Firm registered under LLP Act, 2008.  
+• Registered with Goods and Services Tax 
+Network (GSTN).  
+• The Company must have been operational in 
+the State of Odisha for at least the last ten (10) 
+years as of the bid submission date. 
+• Copy of Certificate of 
+Incorporation/ 
+Registration.  
+• Valid GSTIN and copy 
+of GST Registration 
+Certificate. 
+• Copy of PAN  
+b)  Sales Turnover 
+in System 
+Integration 
+Average Annual Sales Turnover generated from 
+services relating to IT/ITeS during the last three 
+financial years ending on 31.03.202 5 (as per the 
+last published Balance sheets), should be at least 
+₹10 Crores. 
+ 
+- Copy of the audited 
+Balance sheet and 
+Profit & Loss account.  
+- Statutory 
+Auditor’s/CA 
+Certificate 
+c)  Net Worth The bidder should have positive net worth in last 3 
+financial years. 
+Statutory Auditor’s 
+Certificate 
+d)  Certification The Bidder should have following valid 
+certifications.  
+─ ISO - 27001  
+─ ISO - 20000  
+─ ISO - 9001  
+Copy of the certification 
+e)  Manpower 
+Strength  
+The bidder must have at least 2 5 
+technical/managerial staff on payroll with 
+qualifications of B.E. / B.Tech. / MCA / MBA / 
+MSC(IT) for ensuring core technical execution and 
+centralized project coordination.   
+Declaration from HR  
+along with PF Challan 
+(any month during last 6  
+months)  
+f)  Local Presence The Bidder must have an established field -level 
+presence in at least 50 Blocks/Tahasils /ULBs 
+across the State of Odisha through its own offices 
+or through implementation associates, authorized 
+local partners, or affiliated operational units. Such 
+• List of 
+Block/Tahasil/ULBs 
+• In case of own 
+offices- lease 
+=== PAGE 18 (Matched: ['MIS', 'Monitoring']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 18 of 65 
+Sl# Basic 
+Requirement 
+Specific Qualification Criteria Document/ Information 
+to be submitted with 
+proposal 
+presence must be supported by valid agreements 
+or partnership arrangements that have been in 
+force for a minimum period of six (6) months prior to 
+the bid submission date, to ensure adequate 
+operational coverage for monitoring and execution 
+of project activities.. 
+ 
+(Deployment of resources solely by the Bidder in 
+Government projects at 50  Blocks/Tahasils/ULBs 
+within the State of Odisha, for a continuous period 
+of at least six (6) months prior to the bid submission 
+date, shall also be considered as valid field -level 
+presence, provided such deployment is at the 
+Block/Tahasil level and supported by documentary 
+evidence.) 
+agreement along with 
+address.  
+• In case of 
+associate/partners – 
+copy of 
+agreement/MoU 
+• In case of 
+Government project – 
+copy of Work order 
+g)  Technical 
+Capability  
+The Bidder must have successfully executed at 
+least one IT/ITeS / Manpower augmentation/ 
+Training project for any Government Department, 
+PSU, or Autonomous Body within the last five (5) 
+years, with a minimum project value of ₹1 Crore. 
+The project should have included  any of  
+components such as training, awareness 
+programmes, camps, workshops or citizen support 
+service centers  or handholding support related to 
+IT/ITeS, Cyber Security, or emerging technologies, 
+and must have involved deployment of manpower 
+across at least 15 districts of Odisha. 
+ 
+Deployment of handholding support resources for 
+non-IT or non-technology-related activities shall not 
+be considered for the purpose of this criterion. 
+Completion Certificates 
+from the client      
+ OR 
+Work Order + Self 
+Certificate of Completion 
+(Certified by the Auditor);  
+ 
+OR 
+ 
+Work Order + Phase 
+Completion Certificate 
+from the client 
+h)  Consortium  Consortium is not allowed Self-Declaration from 
+Director/ Authorized 
+Signatory 
+i)  Blacklisting The bidder should not be under a declaration of 
+ineligibility for corrupt and fraudulent practices 
+issued by any Government or PSU in India. 
+Annexure - Self 
+Declaration (at Clause 
+9.2) 
+=== PAGE 19 (Matched: ['OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 19 of 65 
+Sl# Basic 
+Requirement 
+Specific Qualification Criteria Document/ Information 
+to be submitted with 
+proposal 
+j)  EMD The bidder must submit EMD of ₹9,00,000/- in pre-
+qualification bid.  
+DD/BG 
+ 
+Note : 
+• The bidder should submit the supporting document as documentary proof in Pre -qualification 
+bid response 
+• The Authority reserves the right to verify the authenticity and genuineness of the documents 
+submitted by the bidder from the respective issuing organisations. In respect of manpower 
+strength/operational presence in districts, the Authority also reserves the right to verify the same 
+through the concerned District Administration. 
+ 
+5.2 Technical Evaluation Criteria   
+The Proposal evaluation committee will evaluate the proposals submitted by the bidders with a 
+detailed scrutiny. During evaluation of proposals, OCAC, may, at its discretion, ask the bidders for 
+clarification of their Technical Proposals. Only those proposals meeting the above qualification criteria 
+will be evaluated as per the criteria mentioned below: 
+ 
+Sl# Evaluation Criteria Max Score Documents required 
+a.  Financial and Resource Strength 
+i)  Average Annual turnover from IT/ ITeS project in last 
+3 years 
+− ≥ 5 Cr: 2 Marks 
+[Additional 1 marks for additional ₹50 Lakhs  subject 
+to maximum 10 marks] 
+10 
+− Copy of audited Profit & 
+Loss Statement 
+OR 
+− Certificate from the 
+Statutory Auditor 
+ii)  The bidder must have at least 25 
+technical/managerial staff on payroll with 
+qualifications of B.E. / B.Tech. / MCA / MBA/ MSC(IT) 
+for ensuring core technical execution and centralized 
+project coordination 
+− ≥ 25 Resources : 2 Marks 
+[Additional 1 marks for additional 2 resources  
+subject to maximum 10 marks] 
+10 − Declaration from HR 
+with PF Challan 
+iii)  The bidder having following certification with validity  
+− CMMI Level 5 (from CMMi Institute) : 5 Marks 
+− CMMI Level 3 (from CMMi Institute) : 2 Marks 
+ 
+5 − Copy of the certificate 
+b.  General e- Governance Experience 
+=== PAGE 20 (Matched: ['MIS', 'Monitoring']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 20 of 65 
+Sl# Evaluation Criteria Max Score Documents required 
+iv)  The Bidder must have an established field -level 
+presence in at least 50 Blocks/Tahasils/ULBs across 
+the State of Odisha through its own offices or through 
+implementation associates, authorized local 
+partners, or affiliated operational units. Such 
+presence must be supported by valid agreements or 
+partnership arrangements that have been in force for 
+a minimum period of six (6) months prior to the bid 
+submission date, to ensure adequate operational 
+coverage for monitoring and execution of project 
+activities.. 
+ 
+(Deployment of resources solely by the Bidder in 
+Government projects at 50 Blocks/ Tahasils/ULBs 
+within the State of Odisha, for a continuous period of 
+at least six (6) months prior to the bid submission 
+date, shall also be considered as valid field -level 
+presence, provided such deployment is at the 
+Block/Tahasil level and supported by d ocumentary 
+evidence.) 
+− Presence/deployment ≥ 50 blocks - 1 Mark 
+[Additional 1 marks for each additional 5 blocks 
+subject to maximum 10 marks] 
+10 Copy of Work Order and  
+Completion / Go -live 
+certificate 
+v)  The Bidder must have successfully executed at least 
+one IT/ITeS/ Manpower augmentation/ Training 
+project for any Government Department, PSU, or 
+Autonomous Body within the last five (5) years, with 
+a minimum project value of ₹1 Crore. The project 
+should hav e included any of components such as 
+training, awareness programs, camps, citizen 
+support service or handholding support related to 
+IT/ITeS, Cyber Security, or emerging technologies, 
+and must have involved deployment of manpower 
+across at least 15 districts of Odisha.  
+− Resource Deployment at 15 district HQ - 1 
+Marks then for each district HQ 0.5 marks each 
+subject to maximum 5 marks 
+− For each 5 blocks (excluding sadar 
+blocks)/ULBs, additional  -1 marks subject to 
+maximum 5 marks] 
+(in case Block and ULBs are same location, in such 
+case it will be considered as one location) 
+10 Copy of Work Order and  
+Completion / Go -live 
+certificate 
+vi)  Tie-ups / Partnerships / Associations with Higher  
+Educational Institutions, Colleges, or Universities for 
+Training Activities : 
+The bidder should have existing formal tie -ups, 
+partnerships, or associations with recognized Higher 
+Educational Institutions, Colleges, or Universities  for 
+conducting training, skilling, or  capacity-building 
+programs. Such institutional linkages will 
+demonstrate the bidder’s ability to mobilize 
+5 Copies of MoUs  / 
+Agreements / Letters of 
+Association / Endorsements 
+from respective institutions 
+confirming partnership or 
+collaboration for training or 
+facilitation activities.  
+=== PAGE 22 (Matched: ['Monitoring', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 22 of 65 
+Sl# Evaluation Criteria Max Score Documents required 
+− Training methodology (ToT model, blended 
+learning, hands-on, case-based learning, citizen 
+awareness strategy) -5 marks 
+− Monitoring, reporting, feedback and quality 
+assurance mechanism – 7 marks  
+− Resource deployment plan (district/block-level 
+presence, supervision model) – 5 marks  
+− Sample IEC materials / digital learning 
+resources / SOP formats – 5 Marks 
+  
+ 
+a) All the bidders who secure a Technical Score of more than 70% will be declared as technically 
+qualified.  
+b) The bidder with highest technical bid (H1) will be awarded 100% score. 
+c) Technical Scores for other than H1 bidders will be evaluated using the following formula:  
+d) Technical Score of a Bidder = {(Technical Bid score of the Bidder/ Technical Bid Score of H1) 
+X 100} % (Adjusted to two decimal places) 
+e) The commercial bids of only the technically qualified bidders will be opened for further 
+processing.  
+5.3 Evaluation of Financial Bid 
+a) The Financial Bids of the technically qualified bidders will be opened on the prescribed date in 
+the presence of bidders’ representatives 
+b) The bidder with lowest financial bid (L1) will be awarded 100% score.  
+c) Financial Scores for other than L1 bidders will be evaluated using the following formula:  
+Financial Score of a Bidder = {( Financial Bid of L1/Financial Bid of the Bidder) X 100} %  
+(Adjusted to two decimal places) 
+d) Only fixed price financial bids indicating total prices for all the deliverables and services 
+specified in this bid document will be considered.  
+e) The bid price will be inclusive of all taxes and levies and shall be in Indian Rupees. 
+f) Errors & Rectification: Arithmetical errors will be rectified on the following basis: “If there is a 
+discrepancy between the unit price and the total price that is obtained by multiplying the unit 
+price and quantity, the unit price shall prevail, and the total price shall be corrected. If there is 
+a discrepancy between words and figures, the amount in words will prevail”.  
+ 
+5.4 Combined Evaluation of Technical & Financial Bid 
+a) The technical and financial scores secured by each bidder will be added using weightage of 
+70% (Technical) and 30% (Financial) respectively to compute a Composite Bid Score.  
+Bn = 0.70 * Tn + 0.30* Fn 
+Where 
+=== PAGE 24 (Matched: ['OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 24 of 65 
+6. Appointment of System Integrator or Service Provider  
+ 
+6.1 Award Criteria  
+OCAC will award the Contract to the successful bidder whose proposal has been determined to be 
+substantially responsive and has been determined as the most responsive bids as per the process 
+outlined above.  
+ 
+6.2 Right to Accept Any Proposal and To Reject Any or All Proposal(s)  
+OCAC reserves the right to accept or reject any proposal, and to annul the tendering process / Public 
+procurement process and reject all proposals at any time prior to award of contract, without thereby 
+incurring any liability to the affected bidder or bidders or any obligation to inform the affected bidder or 
+bidders of the grounds for such action.  
+ 
+6.3 Purchaser’s Procurement Rights 
+Without incurring any liability, whatsoever to the affected bidder or bidders, the Purchaser reserves the 
+right to: 
+a. Amend, modify, or cancel this tender and to reject any or all proposals without assigning any 
+reason. 
+b. Change any of the scheduled dates stated in this tender. 
+c. Reject proposals that fail to meet the tender requirements. 
+d. Remove any of the item at the time of placement of order. 
+e. Increase or decrease no. of resources supplied under this project. 
+f. Should the Purchaser be unsuccessful in negotiating a contract with the selected bidder, the 
+Purchaser will begin contract negotiations with the next best value bidder in order to serve the 
+best interest. 
+g. Make typographical correction or correct computational errors to proposals  
+h. Request bidders to clarify their proposal. 
+ 
+6.4 Notification of Award  
+Prior to the expiry  of the validity period, OCAC will notify the successful bidder in writing or by fax or 
+email, that its proposal has been accepted. In case the tendering process / public procurement process 
+has not been completed within the stipulated period, OCAC, may like to request the bidders to extend 
+the validity period of the bid.  
+ 
+The notification of award will constitute the formation of the contract. Upon the successful bidder's 
+furnishing of Performance Bank Guarantee, OCAC will notify each unsuccessful bidder.  
+ 
+=== PAGE 25 (Matched: ['OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 25 of 65 
+6.5 Contract Finalization and Award  
+The OCAC shall reserve the right to negotiate with the bidder(s) whose proposal has been ranked best 
+value bid based on Technical and Commercial Evaluation to the proposed Project . On this basis the 
+contract agreement would be finalized for award & signing.  
+ 
+6.6 Performance Guarantee  
+The OCAC will require the selected bidder to provide a Performance Bank Guarantee, within 30 days 
+from the Notification of award  or issue of work order , for a value equivalent to 3% of the total cost of 
+ownership i.e., total order value excluding taxes. The Performance Guarantee should be valid for a 
+period of 3 6 months. The Performance Guarantee shall be kept valid till completion of the project and 
+Warranty period. The selected bidder shall be responsible for extending the validity  date and claim 
+period of the Performance Guarantee as and when it is due on account of non‐completion of the project 
+and Warranty period. In case the selected bidder fails to submit performance guarantee within the time 
+stipulated, the OCAC at its discretion may cancel the order placed on the selected bidder after giving 
+prior written notice to rectify the same. OCAC shall invoke the performance guarantee in case the 
+selected Service Provider fails to discharge their contractual obligations during the period or OCAC 
+incurs any damages due to Service Provider’s negligence in carrying out the project implementation 
+as per the agreed terms & conditions. 
+ 
+6.7 Signing of Contract  
+After the OCAC notifies the successful bidder that its proposal has been accepted, OCAC shall enter 
+into a contract with the successful bidder  taking in to account the  relevant clauses of RFP, pre‐bid 
+clarifications, Corrigenda, the proposal of the bidder in addition to other agreed clauses. 
+ 
+6.8 Failure to Agree with the Terms and Conditions of the RFP  
+Failure of the successful bidder to agree with the Terms & Conditions of the RFP and the Proposal 
+submitted by the successful bidder  shall constitute sufficient grounds for the annulment of the award, 
+in which event OCAC may award the contract to the next best value bidder or call for new proposals 
+from the interested bidders. In such a case, the OCAC shall invoke the PBG  of the most responsive 
+bidder. 
+ 
+7. Contractual Clauses  
+ 
+The Contract Agreement for this engagement would contain the following key clauses: - 
+ 
+7.1 Term of Contract  
+This will include the period required to deliver the deliverables and other services specified in the terms 
+of reference, including the duration of the support period (as may be applicable) 
+ 
+=== PAGE 26 (Matched: ['MIS', 'Scope of Work', 'OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 26 of 65 
+7.2 Termination  
+i. Normal termination of the contract would happen at the end of the tenure. 
+ii. The Purchaser (i.e. OCAC) may, terminate this Contract by giving the System Integrator a 90 
+(Ninety) days prior and written notice indicating its intention to terminate the Contract . 
+iii. Termination by S P - The SP may terminate this Contract, by not less than Ninety (90) days’ 
+written notice to the OCAC, such notice to be given after the occurrence of any of the following 
+events – 
+i. If the Purchaser fails to pay any money due to the S P pursuant to this Contract and 
+not subject to dispute pursuant to Clause 7.10 hereof within forty -five (45) days after 
+receiving written notice from the SI that such payment is overdue.  
+ii. If the Purchaser fails to comply with any final decision reached because of arbitration 
+pursuant to Clause 7.10 hereof  
+iii. If the Purchaser is in material breach of its obligations pursuant to this Contract and 
+has not remedied the same within forty-five (45) days (or such longer period as the SI 
+may have subsequently approved in writing) following the receipt by the Purchaser of 
+the SP’s notice specifying such breach. 
+ 
+7.3 Effects of Termination  
+a. In the event of a pre-mature termination of this agreement by OCAC, the compensation payable 
+to bidder will be decided in accordance with the Terms of Payment Schedule for the milestones 
+completed services and accepted deliverables till the last effective date of termination.  
+ 
+b. Parties shall mutually agree upon a transition plan and comply with such a plan. The bidder 
+shall agree to extend full cooperation in supporting the transition process.  
+ 
+7.4 Scope of Work and Deliverables  
+This will be in conformity with the terms of reference specified in the RFP document and shall 
+include the submissions made by the bidder in their proposal and work plans, further refined during 
+the negotiations. Deliverables and milestones shall be establ ished with a process of formal 
+acceptance or measurable criteria. In case of any conflict between RFP and Proposal submitted 
+by the Bidder  in relation to Scope of Work or Deliverables, the Proposal submitted by Bidder 
+(including clarifications, if any) shall prevail and apply. 
+ 
+7.5 Norms Governing Service Delivery  
+a) Provide necessary performance guarantees on signing of the agreement.  
+b) Shall deliver the services in a professional manner commensurate with accepted industry 
+practices and/or technical standards which are generally expected of such an engagement.  
+=== PAGE 27 (Matched: ['MIS', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 27 of 65 
+c) Bidders shall establish a formal team structure with a named Project Manager who will serve 
+as single point of contact and staff with competent resources to provide effective and expert 
+service delivery, in tune to the requirements.   
+d) Provide a roadmap and project plan for this engagement, clearly describing  the 
+responsibilities, timelines, dependencies, milestones, and risks.  
+e) The cost of travel & accommodation during visit to various places of Odisha for various works 
+like system study, training etc. should be borne by the bidder. 
+ 
+7.6 Fees and Payments  
+a) The total fees payable to the bidder including a milestone-based payment as specified in the 
+terms of reference would be specified. Such payments shall be inclusive of all taxes / levies 
+and other out of pocket expenses. Rate of taxes will be applicable as per the rate 
+prevailing at the time of submission of Bill. 
+b) Payments for additional services in case of change in scope will also be specified.  
+c) In case of a bona fide dispute regarding any invoice , OCAC shall be entitled to delay or 
+withhold payment of the invoice or part of it, limited to the extent of the disputed amount.  
+ 
+7.7 Audit  
+a) The software and documents prepared for this project are subject to audit. The bidder should 
+help OCAC during preparation of compliances of audit without any additional cost.   
+b) Software including executables, binaries , licenses  (if any) and all technical 
+documents/manuals shall be in favour of the OCAC and shall be submitted to the OCAC 
+before final payment or on demand.  
+c) All records pertaining to this work shall be made available to the OCAC and its authorized 
+agencies upon request for verification and/or audit, on the basis of a written request.  
+ 
+7.8 Confidentiality  
+Bidder and its agents shall exercise professionally reasonable care to maintain the required 
+confidentiality and privacy about data, wherever applicable. If required, the bidder will sign a 
+Non-Disclosure Agreement (NDA) with OCAC/ other stakeholders of project.  
+ 
+7.9 Force Majeure  
+Neither Party to this agreement shall be liable to the other for delay or default in performance 
+of its obligations or any loss or damage which may be suffered by the other directly due to a 
+Force Majeure event provided that the affected Party notifies the other Party of such event and 
+its likely effects and duration as soon as possible and takes all reasonable steps to mitigate the 
+losses/disruption.  
+=== PAGE 28 (Matched: ['OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 28 of 65 
+ 
+7.10 Dispute Resolution  
+Any dispute or difference, whatsoever, arising between the parties to this agreement arising out 
+of or in relation to this agreement shall be amicably resolved by the Parties through mutual 
+consultation, in good faith and using their best endeavors. Parties, on mutual consent, may 
+refer a dispute to a competent individual or body or institution or a committee of experts 
+appointed By OCAC (Nodal Authority) for such purpose and abide by the decisions thereon.  
+On non-settlement of the dispute, same shall be referred to the Principal Secretary to 
+Government, E&IT Department, Government of Odisha for his decision and the same shall be 
+binding on all parties, unless either party makes a reference to arbitration proceedings, within 
+sixty days of such decision. 
+Such arbitration shall be governed in all respects by the provision of the Arbitration and 
+Conciliation Act, 1996 or later and the rules framed there under and  any statutory modification 
+or re-enactment thereof. The arbitration proceeding shall be held in Bhubaneswar, Odisha.  
+ 
+7.11 Governing Law and Jurisdiction  
+This agreement and all questions of its interpretation shall be construed in accordance with the 
+Laws of India in the High Court at Cuttack having jurisdiction. Suites, if any arising out of the 
+contract/agreement shall be filed by either party in a court of Law to which the Jurisdiction of 
+the High Court of Odisha extends. 
+ 
+7.12 Change Request Management  
+Any requirement beyond the scope mentioned in the RFP will be treated as Change Request 
+and the process to address the change request is as follows: 
+• Identification and documentation of change request requirement– The details of scope 
+of change will be analysed and documented 
+• Effort Estimate – OCAC will ask the successful bidder to submit the effort estimate in 
+terms of man month rate using any standard estimation model. 
+• Approval or disapproval of the change request – Technical Committee constituted by 
+OCAC will approve or disapprove the change requested including the additional 
+payments, after analysis and discussion with the bidder on the impact of the change 
+on schedule. 
+• Implementation of the change Request – The change will be implemented in 
+accordance with the agreed cost, effort, and schedule. The vendor shall consolidate all 
+approved CRs and raise invoice to OCAC accordingly. 
+• Additional cost towards change request management is to be agreed upon mutually by 
+bidder and OCAC and factored separately post approval of efforts by OCAC. This 
+=== PAGE 29 (Matched: ['MIS', 'OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 29 of 65 
+clause should only be invoked for justified business cases during the tenure of the 
+project for such cases which is beyond the scope of this RFP. 
+ 
+The costing of change request shall be finalized as per cost mentioned in financial bid 
+format- Software Enhancement Service.  The bidder have to quote for 100 man month and 
+payment shall be made as per actual consumed.  
+ 
+7.13 Intellectual Property Rights  
+a. All deliverables, outputs, materials, reports, documentation, training content, presentations, 
+IEC materials, audio-visual content, digital assets, software components, MIS dashboards, 
+datasets, analytics, designs, and any other work products developed, created, or prepared 
+by the selected Agency under this assignment shall be the sole and exclusive property of 
+Odisha Computer Application Centre (OCAC), Government of Odisha. 
+b. The Agency shall ensure that OCAC receives full, perpetual, irrevocable, royalty -free 
+ownership and usage rights over all deliverables produced under the contract.  
+c. The Agency shall hand over to OCAC all deliverables in editable source formats as well as 
+final formats, including but not limited to: 
+• Training materials (Word, PowerPoint, editable design files) 
+• IEC creatives and multimedia files 
+• Video source files 
+• MIS source code (if developed), configuration files, and database schema  
+• Reports, datasets, analytics outputs, and documentation 
+d.  OCAC shall have the unrestricted right to: 
+• Use, reproduce, modify, adapt, translate, publish, distribute, or share the materials 
+developed under the project; 
+• Use the materials for future programmes, training initiatives, or policy 
+dissemination; 
+• Share the materials with Government departments, agencies, or third parties as 
+deemed appropriate. 
+e. The selected Agency shall not claim any ownership, copyright, patent, or other intellectual 
+property rights over any deliverables produced under this assignment.  
+f. The Agency shall not use, publish, distribute, or commercially exploit any deliverable or 
+project output created under this assignment without prior written approval from OCAC.  
+g. The Agency shall ensure that all materials developed under this assignment are original 
+and do not infringe upon the intellectual property rights of any third party. In the event of 
+any such infringement claim, the Agency shall fully indemnify and hold OCA C harmless 
+from any legal liabilities, damages, or claims arising from such infringement.  
+=== PAGE 30 (Matched: ['MIS', 'State Data Policy', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 30 of 65 
+h.  If any pre-existing intellectual property or third -party tools are used by the Agency in the 
+course of this assignment, the Agency shall ensure that OCAC receives perpetual, royalty-
+free rights to use such components as required for the intended purpose of the project.  
+i. The provisions of this clause shall survive the completion, termination, or expiry of the 
+contract. 
+7.14 Data Ownership and Data Confidentiality 
+a. All data, information, records, datasets, reports, analytics, documentation, and any other 
+material collected, generated, processed, or accessed during the course of  this assignment 
+shall remain the sole property of Odisha Computer Application Centre (OCAC), Government of 
+Odisha. 
+b. The selected Agency shall treat all information received or generated during the execution of 
+the project as strictly confidential and shall use such information only for the purposes of 
+performing the obligations under this contract. 
+c. The Agency shall not disclose, publish, transfer, or share any data or information relating to the 
+project with any third party without the prior written approval of OCAC. 
+d. The Agency shall ensure that all personnel, consultants, trainers, and subcontractors engaged 
+for this assignment comply with the confidentiality obligations specified in this clause.  
+e. The Agency shall implement appropriate technical and organizational safeguards to protect all 
+project-related data against unauthorized access, loss, misuse, or disclosure. 
+f. The Agency shall comply with all applicable provisions of the Odisha State Data Policy and 
+other relevant data protection guidelines issued by the Government. 
+g. Upon completion or termination of the contract, the Agency shall hand over all data and project 
+records to OCAC and shall not retain any copies, whether in physical or electronic form, unless 
+expressly permitted by OCAC. 
+h. The provisions of this clause shall survive the completion, termination, or expiry of the contract. 
+ 
+7.15 Knowledge Transfer and Handover 
+a. The selected Agency shall ensure proper knowledge transfer to OCAC and relevant 
+Government stakeholders to enable long -term sustainability of the programme  and continued 
+use of project outputs. 
+b. As part of the assignment, the Agency shall provide OCAC with: 
+i. Complete documentation of training modules, methodologies, and learning materials  
+ii. All training manuals, presentations, and IEC materials in editable formats  
+iii. MIS documentation including system architecture, user manuals, and configuration 
+details (where applicable) 
+iv. Guidelines and standard operating procedures developed under the project  
+v. Data repositories, analytics outputs, and relevant supporting documentation  
+=== PAGE 31 (Matched: ['MIS', 'Scope of Work', 'State Data Policy', 'OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 31 of 65 
+a. The Agency shall conduct knowledge transfer sessions, if required, to familiarize OCAC officials 
+or designated personnel with the use of developed materials, MIS dashboards, and reporting 
+systems. 
+b. All project materials, documentation, and digital assets shall be handed over to OCAC in a 
+structured manner at the completion of the assignment. 
+c. The Agency shall ensure that all deliverables are fully usable and reusable by OCAC without 
+dependency on the Agency after project completion. 
+ 
+7.16 Liquidated Damages  
+In the event of delay in execution of work, specified in this Contract / furnishing of deliverables, the 
+Implementation Agency/System Integrator shall be liable to a penalty @0.1% of the value of work order 
+in respective phases, for every week of delay up to a maximum of 2%, after which OCAC shall be at 
+liberty to cancel the award. For the purpose of this clause, part of a week shall be considered to be a 
+full week. Penalty will not be applicable if the delay is not attributable to the bidder.  However, in such 
+cases bidder has to communicate in writing the reason of delay. Decision of Chairman, OCAC in this 
+matter is final.   
+ 
+7.17 Limitation of Liability 
+Except in cases of gross negligence or willful misconduct: - 
+a. neither party shall be liable to the other party for any indirect or consequential loss or damage, 
+loss of use, loss of production, or loss of profits or interest costs, provided that this exclusion 
+shall not apply to any obligation of the supplier/ select ed bidder to pay liquidated damages to 
+the Purchaser; and 
+b. Maximum liability of the bidder for this project will be limited to the total value of the contract or 
+the amount actually paid to the bidder whichever is lower and will not include any indirect or 
+consequential clause or damage, loss or profit, data or revenue. 
+ 
+8. Terms of Reference  
+ 
+8.1 Scope of Work for Training & Capacity Building on Odisha State Data 
+Policy (OSDP) 2.0 
+The selected Agency shall be responsible for the end -to-end design, development, and execution of a 
+comprehensive Statewide capacity-building programme on the Odisha State Data Policy (OSDP)  2.0. 
+The programme shall equip Government officials at the State, District, Block, and Gram Panchayat 
+levels with the knowledge, skills, and tools required to implement the Data Policy in routine 
+administrative and operational work. In addition, the Agency sh all implement structured citizen 
+awareness interventions on responsible data practices, digital privacy, and ethical handling of personal 
+information. 
+=== PAGE 32 (Matched: ['State Data Policy', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 32 of 65 
+The assignment shall ensure a uniform understanding and adoption of data governance principles, 
+privacy safeguards, standardized documentation practices, and secure data handling procedures 
+across all tiers of administration. 
+Target Participants 
+Administrative 
+Level 
+Target Participants Approx. No. of 
+Participants 
+(Indicative) 
+Training 
+Mode 
+Directorate Level Governance Officials  at 
+Directorates 
+3000 Physical  
+District Level District Collectors, Additional 
+Collectors, District Programme  
+Officers (DPOs), District Data 
+Coordinators, IT Officers 
+2400 
+Physical 
+Block Level Block Development Officers 
+(BDOs), Block IT Staff, 
+Extension Officers, Welfare 
+Supervisors 
+9420 
+Physical 
+Gram Panchayat 
+Level 
+Panchayat Executive Officers, 
+Welfare Assistants, Frontline 
+Data Operators 
+26800 
+Physical / 
+Cluster-based 
+Awareness 
+Campaign 
+Activities 
+(Cost discovery 
+item) 
+ 
+Citizens including SHG 
+Members, Youth Groups, 
+Students, Community 
+Representatives and Local 
+Stakeholders 
+ 
+Community 
+Awareness 
+Sessions 
+ 
+Note 
+The above numbers represent indicative estimates derived from the proposed batch structure 
+of the training and awareness programmes. The actual number of participants may vary based 
+on departmental nominations, administrative requirements, and directions i ssued by OCAC 
+from time to time. 
+ 
+8.1.1 Detailed Objectives of the Assignment 
+The objectives of the Data Policy Capacity Building Programme are to: 
+• Strengthen institutional understanding of the State Data Policy and its operational 
+requirements; 
+• Build the capacities of Government officials across administrative levels to manage data 
+responsibly, securely, and systematically; 
+=== PAGE 33 (Matched: ['OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 33 of 65 
+• Promote standardized processes for data collection, validation, documentation, storage, 
+sharing, and disposal; 
+• Enhance citizen awareness on digital privacy, safe data practices, and rights related to 
+protection of personal data; and 
+• Foster a culture of data-driven, transparent, and accountable governance aligned with the Data 
+Policy. 
+8.1.2  Development of Training Material 
+The Agency shall develop a complete suite of bilingual (Odia and English) training material that explains 
+the Data Policy in a clear, practical, and implementable manner. The material shall include trainer 
+handbooks, participant manuals, presentation decks , SOP-based workflow documents, case studies, 
+multimedia learning aids, and field-ready reference guides. 
+All materials shall be developed using non-personal or synthetic datasets and shall reflect role-specific 
+responsibilities, administrative workflows, and recommended compliance practices under the Data 
+Policy. The full content package shall be submitted to  OCAC for review and approval before training 
+rollout. A digital version of all approved training materials shall also be uploaded to the designated 
+platform, as directed by OCAC. 
+8.1.3 Training of Government Officials 
+The Agency shall implement a structured multi -tier training programme covering Government officials 
+responsible for data handling and data governance at the Directorate, District, Block, and Gram 
+Panchayat levels. Trainings shall be delivered as per an OCAC -approved plan, ensuring uniformity in 
+methodology, content delivery, and learning outcomes across all locations. 
+• Directorate Level: The Agency shall conduct orientation and capacity -building programmes 
+for officials of Directorates. 
+• District Level: Training shall focus on operationalizing the Data Policy within district offices, 
+including uniform data classification, quality assurance practices, secure record maintenance, 
+incident reporting, and consistent use of approved templates and formats. 
+• Block Level:  Training shall emphasize practical execution, including data entry, validation, 
+rectification of errors, record maintenance, register management, and frontline compliance 
+measures. Officials handling beneficiary -level and scheme -level datasets shall be tr ained to 
+follow standardized procedures aligned with the Policy. 
+• Gram Panchayat Level: Training programmes shall be conducted at the Gram Panchayat level 
+to build awareness on grassroots -level data practices, including proper documentation, 
+maintenance of physical registers, responsible handling of sensitive data, privacy -conscious 
+interaction with citizens, and adherence to simplified Standard Operating P rocedures (SOPs) 
+suitable for GP offices. Wherever required for operational convenience, such trainings may also 
+be conducted in cluster mode by grouping nearby Gram Panchayats. 
+=== PAGE 34 (Matched: ['MIS', 'Monitoring', 'OCAC', 'PMU']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 34 of 65 
+Each training programme  shall include demonstrations, practical exercises, case -based learning, 
+assessments, and feedback collection, to ensure measurable improvement in knowledge and 
+readiness. 
+8.1.4 Awareness Programme for Citizens 
+In parallel with official trainings, the Agency shall implement a Statewide citizen awareness programme 
+to enhance public understanding of digital privacy, responsible data sharing, and safe interaction with 
+digital governance platforms. Outreach shall be extensive, with special focus on rural and tribal areas 
+and groups including SHG members, women, studen ts, elderly beneficiaries, and marginalized 
+communities. 
+The Agency shall conduct field -level awareness activities at Block /ULB and Gram Panchayat levels, 
+including community meetings, sensitization events, demonstration sessions, and interactions with 
+SHG federations and youth collectives. These activities shall cover citizens’ rights on personal data 
+protection, safe data sharin g practices, and the importance of verifying consent when sharing 
+information with any digital or administrative system. 
+The Agency shall also distribute IEC materials including posters  / leaflets / visual aids during these 
+sessions. 
+NB: The Selected Agency shall ensure that all awareness activities, data collection processes, citizen 
+interactions, and documentation carried out under this assignment strictly comply with the provisions of 
+the Digital Personal Data Protection (DPDP) Act, 2023, and any subsequent rules or guidelines issued 
+by the Government of India or Government of Odisha. The Agency shall maintain strict confidentiality 
+and ensure that no personal or sensitive data of participants or citizens is collected, stored, processed, 
+or shared without proper authorization and safeguards as prescribed under applicable data protection 
+and privacy regulations. 
+8.1.5 Monitoring, Reporting & Evaluation 
+The Agency shall establish a robust monitoring, reporting, and evaluation system to ensure 
+transparency, verifiability, and accountability of all programme activities. The Selected Agency shall 
+design and develop the MIS platform required for monitoring and reporting under the project. OCAC 
+shall provide the necessary IT infrastructure for hosting of  the application at the Odisha State Data 
+Centre (OSDC). The Agency shall ensure that the application is compatible with the infrastructure 
+standards and security guidelines prescribed by OCAC and the Government of Odisha.  
+The monitoring framework shall include: 
+• Central programme oversight through a PMU structure; 
+• District-level coordination to supervise trainings and field activities; 
+• Dedicated field monitors to validate GP and Block-level activities; 
+=== PAGE 35 (Matched: ['MIS', 'Monitoring', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 35 of 65 
+• Submission of periodical progress reports; 
+• Feedback report to measure learning gains 
+• Evaluation of awareness levels, adoption indicators, and compliance readiness.  
+OCAC may conduct random verifications, field visits, or independent reviews as required.  
+8.1.6 Training Structure & Duration (Full Multi-Tier Model) 
+Training shall be delivered through a structured five-tier cascading training framework to enable 
+uniform understanding and adoption across the administration. 
+8.1.6.1 Tier 1 – Directorate Level  
+• Duration: One Day (7-8 Hours) 
+• Mode: Physical  
+• Participants: Below the rank of Asst. Director 
+Session Focus: 
+• Strategic importance of data governance in public administration 
+• Institutional accountability and leadership responsibilities under OSDP  
+• Risk management, compliance, and privacy safeguards 
+• Inter-departmental coordination for data sharing 
+• Governance-level monitoring and oversight mechanisms 
+• Alignment of OSDP with broader digital governance initiatives 
+• Case illustrations of policy-level risks and mitigation approaches 
+This session shall be delivered in an executive briefing format, supported by concise presentation 
+material and a summary note of key deliberations. 
+ 
+8.1.6.2 Tier 2 – District-Level Training Programme 
+• Duration: 1 Day (7-8 Hours) 
+• Mode: Physical  
+• Participants: District-level Data Managers, MIS staff, and supervisory officials 
+Training Focus: 
+• Core requirements and operational aspects of the Data Policy 
+• Classification and organization of district-level datasets 
+• Maintenance of structured departmental registers 
+=== PAGE 36 (Matched: ['MIS']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 36 of 65 
+• Error reduction and validation techniques 
+• Data privacy compliance and secure record management 
+• Procedures for processing data access and sharing requests 
+• Use of standardized documentation templates and checklists 
+• Incident reporting mechanisms for data breaches 
+ 
+8.1.6.3 Tier 3 – Block-Level Training Programme 
+• Duration: 1 Day (7-8 Hours) 
+• Mode: Physical  
+• Participants: MIS/Data Operators, Supervisors, and Data Entry Operators  
+Training Focus: 
+• Handling and maintenance of beneficiary-level datasets 
+• Ensuring accuracy, completeness, and timeliness of data 
+• Data entry standards and quality assurance techniques 
+• Practical guidelines and compliance measures for daily operations 
+• Maintenance of data registers in approved formats 
+• Identification and correction of discrepancies 
+• Secure handling of sensitive and confidential information 
+• Generation of reports in prescribed formats 
+ 
+8.1.6.4 Tier 4 – Gram Panchayat-Level Training Programme 
+• Duration: 1/2 Day (3-4 hors) 
+• Mode: Physical 
+• Participants: Panchayat Executive Officers (PEOs), Welfare Assistants, Data Handlers, and 
+frontline functionaries 
+Training Focus: 
+• Simple and practical explanation of OSDP provisions 
+• Daily checklist for compliant data management 
+• Privacy safeguards specific to GP-level records 
+• Handling Aadhaar-linked and other sensitive data 
+• Verification of beneficiary records 
+• GP-level data flow and role-based responsibilities 
+=== PAGE 37 (Matched: ['State Data Policy']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 37 of 65 
+• Daily documentation and safe storage practices 
+• Maintenance of physical registers 
+• Case studies based on Gram Panchayat-level scenarios 
+8.1.7 Detailed Training Module Development 
+The Selected Agency shall develop comprehensive bilingual (Odia and English) training modules in the 
+form of Participant Handouts and PowerPoint Presentations to support the delivery of the training 
+programmes under the project. 
+The training materials shall be designed in a simple, structured, and user -friendly format suitable for 
+officials at different administrative levels and shall include relevant illustrations, infographics, examples, 
+and case references to enhance understand ing. The printed participant handout shall conform to the 
+following specifications: 
+• Maximum Pages: 28 pages (including cover) 
+• Size: 1/4 Crown size 
+• Paper: Inside pages – 130 GSM Art Paper 
+• Cover (Front & Back): 250 GSM Art Paper 
+• Printing: Multicolour printing 
+• Language: Bilingual (Odia and English) 
+ 
+The PowerPoint presentations shall be prepared in alignment with the training modules and shall be 
+used by trainers for delivering the training sessions at Directorate, District, Block, and Gram 
+Panchayat levels. The training modules shall broadly cover, but not be limited to, the following topics:  
+The Agency shall develop comprehensive bilingual (Odia + English) modules covering:  
+Module 1: Introduction to Odisha State Data Policy 
+a) Purpose & background 
+b) Citizen rights in Government data 
+c) Data governance principles 
+d) Administrative roles 
+Module 2: Data Classification & Categorization 
+a) Personal data 
+b) Non-personal data 
+c) Sensitive data 
+d) Metadata 
+e) Examples from Odisha departments 
+Module 3: Data Lifecycle Management 
+a) Data collection 
+b) Processing 
+=== PAGE 38 (Matched: ['MIS']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 38 of 65 
+c) Storage 
+d) Usage 
+e) Sharing 
+f) Retention 
+g) Archiving 
+h) Disposal 
+Module 4: Data Privacy & Security Practices 
+a) Access control 
+b) Password & credential rules 
+c) Secure file handling 
+d) Physical file protection 
+e) Device-level good practices 
+f) Sharing limitations 
+g) Incident management 
+Module 5: Data Quality Management 
+a) Accuracy 
+b) Completeness 
+c) Consistency 
+d) Validity 
+e) Practical techniques to reduce manual errors 
+f) GP/block-level examples 
+Module 6: Inter-Departmental Data Sharing Process 
+a) When sharing is allowed 
+b) When approvals are needed 
+c) How to document permission 
+d) Formats & request templates 
+e) Roles: Requestor, Approver, Custodian 
+Module 7: Documentation, Registers & Reporting 
+a) Templates for daily documentation 
+b) Data registers 
+c) Approval records 
+d) SOP checklist 
+e) Standard reporting formats 
+Module 8: Case Studies & Practical Simulations (using non-personal dummy datasets) 
+a) Example: Scheme eligibility list 
+b) Example: Updating beneficiary records 
+=== PAGE 39 (Matched: ['Training Plan', 'Monitoring', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 39 of 65 
+c) Example: Fixing duplicate entries 
+d) Example: Managing sensitive documents 
+e) Example: Safe handling of digital files 
+Training Material Content must be submitted to OCAC for review, feedback, and formal approval before 
+rollout. 
+ 
+8.1.8 Training Delivery Mechanism 
+Comprehensive Planning: The Agency shall prepare: 
+ 
+a. Master Training Plan 
+b. District & Block Calendars 
+c. Venue Plan 
+d. Trainer Deployment Plan 
+e. Resource Mobilization Plan 
+ 
+Logistics Responsibility: The Agency shall arrange: 
+• Training halls 
+• Projectors 
+• Internet connectivity 
+• Stationery 
+• Training Kit (Notebook, Pen, Handout) 
+• Signage & branding 
+OCAC will provide: 
+• Policy documents 
+• Access to sample datasets, if required 
+ 
+8.1.9  Monitoring & Evidence Capture Framework 
+The Agency shall ensure complete documentation for every batch, including:  
+• Attendance sheets 
+• Photographs  
+• Short video recordings 
+• Feedback forms 
+• Training summary sheets 
+• Training report for each batch 
+=== PAGE 40 (Matched: ['Monitoring', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 40 of 65 
+OCAC may engage a third-party agency or independent institution for impact assessment, monitoring, 
+evaluation, or verification of the training programmes and awareness activities conducted under this 
+project. The Selected Agency shall extend necessary cooperation and provide all required data, reports, 
+records, and field-level support for such assessments as and when required. 
+8.1.10 Directorate-Level ToT Structure 
+The Agency shall submit a detailed ToT report covering all aspects of the Directorate-level Training of 
+Trainers. 
+Mandatory components: 
+a) Training agenda & session plan 
+b) Final list of master trainers (designation, department, contact) 
+c) Attendance sheet 
+This ToT report shall serve as the base document for district/block/GP rollouts.  
+The Selected Agency shall organize Directorate-Level Training of Trainers (ToT) programmes to create 
+a pool of qualified trainers for the rollout of training programmes at District, Block, and Gram Panchayat 
+levels under the project. 
+The ToT programme shall aim to train at least 250 Master Trainers, who shall subsequently deliver the 
+training programmes across the State. 
+The Agency shall submit a detailed ToT Report covering all aspects of the Directorate-level Training of 
+Trainers. 
+Mandatory components of the ToT Report shall include: 
+a) Training agenda and session plan 
+b) Final list of Master Trainers (Name, designation, department/organization, and contact 
+details) 
+c) Attendance sheets of all ToT participants 
+d) Photographic documentation and session summary 
+Note: 
+ This ToT report shall serve as the base document for the rollout of training programmes at 
+District, Block, and Gram Panchayat levels. 
+ The Selected Agency shall submit a detailed ToT schedule and implementation plan within one 
+(1) month from the date of issuance of the Work Order. 
+ OCAC shall review and evaluate the quality, competency, and readiness of the Master Trainers 
+upon completion of the ToT sessions. OCAC may also engage a third -party agency or 
+independent institution to evaluate the effectiveness and quality of the ToT prog ramme. 
+ The Statewide training rollout at District, Block, and Gram Panchayat levels shall commence 
+only after approval of the Master Trainers by OCAC based on the evaluation of the ToT 
+programme.  
+ Only the trainers approved by OCAC shall be permitted to conduct the training programmes 
+under this project. 
+=== PAGE 41 (Matched: ['MIS', 'State Data Policy', 'OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 41 of 65 
+8.1.11 District/Block/GP Training Structure 
+The Agency shall prepare batch-wise reports for each session conducted at district, block, and GP 
+levels. 
+Mandatory components for each report: 
+a) District/Block/GP name and administrative unit 
+b) Date, venue, and session timing 
+c) Batch details (batch number, participant category) 
+d) List of participants: name, designation, department/office, contact information  
+e) Attendance sheet 
+f) Photographic evidence:  
+Reports shall be compiled into district-wise folders for easy verification by OCAC. 
+ 
+8.1.12 Timelines for Deliverables 
+The overall implementation period shall be as finalized by OCAC (e.g., 6 to 12 months). Indicative 
+timelines are as follows: 
+Preparatory Work (Weeks 1–4) 
+• Week 1: Kick-off meeting, inception report submission 
+• Week 2: Content development (training + IEC materials) 
+• Week 3: MIS setup and demo to OCAC 
+• Week 4: Approval of materials + district planning 
+Impart Training & Capacity Building at all the levels 
+• Training at Districts/Blocks/GPs 
+Evaluation  
+Every 3 months : Final survey, evaluation metrics and impact analysis 
+End of project: Submission of final completion report and handover of MIS/data  
+8.2 Deliverables under Scope for OSDP Training programme 
+The Selected Agency shall be responsible for planning, organizing, and delivering capacity -building 
+programmes and awareness activities under the Odisha State Data Policy (OSDP) initiatives. The 
+Agency shall ensure the provision of required infrastructure,  training materials, logistics, manpower, 
+and documentation for each programme conducted. 
+8.2.1 Directorate Level Training – Level 2  
+i. The Agency shall conduct Directorate Level Level-2 training programmes for senior officials 
+with an approximate batch size of 30 participants and a duration of one day.  
+ii. The Agency shall arrange training infrastructure including venue, audio-visual setup, laptop for 
+demonstration, projection system (Projector / Smart TV / Panel), banner (1 No., minimum size 
+8 ft × 5 ft), and standees (2 Nos., 6 ft × 3 ft).  
+=== PAGE 42 (Matched: ['Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 42 of 65 
+iii. Participants shall be provided with training kits consisting of participant manual, notepad, 
+pen, and file/folder.  
+i.  Participants shall be provided breakfast, lunch, evening snacks, and tea/coffee. 
+iv. Training shall be delivered by trainer(s) supported by necessary support staff. 
+ 
+8.2.2 District Level Training Programmes 
+ii. District-level training programmes shall be conducted with an approximate batch size of 40 
+participants and a duration of one day.  
+iii. The Agency shall ensure the same infrastructure arrangements, training kits, and manpower 
+structure as defined above.  
+iv. Participants shall be provided breakfast, lunch, evening snacks, and tea/coffee. 
+ 
+8.2.3 Block Level Training Programmes 
+i. Block-level training programmes shall be conducted with an approximate batch size of 30 
+participants and a duration of one day.  
+ii. Infrastructure arrangements, training kits, training manpower, and refreshments shall remain 
+the same as those specified for District-level training programmes. 
+ 
+8.2.4 Gram Panchayat (GP) Level Training Programmes 
+i. Gram Panchayat level training programmes shall be conducted in cluster mode with an 
+approximate batch size of 29 participants and a duration of 3-4 hour.  
+ii. The Agency shall ensure similar infrastructure, logistics, training kits, manpower, and 
+refreshments as specified above. 
+Note: For each training programme conducted, the Agency shall submit the following deliverables: 
+i. Completion report for each training programme 
+ii. Attendance records of participants 
+iii. Training photographs 
+iv. Participant feedback forms 
+ 
+8.2.5 Awareness Campaign Activities 
+i. The Agency shall conduct Awareness Campaign Activities  to promote citizen awareness 
+regarding responsible data practices, digital privacy, and safe interaction with digital 
+governance platforms. 
+ii. Each awareness campaign session shall be conducted for approximately 50 participants with 
+a duration of 1–2 hours.  
+iii. The Agency shall arrange necessary infrastructure and logistics including audio -visual setup, 
+demonstration facilities, banners, and standees.  
+iv. Participants shall be provided IEC materials such as leaflets  for dissemination of key 
+messages related to data privacy and responsible data sharing. 
+v. These awareness sessions shall be conducted by trainer(s) supported by support staff, and 
+the Agency shall submit the required documentation including attendance records, 
+photographs, and activity reports for each campaign conducted. 
+ 
+=== PAGE 43 (Matched: ['MIS', 'Monitoring', 'OCAC', 'PMU', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 43 of 65 
+8.2.6 Digital IEC  
+The Agency shall design and develop digital Information, Education and Communication (IEC) 
+materials to support online awareness campaigns and digital outreach activities. The digital IEC 
+content shall include, but not be limited to, the following: 
+i. 50 Image Creatives for social media dissemination 
+ii. 50 Social Media Reels highlighting key aspects of data privacy, responsible data sharing, and 
+digital governance 
+iii. 50 Informational Videos explaining important provisions of OSDP and citizen awareness 
+messages 
+The digital content shall be suitable for dissemination through official websites, social media platforms, 
+awareness campaigns, and digital outreach programmes. 
+8.2.7 MIS Development for OSDP Training Program: 
+The Agency shall design, develop, deploy, and maintain a Management Information System (MIS) 
+to facilitate monitoring and reporting of training programmes and awareness activities conducted 
+under this project. 
+The MIS system shall support the following functionalities: 
+i. Training scheduling and programme planning 
+ii. Participant registration and database management 
+iii. Attendance tracking and verification 
+iv.  Activity monitoring and documentation 
+v. Generation of reports and analytical dashboards 
+The MIS shall enable real-time monitoring, reporting, and evaluation of programme 
+implementation across State, District, Block, and Gram Panchayat levels. 
+Deliverables 
+The Agency shall submit and maintain the following deliverables: 
+▪ Fully functional MIS platform for programme monitoring 
+▪ Activity monitoring reports generated through the MIS 
+▪ Periodic analytics and performance reports for review by OCAC 
+ 
+8.2.8 Central Project Management Team Structure 
+The Selected Agency shall deploy and maintain a Central Project Management Team (PMU) for overall 
+planning, coordination, monitoring, and quality assurance of the OSDP training and awareness 
+programmes throughout the project period. 
+The Central Team shall consist of qualified professionals with relevant academic qualifications and 
+domain experience. The manpower proposed by the Bidder at the time of bidding shall be full -time 
+resources dedicated to the project and shall remain associa ted with the project during the contract 
+period. 
+The proposed personnel shall possess qualifications from recognized universities or institutions and 
+shall meet the minimum eligibility criteria specified below. 
+i. Project Manager 
+=== PAGE 44 (Matched: ['MIS', 'Monitoring', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 44 of 65 
+The Agency shall nominate a Project Manager responsible for overall management, coordination, and 
+successful implementation of the project. 
+Minimum Qualification 
+MBA / PGDM from an institute ranked within the Top 50 under the latest NIRF ranking (Management 
+Category) – 2025, from a recognized university / institution. 
+Minimum Experience 
+Minimum 5 years of professional experience  in project management, programme coordination, or 
+implementation of large-scale training / e-governance / digital capacity-building initiatives. 
+Key Roles and Responsibilities 
+• Overall project planning, implementation, and coordination with OCAC  
+• Preparation of project implementation plan, training schedules, and activity timelines  
+• Supervision of training programmes and awareness campaigns across State, District, Block, 
+and GP levels 
+• Coordination with Government departments, stakeholders, and field teams  
+• Monitoring project progress and ensuring timely delivery of project milestones  
+• Ensuring quality of training content, IEC materials, and programme execution  
+• Submission of progress reports, MIS reports, and project documentation to OCAC  
+ 
+ii. Domain Expert – Cyber Security 
+The Agency shall deploy a Cyber Security Domain Expert to support training content development and 
+advisory functions related to data protection, privacy, and cybersecurity aspects under OSDP.  
+Minimum Qualification 
+B.E. / B.Tech / MCA / M.Sc (IT / Computer Science) from a recognized university or institution.  
+Minimum Experience 
+Minimum 5 years of experience in cybersecurity, information security, data protection frameworks, or 
+IT governance. 
+Certification 
+At least one of the following certifications: CISA / CISM / CISSP /ISO 27001 Auditor / Implementer CEH 
+Key Roles and Responsibilities 
+• Provide subject-matter expertise on cybersecurity and data protection principles 
+• Support development of training modules related to privacy, data security, and responsible data 
+management 
+• Ensure alignment of training materials with national data protection frameworks and best 
+practices 
+• Provide technical guidance during training programmes and awareness activities  
+• Support OCAC in reviewing cybersecurity-related aspects of IEC and training content 
+ 
+iii. Domain Expert – Digital Platforms / e-Governance Systems 
+The Agency shall deploy a Domain Expert for Digital Platforms and e -Governance Systems  to 
+support programme design and integration with digital governance frameworks.  
+=== PAGE 45 (Matched: ['MIS', 'Monitoring', 'OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 45 of 65 
+Minimum Qualification 
+B.E. / B.Tech / MCA / M.Sc (IT / Computer Science) from a recognized university or institution.  
+Minimum Experience 
+Minimum 5 years of experience  in digital platform implementation, e -governance systems, IT project 
+delivery, or enterprise architecture. 
+Certification 
+At least one of the certifications: PMP / PRINCE2 / TOGAF / ITIL / AWS / Azure / GCP Solution Architect 
+Key Roles and Responsibilities 
+• Provide expertise on digital governance platforms and IT architecture  
+• Support design and monitoring of the MIS system and digital programme components  
+• Ensure integration of training monitoring systems with digital reporting frameworks  
+• Provide technical advisory support for digital outreach and programme monitoring  
+• Assist OCAC in reviewing digital infrastructure and system-related deliverables 
+Deployment Requirement 
+The above personnel shall be full -time resources of the Selected Agency and shall remain associated 
+with the project during the contract period. The Bidder shall submit detailed CVs of the proposed 
+personnel along with the technical proposal, clearly indic ating their qualifications, certifications, and 
+relevant experience. 
+Any replacement of key personnel during the project period shall be made only with prior approval of 
+OCAC and with personnel having equivalent or higher qualifications and experience.  
+9 Payment Terms  
+a) Payments to the Selected Agency shall be made in Indian Rupees (INR) and shall be based on 
+the actual activities completed as per the approved Price Bid and verified by OCAC.  
+b) The total contract value shall be the Grand Total Amount quoted in the Price Bid. The quoted 
+prices shall remain firm and fixed for the entire duration of the contract and shall not be subject 
+to any escalation. 
+c) Payments shall be released activity -wise upon successful completion of the respective 
+deliverables, submission of invoice, and verification by OCAC. 
+Activity-wise Payment Schedule 
+Sl. 
+No. 
+Activity Deliverables / Supporting 
+Documents 
+Payment Condition 
+1 Directorate Level 
+Training 
+Programmes 
+i. Training completion 
+report 
+ii. Participant attendance 
+sheets 
+iii. Photographs of training 
+sessions 
+iv. Participant feedback 
+forms 
+100% payment for each batch shall be 
+released upon successful completion of 
+the respective batch and submission of all 
+required deliverables, supporting 
+documents, and evidence as prescribed by 
+OCAC. 
+3 District Level 
+Training 
+Programmes 
+i. District training 
+completion report 
+ii. Participant attendance 
+sheets 
+iii. Photographic evidence 
+iv. Feedback forms 
+100% payment for each batch shall be 
+released upon successful completion of 
+the respective batch and submission of all 
+required deliverables, supporting 
+documents, and evidence as prescribed by 
+OCAC. 
+=== PAGE 46 (Matched: ['MIS', 'OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 46 of 65 
+4 Block Level 
+Training 
+Programmes 
+i. Block level training 
+completion reports 
+ii. Attendance sheets 
+iii. Training photographs 
+iv. Feedback records 
+100% payment for each batch shall be 
+released upon successful completion of 
+the respective batch and submission of all 
+required deliverables, supporting 
+documents, and evidence as prescribed by 
+OCAC. 
+5 Gram Panchayat 
+(GP) Level 
+Training 
+Programmes 
+i. GP-wise training report 
+ii. Attendance sheets of 
+participants 
+iii. Photographs of training 
+sessions 
+iv. Feedback forms 
+100% payment for each batch shall be 
+released upon successful completion of 
+the respective batch and submission of all 
+required deliverables, supporting 
+documents, and evidence as prescribed by 
+OCAC. 
+6 Awareness 
+Campaign 
+Activities 
+i. Campaign activity report 
+ii. Participant records 
+(where applicable) 
+iii. Photographs / short 
+video evidence 
+iv. MIS entries of 
+campaigns conducted 
+Payment shall be released after 
+completion of every 10 awareness 
+campaigns, supported by activity reports, 
+photographs and MIS documentation. 
+7 MIS Development 
+and Deployment 
+for OSDP 
+i. Functional MIS platform 
+deployed 
+ii. User access and 
+operational 
+demonstration 
+iii. System documentation 
+and training for OCAC 
+officials 
+• 50% of the payment shall be released 
+upon successful development, 
+deployment, and User Acceptance 
+Testing (UAT) approval by OCAC. 
+• 30% of the payment shall be released 
+after successful Go -Live of the 
+application. 
+• The remaining 20% payment shall be 
+released after successful operation of 
+the application for a period of three (3) 
+months from the date of Go -Live and 
+upon satisfactory performance 
+certification by OCAC. 
+ 
+9 Development and 
+Printing of 
+Training Materials 
+i. Final approved Trainer 
+Manual and Participant 
+Manual 
+ii. Printed training 
+materials as per 
+specifications 
+iii. Sample copies 
+submitted to OCAC 
+100% of the Payment shall be released 
+after printing of each 1000 copy of the  
+10 Digital IEC 
+Content 
+Development 
+i. Image creatives (as 
+specified 
+ii. Social media reels 
+iii. Informational videos 
+iv. Digital IEC repository 
+submitted to OCAC 
+Payment shall be released after successful 
+development and approval of the digital 
+IEC content by OCAC. 
+ 
+d. Each payment claim shall be accompanied by: 
+i Valid tax invoice 
+ii All statutory deductions and applicable taxes shall be deducted at source as per prevailing 
+Government rules. 
+10 Penalty  
+ 
+=== PAGE 47 (Matched: ['MIS', 'Monitoring', 'OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 47 of 65 
+a. The time schedule for the entire project and for major activities shall be agreed upon between 
+OCAC and the Selected Agency and shall form part of the approved implementation plan.  
+ 
+b. In the event of delay in execution of deliverables or activities, or in case of quality -related 
+deficiencies attributable to the Selected Agency, OCAC reserves the right to impose penalty as per 
+the following: 
+S.N. Activity / Deficiency Penalty 
+1 Delay in completion of deliverables / 
+activities as per the approved schedule 
+0.5% of the total value quoted by the bidder for 
+the entire Training Programme Project for every 
+twelve (12) weeks of delay or part thereof, 
+subject to a maximum delay period of thirty -six 
+(36) weeks from the scheduled target date 
+2 Proven incidents of inappropriate 
+trainer behaviour, misconduct, or 
+violation of professional standards 
+during training / awareness 
+programmes 
+0.2% of the total project value per incident, 
+subject to a maximum of 1% of the total project 
+value 
+3 Consistently poor participant feedback 
+indicating unsatisfactory quality of 
+training / awareness delivery, based on 
+documented evaluation by OCAC 
+0.2% of the total project value per instance, 
+subject to a maximum of 1% of the total project 
+value 
+ 
+c. The maximum cumulative penalty levied upon the Selected Agency under this clause shall not 
+exceed 10% of the billing amount . 
+ 
+d. For the purpose of imposition of penalty under Sl. No. 2 and 3 above, OCAC reserves the right to 
+determine such deficiencies based on documented complaints, participant feedback, monitoring 
+reports, field verification, or assessment conducted by OCAC or its authorized repre sentatives. 
+ 
+e. In the event that the delay exceeds thirty -six (36) weeks from the scheduled target date, OCAC 
+reserves the right to take appropriate action, including: 
+ 
+i. permitting continuation of the project with applicable penalty, without any additional financial 
+implication to OCAC; or 
+ii. terminating the project / contract. 
+ 
+f. In case of termination on account of delay or serious non -performance attributable to the Selected 
+Agency, OCAC reserves the right to invoke the Performance Bank Guarantee and initiate action for 
+recovery of any applicable penalty or damages as per the terms of the Contract. 
+ 
+ 
+ 
+ 
+ 
+ 
+=== PAGE 48 (Matched: ['MIS', 'State Data Policy']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 48 of 65 
+ 
+11. Formats for Submission of Proposal  
+ 
+11.1 Pre-Qualification Bid Formats 
+11.1.1 FORM PQ-1: Cover Letter 
+(To be submitted on the Letterhead of Bidder) 
+To 
+The General Manager (Admin),  
+Odisha Computer Application Centre,  
+N-1/7-D, Acharya Vihar, P.O. RRL, Bhubaneswar - 751013. 
+Sub: RFP for Selection of Service Provider for Capacity Building, Training, and Awareness on 
+the Odisha State Data Policy Platform 
+Madam, 
+I, the undersigned, offer to provide the services for the proposed assignment in respect to your Request 
+for Proposal No. <<Bid reference>> dated <<date >>. We hereby submit our proposal which includes 
+the pre -qualification proposal, technical proposal and commercial proposal, sealed under separate 
+envelopes. Our proposal will be valid for acceptance for 180 Days and I confirm that this proposal will 
+remain binding upon us and may be accepted by you at any time before this expiry date. 
+ 
+All the information and statements made in our proposal are true and correct and I accept that any 
+misinterpretation contained in it may lead to disqualification of our proposal. If negotiations are held 
+during the period of validity of the proposal, I undertake to negotiate on the basis of proposal submitted 
+by us. Our proposal is binding upon us and subject to the modifications resulting from contract 
+negotiations. 
+ 
+I have examined all the information as provided in your Request for Proposal (RFP) and offer to 
+undertake the service described in accordance with the conditions and requirements of the selection 
+process. I agree to bear all costs incurred by us in connect ion with the preparation and submission of 
+this proposal and to bear any further pre-contract costs. In case, any provisions of this RFP/ ToR/Scope 
+including of our technical and financial proposal are found to be deviated, then you shall have rights to 
+reject our proposal. I confirm that, I have the authority to submit the proposal and to clarify any details 
+on its behalf. 
+ 
+I understand you are not bound to accept any proposal you receive. 
+ 
+Yours faithfully, 
+ 
+(Authorized Signatory) 
+Name, Designation & Contact No. 
+Seal 
+=== PAGE 50 (Matched: ['Scope of Work', 'State Data Policy']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 50 of 65 
+11.1.3 FORM PQ-3 [Acceptance of Terms and Conditions] 
+(To be submitted on the Letterhead of Bidder) 
+To 
+The General Manager (Admin),  
+Odisha Computer Application Centre,  
+N-1/7-D, Acharya Vihar P.O. RRL, Bhubaneswar - 751013. 
+ 
+Sub: RFP for Selection of Service Provider for Capacity Building, Training, and Awareness on 
+the Odisha State Data Policy Platform 
+Madam/Sir, 
+ 
+I have carefully and thoroughly gone through the Terms & Conditions along with scope of work 
+contained in the <<Bid reference>> dated <<date >>. regarding RFP for Selection of Service Provider 
+for Capacity Building, Training, and Awareness on the Odisha State Data Policy . 
+ 
+I declare that all the provisions/clauses including scope of work of this RFP are acceptable to our 
+company. I further certify that I am an authorized signatory of the company and I am, therefore, 
+competent to make this declaration. 
+ 
+Yours faithfully, 
+ 
+ 
+(Authorized Signatory) 
+Name, Designation & Contact No. 
+Seal 
+ 
+ 
+=== PAGE 52 (Matched: ['MIS', 'State Data Policy', 'OCAC']) ===
+11.2 Technical Bid Formats 
+ 
+11.2.1 FORM TECH-1Technical Bid Cover Letter 
+ 
+To 
+   
+The General Manager (Admin) 
+Odisha Computer Application Centre  
+(Technical Directorate of E & IT Dept, Govt. of Odisha)  
+N-1/7-D, Acharya Vihar P.O. - RRL,  
+Bhubaneswar - 751013    
+ 
+Sub: RFP for Selection of Service Provider for Capacity Building, Training, and Awareness on 
+the Odisha State Data Policy Platform 
+RFP  Reference No <<Bid reference>> dated <<date >>. 
+ 
+Dear Sir/Madam, 
+ 
+We, the undersigned, offer to provide solution to OCAC, for Capacity Building, Training, and 
+Awareness on the Odisha State Data Policy. 
+ 
+We are hereby submitting our Proposal, which includes the Pre-Qualification Bid, Technical bid and the 
+Commercial Bid sealed in a separate envelope. 
+ 
+We hereby declare that all the information and statements made in this Technical bid are true and 
+accept that any misinterpretation contained in it may lead to our disqualification.  
+ 
+We undertake, if our Proposal is accepted, to initiate the implementation services related to the 
+assignment not later than the date indicated in the RFP Document. 
+ 
+We agree to abide by all the terms and conditions of the RFP document. We would hold the terms of 
+our bid valid for 180 days as stipulated in the RFP document. 
+ 
+We understand you are not bound to accept any Proposal you receive. 
+ 
+Yours sincerely, 
+ 
+ 
+Authorized Signature [In full and initials]: __________________________________ 
+ 
+Name and Title of Signatory: ____________________________________________  
+ 
+Name of Firm: _________________________________________________________  
+ 
+Address: ______________________________________________________________  
+ 
+ 
+=== PAGE 53 (Matched: ['MIS']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 53 of 65 
+11.2.2 FORM TECH-2: Approach and Methodology 
+ 
+The Bidder shall submit a detailed note on the proposed Approach and Methodology for execution of 
+the assignment. The submission must comprehensively address all parameters specified under Clause 
+8.1 (“Terms of Reference”) and the Technical Evaluation Criteria at Clause 5.2(c)(ix). 
+ 
+The proposed Approach and Methodology shall be presented by the Bidder before the Tender 
+Evaluation Committee as part of the technical evaluation process. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Name of the Bidder: - 
+ 
+Authorised Signatory: - 
+ 
+Seal of the Organization:  
+ 
+ 
+Date: 
+Place: 
+ 
+ 
+=== PAGE 54 (Matched: ['Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 54 of 65 
+ 
+11.2.3 FORM TECH-4: Detailed Work Plan with Activities, Duration, 
+Sequencing, Interrelations, Milestones and Dependencies 
+SL# Deliverable/ 
+Activity* 
+Months 
+1 2 3 4 5 6 7 n 
+a)           
+b)           
+c)           
+d)           
+e)           
+f)           
+g)           
+h)           
+i)           
+j)           
+k)           
+l)           
+m)           
+n)           
+o)           
+p)           
+q)           
+r)           
+s)           
+ 
+=== PAGE 57 (Matched: ['State Data Policy']) ===
+   
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP                     PAGE:57 
+  
+ 
+11.3 Financial Bid 
+11.3.1 FORM FIN-1: Financial Bid Covering Letter 
+(To be submitted on the Letterhead of Bidder) 
+To 
+The General Manager (Admin), 
+Odisha Computer Application Centre, 
+N-1/7-D, Acharya Vihar P.O. RRL, Bhubaneswar - 751013. 
+ 
+Sub:  RFP for Selection of Service Provider for Capacity Building, Training, and Awareness on 
+the Odisha State Data Policy  
+Ref: <<Bid reference>> dated <<date >>.  
+ 
+Madam/Sir, 
+ 
+I /We, the undersigned, offer to provide the service for for Capacity Building, Training, and Awareness 
+on the Odisha State Data Policy as per <<Bid reference>> dated <<date >>  and our Pre-Qualification, 
+Technical and Financial Proposals. Our attached Financial Proposal is for the sum of <<Amount in 
+words and figures>> exclusive of all applicable taxes and duties. 
+ 
+a) BID PRICE 
+We declare that our Bid Price is for the entire scope of the work as specified in the Chapter 8. These 
+prices are indicated in the Financial Bid as part of this RFP response.  
+b) PRICE AND VALIDITY   
+All the prices mentioned in our Tender are in accordance with the terms as  specified in the RFP 
+documents. All the prices and other terms and conditions of this Bid are valid for a period of 3 years 
+from the date of opening of the Bid.   
+ 
+We hereby confirm that our prices do not include any taxes and duties.   
+ 
+We understand that the actual payment would be made as per the existing tax rates during the time of 
+payment.   
+c) PERFORMANCE BANK GUARANTEE 
+We hereby declare that in case  the contract is awarded to us, we shall submit the Performance Bank 
+Guarantee as specified in this RFP document. 
+ 
+We understand you are not bound to accept any Proposal you receive. We hereby declare that our 
+Proposal is made in good faith, without collusion or fraud and the information contained in the proposal 
+is true and correct to the best of our knowledge and belief. 
+ 
+We understand that our proposal is binding on us and that you are not bound to accept any proposal 
+you receive. 
+Yours faithfully, 
+ 
+                                                                                                                 (Authorized Signatory) 
+=== PAGE 58 (Matched: ['Deliverable']) ===
+   
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP                     PAGE:58 
+  
+ 
+Name, Designation & Contact No. 
+ Seal 
+11.3.2 FORM FIN-2: Financial Bid  
+Bidder has to furnish the Financial bid as per the excel sheet as well as upload the financial 
+bid in PDF file (after printing of the same in company letter head) 
+ 
+All prices quoted below shall be exclusive of applicable taxes. Taxes such as GST shall 
+be paid extra as applicable as per Government rules. 
+Financial Bid  
+A. Training Component  
+S.N. Component Participants 
+per Batch 
+(indicative) 
+/ Campaign 
+(A) 
+Amount per 
+Participant / Unit (₹) 
+(B) 
+Indicative 
+No. of 
+Batches / 
+Campaigns 
+(C) 
+Total 
+Amount 
+(₹) 
+(Exclusive 
+of Taxes) 
+1 Directorate 
+Level Training 
+Programmes  
+Refer clause no. 
+8.2.1 for 
+deliverable 
+details 
+30 
+ 
+100  
+2 District Level 
+Training 
+Programmes 
+Refer clause no. 
+8.2.2 for 
+deliverable 
+details 
+40 
+ 
+60  
+3 Block Level 
+Training 
+Programmes 
+Refer clause no. 
+8.2.3 for 
+deliverable 
+details 
+30 
+ 
+314  
+4 Gram 
+Panchayat (GP) 
+Level Training 
+Programmes 
+16 
+ 
+1675  
+=== PAGE 59 (Matched: ['MIS', 'Deliverable']) ===
+   
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP                     PAGE:59 
+  
+ 
+Refer clause no. 
+8.2.4 for 
+deliverable 
+details 
+5 Cost Discovery 
+item 
+Awareness 
+Campaign 
+Activities 
+Refer clause no. 
+8.2.5 for 
+deliverable 
+details 
+50 
+ 
+50  
+ Total Cost Excluding GST (Training Component)   
+ 
+B. Material Component  
+S.N. Component Unit 
+(A) 
+Indicative Quantity  
+(B) 
+Unit Cost 
+excluding 
+GST 
+(C) 
+ 
+Total 
+Amount 
+(₹) 
+(Exclusive 
+of Taxes) 
+(D=BxC) 
+1.  Training Kit 
+(folder, pen, 
+notebook) 
+Nos 41620   
+2.  MIS Development 
+for OSDP 
+Training 
+Programme 
+Refer clause no. 
+8.2.7 for 
+deliverable 
+details 
+Lumpsum 1   
+3.  Development of 
+Content and 
+Refer Clause no. 
+8.1.7 for 
+specifications 
+Lumpsum 1   
+=== PAGE 60 (Matched: ['Deliverable']) ===
+   
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP                     PAGE:60 
+  
+ 
+4.  Printing of 
+Training Material 
+for OSDP 
+Training 
+Programmes 
+Nos. 41620   
+8 Digital Content 
+Preparation for 
+IEC Materials 
+Refer Clause no. 
+8.2.6 for 
+deliverable 
+details 
+Lump Sum 1   
+ Total Cost Excluding GST (Material Component)   
+ 
+C. Cost Summary 
+  
+SL# Name of the Component Total Cost excluding GST 
+1 Total Cost of Part-A - Training Component  
+2 Total Cost of Part-B – Material  Component  
+ Grand Total Excluding GST  
+(The Grand Total Cost indicated in the Cost Summary, excluding GST, shall be 
+considered for evaluation of the Commercial Bid.) 
+ 
+Note: 
+1. For training programmes and awareness campaigns (Sl. No. 1–5), the Total Amount 
+shall be calculated as: 
+Participants per Batch / Campaign × Amount per Participant × Indicative 
+Number of Batches / Campaigns. 
+2. For items quoted on per unit basis (Sl. No. 8), the Total Amount shall be calculated 
+as: 
+Unit Rate × Indicative Quantity. 
+3. For items quoted on lump-sum basis (Sl. No. 6  and 8), the Total Amount shall be 
+the lump-sum amount quoted by the bidder. 
+ 
+Declaration 
+We hereby declare that: 
+=== PAGE 61 (Matched: ['OCAC']) ===
+   
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP                     PAGE:61 
+  
+ 
+• The prices quoted in this Financial Bid are exclusive of all applicable taxes. Taxes such 
+as GST shall be paid extra as applicable. 
+• The prices quoted are firm and final for the entire duration of the contract. 
+• The prices quoted in this Financial Bid shall remain valid for an initial period of three 
+(3) years from the date of award of the contract. The contract may be extended for a 
+further period of up to two (2) years, subject to requirement of the State and on  the 
+same terms and conditions including the quoted price, as may be decided by OCAC. 
+• The Indicative Quantities mentioned in the Financial Bid Table are for estimation 
+purposes only. The actual quantity of training programmes , campaigns, and other 
+activities may vary and may exceed the indicative quantities based on the 
+requirements of the State and directions issued by OCAC from time to time. 
+• No escalation or additional claim shall be entertained during the contract period. 
+• Authority reserves right to increase/decrease number of participants/batches/training 
+materials. The payment shall be made as per actual.   
+• The Financial Bid is submitted in full compliance with the terms and conditions of the 
+RFP. 
+ 
+Date: ___________ 
+Place: ___________ 
+Authorized Signatory 
+Name: _______________________ 
+Designation: __________________ 
+Organization: __________________ 
+Seal: _________________________ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+=== PAGE 62 (Matched: ['MIS', 'State Data Policy', 'OCAC']) ===
+   
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP                     PAGE:62 
+  
+ 
+ 
+ 
+ 
+11.4 Format for Bank Guarantee for Earnest Money Deposit  
+To 
+The General Manager (Admin) 
+Odisha Computer Application Centre  
+(Technical Directorate of E & IT Dept, Govt. of Odisha)  
+N-1/7-D, Acharya Vihar P.O. - RRL,  
+Bhubaneswar - 751013    
+Whereas <<Name of the bidder>> (hereinafter called 'the Bidder') has submitted the bid for 
+Submission of RFP # <<RFP Number>> dated <<Date>> for Selection of Service Provider for 
+Capacity Building, Training, and Awareness on the Odisha State Data Policy for 3 Years (hereinafter 
+called "the Bid") to OCAC.  
+Know all Men by these presents that we <<Name of the Bidder>> having our office at <<Address>> 
+(hereinafter called "the Bank") are bound unto the <<Nodal Agency>> (hereinafter called "the 
+Purchaser") in the sum of Rs. <<Amount in figures>> (Rupees <<Amount in words>> only) for which 
+payment well and truly to be made to the said Purchaser, the Bank binds itself, its successors and 
+assigns by these presents. Sealed with the Common Seal of the said Bank this <<Date>>  
+The conditions of this obligation are:  
+1. If the Bidder having its bid withdrawn during the period of bid validity specified by the Bidder on 
+the Bid Form; or   
+2. If the Bidder, having been notified of the acceptance of its bid by the Purchaser during the 
+period of validity of bid   
+(a) Withdraws his participation from the bid during the period of validity of bid document; or   
+(b) Fails or refuses to participate in the subsequent Tender process after having been short 
+listed.   
+We undertake to pay to the Purchaser up to the above amount upon receipt of its first written 
+demand, without the Purchaser having to substantiate its demand, provided that in its demand the 
+Purchaser will note that the amount claimed by it is due to it owing to the occurrence of one or both 
+of the two conditions, specifying the occurred condition or conditions.  
+This guarantee will remain in force up to <<insert date>> and including <<extra time over and above 
+mandated in the RFP>> from the last date of submission and any demand in respect thereof should 
+reach the Bank not later than the above date.  
+=== PAGE 64 (Matched: ['State Data Policy']) ===
+   
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP                     PAGE:64 
+  
+ 
+d) Performance Security 
+ 
+To  
+The General Manager (Admin) 
+Odisha Computer Application Centre  
+(Technical Directorate of E & IT Dept, Govt. of Odisha)  
+N-1/7-D, Acharya Vihar P.O. - RRL,  
+Bhubaneswar - 751013    
+  
+Whereas <<name of the supplier and address>> (hereinafter called “the bidder”) has undertaken, in 
+pursuance of contract no. <Insert Contract No.> dated. <Date> to provide services for Capacity 
+Building, Training, and Awareness on the Odisha State Data Policy for 3 Years to Odisha Computer 
+Application Centre, Bhubaneswar (hereinafter called “the beneficiary”)  
+ 
+And whereas it has been stipulated by in the said contract that the bidder shall furnish you with a bank 
+guarantee by a recognized bank for the sum specified therein as security for compliance with its 
+obligations in accordance with the contract;  
+ 
+And whereas we, <Name of Bank> a banking company incorporated and having its head /registered 
+office at <Address of Registered Office> and having one of its office at <Address of Local Office> have 
+agreed to give the supplier such a bank guarantee.  
+ 
+Now, therefore, we hereby affirm that we are guarantors and responsible to you, on behalf of the 
+supplier, up to a total of Rs.<Insert Value> (Rupees <Insert Value in Words> only) and we undertake 
+to pay you, upon your first written demand declaring the supplier to be in default under the contract and 
+without cavil or argument, any sum or sums within the limits of Rs. <Insert Value> (Rupees <Insert 
+Value in Words> only) as aforesaid, without your needing to prove or to show grounds or reasons for 
+your demand or the sum specified therein.  
+ 
+We hereby waive the necessity of your demanding the said debt from the bidder before presenting us 
+with the demand.  
+ 
+We further agree that no change or addition to or other modification of the terms of the contract to be 
+performed there under or of any of the contract documents which may be made between you and the 
+Bidder shall in any way release us from any liability un der this guarantee and we hereby waive notice 
+of any such change, addition or modification. This Guarantee shall be valid until <<Insert Date>>  
+ 
+Notwithstanding anything contained herein:  

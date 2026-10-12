@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class District extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'code',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    public function blocks(): HasMany
+    {
+        return $this->hasMany(Block::class);
+    }
+
+    public function venues(): HasMany
+    {
+        return $this->hasMany(Venue::class);
+    }
+
+    public function batches(): HasMany
+    {
+        return $this->hasMany(TrainingBatch::class);
+    }
+}

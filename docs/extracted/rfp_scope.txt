@@ -1,0 +1,630 @@
+consequential clause or damage, loss or profit, data or revenue. 
+ 
+8. Terms of Reference  
+ 
+8.1 Scope of Work for Training & Capacity Building on Odisha State Data 
+Policy (OSDP) 2.0 
+The selected Agency shall be responsible for the end -to-end design, development, and execution of a 
+comprehensive Statewide capacity-building programme on the Odisha State Data Policy (OSDP)  2.0. 
+The programme shall equip Government officials at the State, District, Block, and Gram Panchayat 
+levels with the knowledge, skills, and tools required to implement the Data Policy in routine 
+administrative and operational work. In addition, the Agency sh all implement structured citizen 
+awareness interventions on responsible data practices, digital privacy, and ethical handling of personal 
+information. 
+=== PAGE 32 (Matched: ['State Data Policy', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 32 of 65 
+The assignment shall ensure a uniform understanding and adoption of data governance principles, 
+privacy safeguards, standardized documentation practices, and secure data handling procedures 
+across all tiers of administration. 
+Target Participants 
+Administrative 
+Level 
+Target Participants Approx. No. of 
+Participants 
+(Indicative) 
+Training 
+Mode 
+Directorate Level Governance Officials  at 
+Directorates 
+3000 Physical  
+District Level District Collectors, Additional 
+Collectors, District Programme  
+Officers (DPOs), District Data 
+Coordinators, IT Officers 
+2400 
+Physical 
+Block Level Block Development Officers 
+(BDOs), Block IT Staff, 
+Extension Officers, Welfare 
+Supervisors 
+9420 
+Physical 
+Gram Panchayat 
+Level 
+Panchayat Executive Officers, 
+Welfare Assistants, Frontline 
+Data Operators 
+26800 
+Physical / 
+Cluster-based 
+Awareness 
+Campaign 
+Activities 
+(Cost discovery 
+item) 
+ 
+Citizens including SHG 
+Members, Youth Groups, 
+Students, Community 
+Representatives and Local 
+Stakeholders 
+ 
+Community 
+Awareness 
+Sessions 
+ 
+Note 
+The above numbers represent indicative estimates derived from the proposed batch structure 
+of the training and awareness programmes. The actual number of participants may vary based 
+on departmental nominations, administrative requirements, and directions i ssued by OCAC 
+from time to time. 
+ 
+8.1.1 Detailed Objectives of the Assignment 
+The objectives of the Data Policy Capacity Building Programme are to: 
+• Strengthen institutional understanding of the State Data Policy and its operational 
+requirements; 
+• Build the capacities of Government officials across administrative levels to manage data 
+responsibly, securely, and systematically; 
+=== PAGE 33 (Matched: ['OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 33 of 65 
+• Promote standardized processes for data collection, validation, documentation, storage, 
+sharing, and disposal; 
+• Enhance citizen awareness on digital privacy, safe data practices, and rights related to 
+protection of personal data; and 
+• Foster a culture of data-driven, transparent, and accountable governance aligned with the Data 
+Policy. 
+8.1.2  Development of Training Material 
+The Agency shall develop a complete suite of bilingual (Odia and English) training material that explains 
+the Data Policy in a clear, practical, and implementable manner. The material shall include trainer 
+handbooks, participant manuals, presentation decks , SOP-based workflow documents, case studies, 
+multimedia learning aids, and field-ready reference guides. 
+All materials shall be developed using non-personal or synthetic datasets and shall reflect role-specific 
+responsibilities, administrative workflows, and recommended compliance practices under the Data 
+Policy. The full content package shall be submitted to  OCAC for review and approval before training 
+rollout. A digital version of all approved training materials shall also be uploaded to the designated 
+platform, as directed by OCAC. 
+8.1.3 Training of Government Officials 
+The Agency shall implement a structured multi -tier training programme covering Government officials 
+responsible for data handling and data governance at the Directorate, District, Block, and Gram 
+Panchayat levels. Trainings shall be delivered as per an OCAC -approved plan, ensuring uniformity in 
+methodology, content delivery, and learning outcomes across all locations. 
+• Directorate Level: The Agency shall conduct orientation and capacity -building programmes 
+for officials of Directorates. 
+• District Level: Training shall focus on operationalizing the Data Policy within district offices, 
+including uniform data classification, quality assurance practices, secure record maintenance, 
+incident reporting, and consistent use of approved templates and formats. 
+• Block Level:  Training shall emphasize practical execution, including data entry, validation, 
+rectification of errors, record maintenance, register management, and frontline compliance 
+measures. Officials handling beneficiary -level and scheme -level datasets shall be tr ained to 
+follow standardized procedures aligned with the Policy. 
+• Gram Panchayat Level: Training programmes shall be conducted at the Gram Panchayat level 
+to build awareness on grassroots -level data practices, including proper documentation, 
+maintenance of physical registers, responsible handling of sensitive data, privacy -conscious 
+interaction with citizens, and adherence to simplified Standard Operating P rocedures (SOPs) 
+suitable for GP offices. Wherever required for operational convenience, such trainings may also 
+be conducted in cluster mode by grouping nearby Gram Panchayats. 
+=== PAGE 34 (Matched: ['MIS', 'Monitoring', 'OCAC', 'PMU']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 34 of 65 
+Each training programme  shall include demonstrations, practical exercises, case -based learning, 
+assessments, and feedback collection, to ensure measurable improvement in knowledge and 
+readiness. 
+8.1.4 Awareness Programme for Citizens 
+In parallel with official trainings, the Agency shall implement a Statewide citizen awareness programme 
+to enhance public understanding of digital privacy, responsible data sharing, and safe interaction with 
+digital governance platforms. Outreach shall be extensive, with special focus on rural and tribal areas 
+and groups including SHG members, women, studen ts, elderly beneficiaries, and marginalized 
+communities. 
+The Agency shall conduct field -level awareness activities at Block /ULB and Gram Panchayat levels, 
+including community meetings, sensitization events, demonstration sessions, and interactions with 
+SHG federations and youth collectives. These activities shall cover citizens’ rights on personal data 
+protection, safe data sharin g practices, and the importance of verifying consent when sharing 
+information with any digital or administrative system. 
+The Agency shall also distribute IEC materials including posters  / leaflets / visual aids during these 
+sessions. 
+NB: The Selected Agency shall ensure that all awareness activities, data collection processes, citizen 
+interactions, and documentation carried out under this assignment strictly comply with the provisions of 
+the Digital Personal Data Protection (DPDP) Act, 2023, and any subsequent rules or guidelines issued 
+by the Government of India or Government of Odisha. The Agency shall maintain strict confidentiality 
+and ensure that no personal or sensitive data of participants or citizens is collected, stored, processed, 
+or shared without proper authorization and safeguards as prescribed under applicable data protection 
+and privacy regulations. 
+8.1.5 Monitoring, Reporting & Evaluation 
+The Agency shall establish a robust monitoring, reporting, and evaluation system to ensure 
+transparency, verifiability, and accountability of all programme activities. The Selected Agency shall 
+design and develop the MIS platform required for monitoring and reporting under the project. OCAC 
+shall provide the necessary IT infrastructure for hosting of  the application at the Odisha State Data 
+Centre (OSDC). The Agency shall ensure that the application is compatible with the infrastructure 
+standards and security guidelines prescribed by OCAC and the Government of Odisha.  
+The monitoring framework shall include: 
+• Central programme oversight through a PMU structure; 
+• District-level coordination to supervise trainings and field activities; 
+• Dedicated field monitors to validate GP and Block-level activities; 
+=== PAGE 35 (Matched: ['MIS', 'Monitoring', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 35 of 65 
+• Submission of periodical progress reports; 
+• Feedback report to measure learning gains 
+• Evaluation of awareness levels, adoption indicators, and compliance readiness.  
+OCAC may conduct random verifications, field visits, or independent reviews as required.  
+8.1.6 Training Structure & Duration (Full Multi-Tier Model) 
+Training shall be delivered through a structured five-tier cascading training framework to enable 
+uniform understanding and adoption across the administration. 
+8.1.6.1 Tier 1 – Directorate Level  
+• Duration: One Day (7-8 Hours) 
+• Mode: Physical  
+• Participants: Below the rank of Asst. Director 
+Session Focus: 
+• Strategic importance of data governance in public administration 
+• Institutional accountability and leadership responsibilities under OSDP  
+• Risk management, compliance, and privacy safeguards 
+• Inter-departmental coordination for data sharing 
+• Governance-level monitoring and oversight mechanisms 
+• Alignment of OSDP with broader digital governance initiatives 
+• Case illustrations of policy-level risks and mitigation approaches 
+This session shall be delivered in an executive briefing format, supported by concise presentation 
+material and a summary note of key deliberations. 
+ 
+8.1.6.2 Tier 2 – District-Level Training Programme 
+• Duration: 1 Day (7-8 Hours) 
+• Mode: Physical  
+• Participants: District-level Data Managers, MIS staff, and supervisory officials 
+Training Focus: 
+• Core requirements and operational aspects of the Data Policy 
+• Classification and organization of district-level datasets 
+• Maintenance of structured departmental registers 
+=== PAGE 36 (Matched: ['MIS']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 36 of 65 
+• Error reduction and validation techniques 
+• Data privacy compliance and secure record management 
+• Procedures for processing data access and sharing requests 
+• Use of standardized documentation templates and checklists 
+• Incident reporting mechanisms for data breaches 
+ 
+8.1.6.3 Tier 3 – Block-Level Training Programme 
+• Duration: 1 Day (7-8 Hours) 
+• Mode: Physical  
+• Participants: MIS/Data Operators, Supervisors, and Data Entry Operators  
+Training Focus: 
+• Handling and maintenance of beneficiary-level datasets 
+• Ensuring accuracy, completeness, and timeliness of data 
+• Data entry standards and quality assurance techniques 
+• Practical guidelines and compliance measures for daily operations 
+• Maintenance of data registers in approved formats 
+• Identification and correction of discrepancies 
+• Secure handling of sensitive and confidential information 
+• Generation of reports in prescribed formats 
+ 
+8.1.6.4 Tier 4 – Gram Panchayat-Level Training Programme 
+• Duration: 1/2 Day (3-4 hors) 
+• Mode: Physical 
+• Participants: Panchayat Executive Officers (PEOs), Welfare Assistants, Data Handlers, and 
+frontline functionaries 
+Training Focus: 
+• Simple and practical explanation of OSDP provisions 
+• Daily checklist for compliant data management 
+• Privacy safeguards specific to GP-level records 
+• Handling Aadhaar-linked and other sensitive data 
+• Verification of beneficiary records 
+• GP-level data flow and role-based responsibilities 
+=== PAGE 37 (Matched: ['State Data Policy']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 37 of 65 
+• Daily documentation and safe storage practices 
+• Maintenance of physical registers 
+• Case studies based on Gram Panchayat-level scenarios 
+8.1.7 Detailed Training Module Development 
+The Selected Agency shall develop comprehensive bilingual (Odia and English) training modules in the 
+form of Participant Handouts and PowerPoint Presentations to support the delivery of the training 
+programmes under the project. 
+The training materials shall be designed in a simple, structured, and user -friendly format suitable for 
+officials at different administrative levels and shall include relevant illustrations, infographics, examples, 
+and case references to enhance understand ing. The printed participant handout shall conform to the 
+following specifications: 
+• Maximum Pages: 28 pages (including cover) 
+• Size: 1/4 Crown size 
+• Paper: Inside pages – 130 GSM Art Paper 
+• Cover (Front & Back): 250 GSM Art Paper 
+• Printing: Multicolour printing 
+• Language: Bilingual (Odia and English) 
+ 
+The PowerPoint presentations shall be prepared in alignment with the training modules and shall be 
+used by trainers for delivering the training sessions at Directorate, District, Block, and Gram 
+Panchayat levels. The training modules shall broadly cover, but not be limited to, the following topics:  
+The Agency shall develop comprehensive bilingual (Odia + English) modules covering:  
+Module 1: Introduction to Odisha State Data Policy 
+a) Purpose & background 
+b) Citizen rights in Government data 
+c) Data governance principles 
+d) Administrative roles 
+Module 2: Data Classification & Categorization 
+a) Personal data 
+b) Non-personal data 
+c) Sensitive data 
+d) Metadata 
+e) Examples from Odisha departments 
+Module 3: Data Lifecycle Management 
+a) Data collection 
+b) Processing 
+=== PAGE 38 (Matched: ['MIS']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 38 of 65 
+c) Storage 
+d) Usage 
+e) Sharing 
+f) Retention 
+g) Archiving 
+h) Disposal 
+Module 4: Data Privacy & Security Practices 
+a) Access control 
+b) Password & credential rules 
+c) Secure file handling 
+d) Physical file protection 
+e) Device-level good practices 
+f) Sharing limitations 
+g) Incident management 
+Module 5: Data Quality Management 
+a) Accuracy 
+b) Completeness 
+c) Consistency 
+d) Validity 
+e) Practical techniques to reduce manual errors 
+f) GP/block-level examples 
+Module 6: Inter-Departmental Data Sharing Process 
+a) When sharing is allowed 
+b) When approvals are needed 
+c) How to document permission 
+d) Formats & request templates 
+e) Roles: Requestor, Approver, Custodian 
+Module 7: Documentation, Registers & Reporting 
+a) Templates for daily documentation 
+b) Data registers 
+c) Approval records 
+d) SOP checklist 
+e) Standard reporting formats 
+Module 8: Case Studies & Practical Simulations (using non-personal dummy datasets) 
+a) Example: Scheme eligibility list 
+b) Example: Updating beneficiary records 
+=== PAGE 39 (Matched: ['Training Plan', 'Monitoring', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 39 of 65 
+c) Example: Fixing duplicate entries 
+d) Example: Managing sensitive documents 
+e) Example: Safe handling of digital files 
+Training Material Content must be submitted to OCAC for review, feedback, and formal approval before 
+rollout. 
+ 
+8.1.8 Training Delivery Mechanism 
+Comprehensive Planning: The Agency shall prepare: 
+ 
+a. Master Training Plan 
+b. District & Block Calendars 
+c. Venue Plan 
+d. Trainer Deployment Plan 
+e. Resource Mobilization Plan 
+ 
+Logistics Responsibility: The Agency shall arrange: 
+• Training halls 
+• Projectors 
+• Internet connectivity 
+• Stationery 
+• Training Kit (Notebook, Pen, Handout) 
+• Signage & branding 
+OCAC will provide: 
+• Policy documents 
+• Access to sample datasets, if required 
+ 
+8.1.9  Monitoring & Evidence Capture Framework 
+The Agency shall ensure complete documentation for every batch, including:  
+• Attendance sheets 
+• Photographs  
+• Short video recordings 
+• Feedback forms 
+• Training summary sheets 
+• Training report for each batch 
+=== PAGE 40 (Matched: ['Monitoring', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 40 of 65 
+OCAC may engage a third-party agency or independent institution for impact assessment, monitoring, 
+evaluation, or verification of the training programmes and awareness activities conducted under this 
+project. The Selected Agency shall extend necessary cooperation and provide all required data, reports, 
+records, and field-level support for such assessments as and when required. 
+8.1.10 Directorate-Level ToT Structure 
+The Agency shall submit a detailed ToT report covering all aspects of the Directorate-level Training of 
+Trainers. 
+Mandatory components: 
+a) Training agenda & session plan 
+b) Final list of master trainers (designation, department, contact) 
+c) Attendance sheet 
+This ToT report shall serve as the base document for district/block/GP rollouts.  
+The Selected Agency shall organize Directorate-Level Training of Trainers (ToT) programmes to create 
+a pool of qualified trainers for the rollout of training programmes at District, Block, and Gram Panchayat 
+levels under the project. 
+The ToT programme shall aim to train at least 250 Master Trainers, who shall subsequently deliver the 
+training programmes across the State. 
+The Agency shall submit a detailed ToT Report covering all aspects of the Directorate-level Training of 
+Trainers. 
+Mandatory components of the ToT Report shall include: 
+a) Training agenda and session plan 
+b) Final list of Master Trainers (Name, designation, department/organization, and contact 
+details) 
+c) Attendance sheets of all ToT participants 
+d) Photographic documentation and session summary 
+Note: 
+ This ToT report shall serve as the base document for the rollout of training programmes at 
+District, Block, and Gram Panchayat levels. 
+ The Selected Agency shall submit a detailed ToT schedule and implementation plan within one 
+(1) month from the date of issuance of the Work Order. 
+ OCAC shall review and evaluate the quality, competency, and readiness of the Master Trainers 
+upon completion of the ToT sessions. OCAC may also engage a third -party agency or 
+independent institution to evaluate the effectiveness and quality of the ToT prog ramme. 
+ The Statewide training rollout at District, Block, and Gram Panchayat levels shall commence 
+only after approval of the Master Trainers by OCAC based on the evaluation of the ToT 
+programme.  
+ Only the trainers approved by OCAC shall be permitted to conduct the training programmes 
+under this project. 
+=== PAGE 41 (Matched: ['MIS', 'State Data Policy', 'OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 41 of 65 
+8.1.11 District/Block/GP Training Structure 
+The Agency shall prepare batch-wise reports for each session conducted at district, block, and GP 
+levels. 
+Mandatory components for each report: 
+a) District/Block/GP name and administrative unit 
+b) Date, venue, and session timing 
+c) Batch details (batch number, participant category) 
+d) List of participants: name, designation, department/office, contact information  
+e) Attendance sheet 
+f) Photographic evidence:  
+Reports shall be compiled into district-wise folders for easy verification by OCAC. 
+ 
+8.1.12 Timelines for Deliverables 
+The overall implementation period shall be as finalized by OCAC (e.g., 6 to 12 months). Indicative 
+timelines are as follows: 
+Preparatory Work (Weeks 1–4) 
+• Week 1: Kick-off meeting, inception report submission 
+• Week 2: Content development (training + IEC materials) 
+• Week 3: MIS setup and demo to OCAC 
+• Week 4: Approval of materials + district planning 
+Impart Training & Capacity Building at all the levels 
+• Training at Districts/Blocks/GPs 
+Evaluation  
+Every 3 months : Final survey, evaluation metrics and impact analysis 
+End of project: Submission of final completion report and handover of MIS/data  
+8.2 Deliverables under Scope for OSDP Training programme 
+The Selected Agency shall be responsible for planning, organizing, and delivering capacity -building 
+programmes and awareness activities under the Odisha State Data Policy (OSDP) initiatives. The 
+Agency shall ensure the provision of required infrastructure,  training materials, logistics, manpower, 
+and documentation for each programme conducted. 
+8.2.1 Directorate Level Training – Level 2  
+i. The Agency shall conduct Directorate Level Level-2 training programmes for senior officials 
+with an approximate batch size of 30 participants and a duration of one day.  
+ii. The Agency shall arrange training infrastructure including venue, audio-visual setup, laptop for 
+demonstration, projection system (Projector / Smart TV / Panel), banner (1 No., minimum size 
+8 ft × 5 ft), and standees (2 Nos., 6 ft × 3 ft).  
+=== PAGE 42 (Matched: ['Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 42 of 65 
+iii. Participants shall be provided with training kits consisting of participant manual, notepad, 
+pen, and file/folder.  
+i.  Participants shall be provided breakfast, lunch, evening snacks, and tea/coffee. 
+iv. Training shall be delivered by trainer(s) supported by necessary support staff. 
+ 
+8.2.2 District Level Training Programmes 
+ii. District-level training programmes shall be conducted with an approximate batch size of 40 
+participants and a duration of one day.  
+iii. The Agency shall ensure the same infrastructure arrangements, training kits, and manpower 
+structure as defined above.  
+iv. Participants shall be provided breakfast, lunch, evening snacks, and tea/coffee. 
+ 
+8.2.3 Block Level Training Programmes 
+i. Block-level training programmes shall be conducted with an approximate batch size of 30 
+participants and a duration of one day.  
+ii. Infrastructure arrangements, training kits, training manpower, and refreshments shall remain 
+the same as those specified for District-level training programmes. 
+ 
+8.2.4 Gram Panchayat (GP) Level Training Programmes 
+i. Gram Panchayat level training programmes shall be conducted in cluster mode with an 
+approximate batch size of 29 participants and a duration of 3-4 hour.  
+ii. The Agency shall ensure similar infrastructure, logistics, training kits, manpower, and 
+refreshments as specified above. 
+Note: For each training programme conducted, the Agency shall submit the following deliverables: 
+i. Completion report for each training programme 
+ii. Attendance records of participants 
+iii. Training photographs 
+iv. Participant feedback forms 
+ 
+8.2.5 Awareness Campaign Activities 
+i. The Agency shall conduct Awareness Campaign Activities  to promote citizen awareness 
+regarding responsible data practices, digital privacy, and safe interaction with digital 
+governance platforms. 
+ii. Each awareness campaign session shall be conducted for approximately 50 participants with 
+a duration of 1–2 hours.  
+iii. The Agency shall arrange necessary infrastructure and logistics including audio -visual setup, 
+demonstration facilities, banners, and standees.  
+iv. Participants shall be provided IEC materials such as leaflets  for dissemination of key 
+messages related to data privacy and responsible data sharing. 
+v. These awareness sessions shall be conducted by trainer(s) supported by support staff, and 
+the Agency shall submit the required documentation including attendance records, 
+photographs, and activity reports for each campaign conducted. 
+ 
+=== PAGE 43 (Matched: ['MIS', 'Monitoring', 'OCAC', 'PMU', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 43 of 65 
+8.2.6 Digital IEC  
+The Agency shall design and develop digital Information, Education and Communication (IEC) 
+materials to support online awareness campaigns and digital outreach activities. The digital IEC 
+content shall include, but not be limited to, the following: 
+i. 50 Image Creatives for social media dissemination 
+ii. 50 Social Media Reels highlighting key aspects of data privacy, responsible data sharing, and 
+digital governance 
+iii. 50 Informational Videos explaining important provisions of OSDP and citizen awareness 
+messages 
+The digital content shall be suitable for dissemination through official websites, social media platforms, 
+awareness campaigns, and digital outreach programmes. 
+8.2.7 MIS Development for OSDP Training Program: 
+The Agency shall design, develop, deploy, and maintain a Management Information System (MIS) 
+to facilitate monitoring and reporting of training programmes and awareness activities conducted 
+under this project. 
+The MIS system shall support the following functionalities: 
+i. Training scheduling and programme planning 
+ii. Participant registration and database management 
+iii. Attendance tracking and verification 
+iv.  Activity monitoring and documentation 
+v. Generation of reports and analytical dashboards 
+The MIS shall enable real-time monitoring, reporting, and evaluation of programme 
+implementation across State, District, Block, and Gram Panchayat levels. 
+Deliverables 
+The Agency shall submit and maintain the following deliverables: 
+▪ Fully functional MIS platform for programme monitoring 
+▪ Activity monitoring reports generated through the MIS 
+▪ Periodic analytics and performance reports for review by OCAC 
+ 
+8.2.8 Central Project Management Team Structure 
+The Selected Agency shall deploy and maintain a Central Project Management Team (PMU) for overall 
+planning, coordination, monitoring, and quality assurance of the OSDP training and awareness 
+programmes throughout the project period. 
+The Central Team shall consist of qualified professionals with relevant academic qualifications and 
+domain experience. The manpower proposed by the Bidder at the time of bidding shall be full -time 
+resources dedicated to the project and shall remain associa ted with the project during the contract 
+period. 
+The proposed personnel shall possess qualifications from recognized universities or institutions and 
+shall meet the minimum eligibility criteria specified below. 
+i. Project Manager 
+=== PAGE 44 (Matched: ['MIS', 'Monitoring', 'OCAC']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 44 of 65 
+The Agency shall nominate a Project Manager responsible for overall management, coordination, and 
+successful implementation of the project. 
+Minimum Qualification 
+MBA / PGDM from an institute ranked within the Top 50 under the latest NIRF ranking (Management 
+Category) – 2025, from a recognized university / institution. 
+Minimum Experience 
+Minimum 5 years of professional experience  in project management, programme coordination, or 
+implementation of large-scale training / e-governance / digital capacity-building initiatives. 
+Key Roles and Responsibilities 
+• Overall project planning, implementation, and coordination with OCAC  
+• Preparation of project implementation plan, training schedules, and activity timelines  
+• Supervision of training programmes and awareness campaigns across State, District, Block, 
+and GP levels 
+• Coordination with Government departments, stakeholders, and field teams  
+• Monitoring project progress and ensuring timely delivery of project milestones  
+• Ensuring quality of training content, IEC materials, and programme execution  
+• Submission of progress reports, MIS reports, and project documentation to OCAC  
+ 
+ii. Domain Expert – Cyber Security 
+The Agency shall deploy a Cyber Security Domain Expert to support training content development and 
+advisory functions related to data protection, privacy, and cybersecurity aspects under OSDP.  
+Minimum Qualification 
+B.E. / B.Tech / MCA / M.Sc (IT / Computer Science) from a recognized university or institution.  
+Minimum Experience 
+Minimum 5 years of experience in cybersecurity, information security, data protection frameworks, or 
+IT governance. 
+Certification 
+At least one of the following certifications: CISA / CISM / CISSP /ISO 27001 Auditor / Implementer CEH 
+Key Roles and Responsibilities 
+• Provide subject-matter expertise on cybersecurity and data protection principles 
+• Support development of training modules related to privacy, data security, and responsible data 
+management 
+• Ensure alignment of training materials with national data protection frameworks and best 
+practices 
+• Provide technical guidance during training programmes and awareness activities  
+• Support OCAC in reviewing cybersecurity-related aspects of IEC and training content 
+ 
+iii. Domain Expert – Digital Platforms / e-Governance Systems 
+The Agency shall deploy a Domain Expert for Digital Platforms and e -Governance Systems  to 
+support programme design and integration with digital governance frameworks.  
+=== PAGE 45 (Matched: ['MIS', 'Monitoring', 'OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 45 of 65 
+Minimum Qualification 
+B.E. / B.Tech / MCA / M.Sc (IT / Computer Science) from a recognized university or institution.  
+Minimum Experience 
+Minimum 5 years of experience  in digital platform implementation, e -governance systems, IT project 
+delivery, or enterprise architecture. 
+Certification 
+At least one of the certifications: PMP / PRINCE2 / TOGAF / ITIL / AWS / Azure / GCP Solution Architect 
+Key Roles and Responsibilities 
+• Provide expertise on digital governance platforms and IT architecture  
+• Support design and monitoring of the MIS system and digital programme components  
+• Ensure integration of training monitoring systems with digital reporting frameworks  
+• Provide technical advisory support for digital outreach and programme monitoring  
+• Assist OCAC in reviewing digital infrastructure and system-related deliverables 
+Deployment Requirement 
+The above personnel shall be full -time resources of the Selected Agency and shall remain associated 
+with the project during the contract period. The Bidder shall submit detailed CVs of the proposed 
+personnel along with the technical proposal, clearly indic ating their qualifications, certifications, and 
+relevant experience. 
+Any replacement of key personnel during the project period shall be made only with prior approval of 
+OCAC and with personnel having equivalent or higher qualifications and experience.  
+9 Payment Terms  
+a) Payments to the Selected Agency shall be made in Indian Rupees (INR) and shall be based on 
+the actual activities completed as per the approved Price Bid and verified by OCAC.  
+b) The total contract value shall be the Grand Total Amount quoted in the Price Bid. The quoted 
+prices shall remain firm and fixed for the entire duration of the contract and shall not be subject 
+to any escalation. 
+c) Payments shall be released activity -wise upon successful completion of the respective 
+deliverables, submission of invoice, and verification by OCAC. 
+Activity-wise Payment Schedule 
+Sl. 
+No. 
+Activity Deliverables / Supporting 
+Documents 
+Payment Condition 
+1 Directorate Level 
+Training 
+Programmes 
+i. Training completion 
+report 
+ii. Participant attendance 
+sheets 
+iii. Photographs of training 
+sessions 
+iv. Participant feedback 
+forms 
+100% payment for each batch shall be 
+released upon successful completion of 
+the respective batch and submission of all 
+required deliverables, supporting 
+documents, and evidence as prescribed by 
+OCAC. 
+3 District Level 
+Training 
+Programmes 
+i. District training 
+completion report 
+ii. Participant attendance 
+sheets 
+iii. Photographic evidence 
+iv. Feedback forms 
+100% payment for each batch shall be 
+released upon successful completion of 
+the respective batch and submission of all 
+required deliverables, supporting 
+documents, and evidence as prescribed by 
+OCAC. 
+=== PAGE 46 (Matched: ['MIS', 'OCAC', 'Deliverable']) ===
+Selection of Service Provider for Capacity Building, Training, and Awareness on the OSDP  Page 46 of 65 
+4 Block Level 
+Training 
+Programmes 
+i. Block level training 
+completion reports 
+ii. Attendance sheets 
+iii. Training photographs 
+iv. Feedback records 
+100% payment for each batch shall be 
+released upon successful completion of 
+the respective batch and submission of all 
+required deliverables, supporting 
+documents, and evidence as prescribed by 
+OCAC. 
+5 Gram Panchayat 
+(GP) Level 
+Training 
+Programmes 
+i. GP-wise training report 
+ii. Attendance sheets of 
+participants 
+iii. Photographs of training 
+sessions 
+iv. Feedback forms 
