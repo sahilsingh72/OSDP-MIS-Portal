@@ -15,7 +15,7 @@ class SystemSettingController extends Controller
      */
     public function index(): View
     {
-        $this->authorize('viewAny', \App\Models\AuditLog::class);
+        $this->authorize('viewAny', SystemSetting::class);
 
         $settings = SystemSetting::all()->groupBy('group');
 
@@ -27,7 +27,7 @@ class SystemSettingController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        $this->authorize('viewAny', \App\Models\AuditLog::class);
+        $this->authorize('update', SystemSetting::class);
 
         $inputs = $request->except(['_token', '_method']);
 
