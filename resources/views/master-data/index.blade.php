@@ -33,20 +33,120 @@
         </div>
 
         <!-- Curriculum Modules Card -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider pb-2 border-b border-slate-200">
-                Curriculum Modules (OSDP 2.0 Syllabus)
-            </h2>
-            <div class="space-y-2 max-h-96 overflow-y-auto pr-1 text-xs">
-                @foreach($modules as $mod)
-                <div class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 transition">
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-slate-900">Module {{ $mod->module_number }}: {{ $mod->title }}</span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700">{{ $mod->code }}</span>
-                    </div>
-                    <p class="text-[11px] text-slate-500 mt-1">{{ $mod->description }}</p>
+        <div id="modules" class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                <div class="flex items-center space-x-2">
+                    <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                        Curriculum Modules (OSDP 2.0 Syllabus)
+                    </h2>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                        {{ $modules->count() }}
+                    </span>
                 </div>
-                @endforeach
+                @can('create', App\Models\TrainingModule::class)
+                <a href="{{ route('modules.create') }}"
+                    class="inline-flex items-center px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition">
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add Module
+                </a>
+                @endcan
+            </div>
+
+            <div class="space-y-3 max-h-[28rem] overflow-y-auto pr-1 text-xs">
+                @forelse($modules as $mod)
+                <div class="p-3.5 rounded-xl border {{ $mod->is_active ? 'border-slate-200 bg-white hover:border-blue-300' : 'border-slate-200/60 bg-slate-50/70 opacity-80' }} transition space-y-2">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <div class="flex items-center flex-wrap gap-1.5">
+                                <span class="font-bold text-slate-900 text-xs">
+                                    Module {{ $mod->module_number }}: {{ $mod->title }}
+                                </span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 font-mono border border-blue-200">
+                                    {{ $mod->code }}
+                                </span>
+                                @if($mod->is_active)
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        Active
+                                    </span>
+                                @else
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                        Inactive
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-1.5 flex-shrink-0">
+                            @can('update', $mod)
+                            <a href="{{ route('modules.edit', $mod) }}"
+                                class="p-1 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition"
+                                title="Edit Module {{ $mod->module_number }}">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </a>
+                            @endcan
+
+                            @can('delete', $mod)
+                            @if(($mod->batches_count ?? 0) === 0)
+                            <form action="{{ route('modules.destroy', $mod) }}" method="POST" class="inline"
+                                onsubmit="return confirm('Are you sure you want to delete Module {{ $mod->module_number }} ({{ $mod->code }})?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+                                    title="Delete Module">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </form>
+                            @else
+                            <span class="p-1 text-slate-300 cursor-not-allowed" title="Cannot delete: linked to {{ $mod->batches_count }} batch(es)">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </span>
+                            @endif
+                            @endcan
+                        </div>
+                    </div>
+
+                    @if($mod->description)
+                    <p class="text-[11px] text-slate-600 leading-relaxed">{{ $mod->description }}</p>
+                    @endif
+
+                    <div class="flex items-center justify-between pt-1 text-[10px] text-slate-400">
+                        <span class="font-medium text-slate-500">
+                            Linked Batches: <strong class="text-blue-600 font-bold">{{ $mod->batches_count ?? 0 }}</strong>
+                        </span>
+                        @if(!empty($mod->topics) && is_array($mod->topics))
+                            <span>{{ count($mod->topics) }} Topics Covered</span>
+                        @endif
+                    </div>
+
+                    @if(!empty($mod->topics) && is_array($mod->topics))
+                    <div class="flex flex-wrap gap-1 pt-1">
+                        @foreach(array_slice($mod->topics, 0, 4) as $top)
+                            <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px]">
+                                • {{ $top }}
+                            </span>
+                        @endforeach
+                        @if(count($mod->topics) > 4)
+                            <span class="px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-500 text-[10px]">
+                                +{{ count($mod->topics) - 4 }} more
+                            </span>
+                        @endif
+                    </div>
+                    @endif
+                </div>
+                @empty
+                <div class="p-6 text-center text-slate-400">
+                    <p class="font-medium">No curriculum modules configured yet.</p>
+                </div>
+                @endforelse
             </div>
         </div>
 

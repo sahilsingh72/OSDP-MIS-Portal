@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\TrainingBatchController;
+use App\Http\Controllers\TrainingModuleController;
 use App\Http\Controllers\TrainingUploadController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckActiveUser;
@@ -54,6 +55,9 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     Route::get('/master-data', [MasterDataController::class, 'index'])->name('master-data.index');
     Route::get('/api/districts/{district}/blocks', [MasterDataController::class, 'getBlocks'])->name('api.districts.blocks');
     Route::get('/api/blocks/{block}/gram-panchayats', [MasterDataController::class, 'getGramPanchayats'])->name('api.blocks.gps');
+
+    // Curriculum Modules Management
+    Route::resource('modules', TrainingModuleController::class)->except(['show']);
 
     // Training Batches
     Route::resource('batches', TrainingBatchController::class);
