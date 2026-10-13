@@ -209,11 +209,16 @@ class TrainingBatch extends Model
         }
 
         if ($user->hasRole('field-monitor')) {
-            return $query->whereHas('fieldVerifications', function ($q) use ($user) {
-                $q->where('users.id', $user->id);
-            })->orWhere(function ($sub) use ($user) {
-                $assignedDistrictIds = $user->assignedDistricts()->pluck('districts.id')->toArray();
-                $sub->whereIn('district_id', $assignedDistrictIds);
+            $assignedDistrictIds = $user->assignedDistricts()->pluck('districts.id')->toArray();
+
+            return $query->where(function ($sub) use ($user, $assignedDistrictIds) {
+                $sub->whereHas('fieldVerifications', function ($q) use ($user) {
+                    $q->where('monitor_id', $user->id);
+                });
+
+                if (!empty($assignedDistrictIds)) {
+                    $sub->orWhereIn('district_id', $assignedDistrictIds);
+                }
             });
         }
 
