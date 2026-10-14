@@ -10,12 +10,14 @@ use App\Models\User;
 use App\Models\Venue;
 use App\Policies\AuditLogPolicy;
 use App\Policies\DistrictPolicy;
+use App\Policies\RolePolicy;
 use App\Policies\SystemSettingPolicy;
 use App\Policies\TrainingModulePolicy;
 use App\Policies\UserPolicy;
 use App\Policies\VenuePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\Models\Role;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(SystemSetting::class, SystemSettingPolicy::class);
         Gate::policy(TrainingModule::class, TrainingModulePolicy::class);
         Gate::policy(Venue::class, VenuePolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
 
         // Implicitly grant "super-admin" role all abilities
         Gate::before(function ($user, $ability) {
