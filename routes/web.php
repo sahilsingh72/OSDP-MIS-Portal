@@ -14,6 +14,7 @@ use App\Http\Controllers\TrainingBatchController;
 use App\Http\Controllers\TrainingModuleController;
 use App\Http\Controllers\TrainingUploadController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VenueController;
 use App\Http\Middleware\CheckActiveUser;
 use Illuminate\Support\Facades\Route;
 
@@ -58,6 +59,9 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
 
     // Curriculum Modules Management
     Route::resource('modules', TrainingModuleController::class)->except(['show']);
+
+    // Certified Venues Management
+    Route::resource('venues', VenueController::class)->except(['show']);
 
     // Training Batches
     Route::resource('batches', TrainingBatchController::class);

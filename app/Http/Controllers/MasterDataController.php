@@ -24,7 +24,7 @@ class MasterDataController extends Controller
         $districts = District::withCount('blocks', 'venues', 'batches')->orderBy('name')->get();
         $tiers = TrainingTier::withCount('batches')->get();
         $modules = TrainingModule::withCount('batches')->orderBy('module_number')->get();
-        $venues = Venue::with('district', 'block')->latest()->paginate(10);
+        $venues = Venue::with('district', 'block')->withCount('batches')->orderBy('name')->get();
 
         return view('master-data.index', compact('districts', 'tiers', 'modules', 'venues'));
     }

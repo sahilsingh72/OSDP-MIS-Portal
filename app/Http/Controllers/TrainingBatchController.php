@@ -263,18 +263,60 @@ class TrainingBatchController extends Controller
         $user = Auth::user();
 
         $tiers = TrainingTier::where('is_active', true)->get();
-        $districts = District::where('is_active', true)->get();
+        $districts = District::where('is_active', true)->orderBy('name')->get();
 
         if ($user->hasRole('district-coordinator')) {
             $assignedIds = $user->assignedDistricts()->pluck('districts.id')->toArray();
             $districts = $districts->whereIn('id', $assignedIds);
         }
 
-        $trainers = User::role('field-trainer')->where('is_active', true)->get();
-        $venues = Venue::where('is_active', true)->get();
-        $modules = TrainingModule::where('is_active', true)->orderBy('module_number')->get();
+        $trainers = User::role('field-trainer')
+            ->where(function ($q) use ($batch) {
+                $q->where('is_active', true)
+                  ->orWhereIn('id', $batch->trainers->pluck('id'));
+            })
+            ->orderBy('name')
+            ->get();
 
-        return view('batches.edit', compact('batch', 'tiers', 'districts', 'trainers', 'venues', 'modules'));
+        $venues = Venue::where('is_active', true)->orderBy('name')->get();
+
+        $modules = TrainingModule::where('is_active', true)
+            ->orWhereIn('id', $batch->modules->pluck('id'))
+            ->orderBy('module_number')
+            ->get();
+
+        // Preload blocks for current batch district
+        $blocks = $batch->district_id
+            ? Block::where('district_id', $batch->district_id)->where('is_active', true)->orderBy('name')->get()
+            : collect();
+
+        // Preload GPs if block is set
+        $gps = $batch->block_id
+            ? GramPanchayat::where('block_id', $batch->block_id)->where('is_active', true)->orderBy('name')->get()
+            : collect();
+
+        $primaryTrainer = $batch->trainers->firstWhere('pivot.role', 'primary') ?? $batch->trainers->first();
+        $coTrainer = $batch->trainers->firstWhere('pivot.role', 'co-trainer');
+        $primaryTrainerId = $primaryTrainer?->id;
+        $coTrainerId = $coTrainer?->id;
+
+        $selectedModuleIds = $batch->modules->pluck('id')->toArray();
+        $selectedGpIds = $batch->clusterGps->pluck('id')->toArray();
+
+        return view('batches.edit', compact(
+            'batch',
+            'tiers',
+            'districts',
+            'blocks',
+            'gps',
+            'trainers',
+            'venues',
+            'modules',
+            'primaryTrainerId',
+            'coTrainerId',
+            'selectedModuleIds',
+            'selectedGpIds'
+        ));
     }
 
     /**
@@ -285,20 +327,65 @@ class TrainingBatchController extends Controller
         $this->authorize('update', $batch);
 
         $validated = $request->validate([
+            'training_tier_id' => ['required', 'exists:training_tiers,id'],
+            'district_id' => ['nullable', 'exists:districts,id'],
+            'block_id' => ['nullable', 'exists:blocks,id'],
+            'venue_id' => ['nullable', 'exists:venues,id'],
+            'primary_trainer_id' => ['required', 'exists:users,id'],
+            'co_trainer_id' => ['nullable', 'different:primary_trainer_id', 'exists:users,id'],
+            'modules' => ['required', 'array', 'min:1'],
+            'modules.*' => ['exists:training_modules,id'],
+            'cluster_gps' => ['nullable', 'array'],
+            'cluster_gps.*' => ['exists:gram_panchayats,id'],
             'scheduled_date' => ['required', 'date'],
             'start_time' => ['required'],
             'end_time' => ['required', 'after:start_time'],
             'actual_start_time' => ['nullable'],
             'actual_end_time' => ['nullable'],
             'status' => ['required', 'string'],
-            'planned_participants' => ['required', 'integer', 'min:5'],
+            'planned_participants' => ['required', 'integer', 'min:5', 'max:500'],
             'remarks' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $old = $batch->toArray();
-        $batch->update($validated);
 
-        AuditLog::record('batch_updated', $batch, $old, $batch->toArray());
+        DB::transaction(function () use ($batch, $validated) {
+            $batch->update([
+                'training_tier_id' => $validated['training_tier_id'],
+                'district_id' => $validated['district_id'] ?? null,
+                'block_id' => $validated['block_id'] ?? null,
+                'venue_id' => $validated['venue_id'] ?? null,
+                'scheduled_date' => $validated['scheduled_date'],
+                'start_time' => $validated['start_time'],
+                'end_time' => $validated['end_time'],
+                'actual_start_time' => $validated['actual_start_time'] ?? null,
+                'actual_end_time' => $validated['actual_end_time'] ?? null,
+                'status' => $validated['status'],
+                'planned_participants' => $validated['planned_participants'],
+                'remarks' => $validated['remarks'] ?? null,
+            ]);
+
+            // Sync trainers with roles
+            $trainerSync = [
+                $validated['primary_trainer_id'] => ['role' => 'primary'],
+            ];
+            if (!empty($validated['co_trainer_id'])) {
+                $trainerSync[$validated['co_trainer_id']] = ['role' => 'co-trainer'];
+            }
+            $batch->trainers()->sync($trainerSync);
+
+            // Sync curriculum modules
+            $batch->modules()->sync($validated['modules']);
+
+            // Sync cluster GPs if any
+            if (!empty($validated['cluster_gps'])) {
+                $batch->clusterGps()->sync($validated['cluster_gps']);
+            } else {
+                $batch->clusterGps()->detach();
+            }
+        });
+
+        AuditLog::record('batch_updated', $batch, $old, $batch->fresh()->toArray());
 
         return redirect()->route('batches.show', $batch)->with('status', 'Batch details updated successfully.');
     }

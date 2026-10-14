@@ -68,16 +68,6 @@ class TrainingBatchPolicy
             return $user->isAssignedToDistrict($batch->district_id);
         }
 
-        if ($user->hasRole('field-trainer')) {
-            // Trainers can only update details during execution / draft phases
-            return $user->isAssignedToBatch($batch->id) && in_array($batch->status, [
-                TrainingBatch::STATUS_SCHEDULED,
-                TrainingBatch::STATUS_IN_PROGRESS,
-                TrainingBatch::STATUS_AWAITING_EVIDENCE,
-                TrainingBatch::STATUS_CORRECTION_REQUIRED,
-            ]);
-        }
-
         return false;
     }
 
