@@ -67,4 +67,38 @@ class AuthorizationAndScopingTest extends TestCase
         $response = $this->actingAs($pmu)->get("/batches/{$batch->id}");
         $response->assertStatus(200);
     }
+
+    /**
+     * Test Field Trainer cannot edit or update batches.
+     */
+    public function test_field_trainer_cannot_edit_batches(): void
+    {
+        $trainer = User::where('email', 'trainer.mohanty@osdp.gov.in')->first();
+        $batch = TrainingBatch::whereHas('trainers', function ($q) use ($trainer) {
+            $q->where('users.id', $trainer->id);
+        })->first();
+        $this->assertNotNull($batch);
+
+        // Edit page must return 403 Forbidden
+        $responseEdit = $this->actingAs($trainer)->get("/batches/{$batch->id}/edit");
+        $responseEdit->assertStatus(403);
+
+        // Update request must return 403 Forbidden
+        $responseUpdate = $this->actingAs($trainer)->put("/batches/{$batch->id}", [
+            'training_tier_id' => $batch->training_tier_id,
+            'scheduled_date' => $batch->scheduled_date->format('Y-m-d'),
+            'start_time' => '10:00',
+            'end_time' => '17:30',
+            'status' => 'scheduled',
+            'planned_participants' => 30,
+            'primary_trainer_id' => $trainer->id,
+            'modules' => $batch->modules->pluck('id')->toArray(),
+        ]);
+        $responseUpdate->assertStatus(403);
+
+        // Batch show page must not render the edit link
+        $responseShow = $this->actingAs($trainer)->get("/batches/{$batch->id}");
+        $responseShow->assertStatus(200);
+        $responseShow->assertDontSee(route('batches.edit', $batch));
+    }
 }

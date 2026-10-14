@@ -152,6 +152,157 @@
 
     </div>
 
+    <!-- Certified Training Venues Table -->
+    <div id="venues" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                    Certified Training Venues (OSDP Delivery Infrastructure)
+                </h2>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                    {{ $venues->count() }}
+                </span>
+            </div>
+            @can('create', App\Models\Venue::class)
+            <a href="{{ route('venues.create') }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition">
+                <svg class="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Venue
+            </a>
+            @endcan
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase font-semibold">
+                    <tr>
+                        <th class="px-6 py-3">Venue & Address</th>
+                        <th class="px-6 py-3">District / Block</th>
+                        <th class="px-6 py-3">Capacity</th>
+                        <th class="px-6 py-3">Classroom Facilities</th>
+                        <th class="px-6 py-3">In-Charge Contact</th>
+                        <th class="px-6 py-3">Batches Hosted</th>
+                        <th class="px-6 py-3">Status</th>
+                        <th class="px-6 py-3 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-slate-700">
+                    @forelse($venues as $v)
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-3.5">
+                            <div class="font-bold text-slate-900">{{ $v->name }}</div>
+                            @if($v->address)
+                                <div class="text-[11px] text-slate-400 mt-0.5 line-clamp-1" title="{{ $v->address }}">{{ $v->address }}</div>
+                            @endif
+                        </td>
+                        <td class="px-6 py-3.5">
+                            <div class="font-medium text-slate-900">{{ $v->district->name ?? 'N/A' }}</div>
+                            <div class="text-[11px] text-slate-400">{{ $v->block->name ?? 'District HQ' }}</div>
+                        </td>
+                        <td class="px-6 py-3.5">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">
+                                {{ $v->capacity }} seats
+                            </span>
+                        </td>
+                        <td class="px-6 py-3.5">
+                            @php
+                                $fac = $v->facilities ?? [];
+                            @endphp
+                            <div class="flex flex-wrap gap-1">
+                                @if(!empty($fac['projector']))
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] bg-blue-50 text-blue-700 border border-blue-200" title="Projector Available">📽️ Projector</span>
+                                @endif
+                                @if(!empty($fac['ac']))
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] bg-sky-50 text-sky-700 border border-sky-200" title="Air Conditioning">❄️ AC</span>
+                                @endif
+                                @if(!empty($fac['internet']))
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] bg-indigo-50 text-indigo-700 border border-indigo-200" title="Internet / WiFi">🌐 WiFi</span>
+                                @endif
+                                @if(!empty($fac['audio_system']))
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] bg-purple-50 text-purple-700 border border-purple-200" title="Audio / PA System">🎙️ Audio</span>
+                                @endif
+                                @if(empty($fac['projector']) && empty($fac['ac']) && empty($fac['internet']) && empty($fac['audio_system']))
+                                    <span class="text-slate-400 text-[11px]">Basic</span>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="px-6 py-3.5">
+                            @if($v->contact_person || $v->contact_phone)
+                                <div class="font-medium text-slate-800">{{ $v->contact_person ?? 'Caretaker' }}</div>
+                                @if($v->contact_phone)
+                                    <div class="text-[11px] text-slate-500 font-mono">{{ $v->contact_phone }}</div>
+                                @endif
+                            @else
+                                <span class="text-slate-400">—</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-3.5">
+                            <span class="font-bold text-blue-600">{{ $v->batches_count }} Batches</span>
+                        </td>
+                        <td class="px-6 py-3.5">
+                            @if($v->is_active)
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Active</span>
+                            @else
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600">Inactive</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-3.5 text-right">
+                            <div class="flex items-center justify-end space-x-1.5">
+                                @can('update', $v)
+                                <a href="{{ route('venues.edit', $v) }}"
+                                    class="p-1 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition"
+                                    title="Edit Venue {{ $v->name }}">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                                @endcan
+
+                                @can('delete', $v)
+                                @if(($v->batches_count ?? 0) === 0)
+                                <form action="{{ route('venues.destroy', $v) }}" method="POST" class="inline"
+                                    onsubmit="return confirm('Are you sure you want to delete venue \'{{ addslashes($v->name) }}\'?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+                                        title="Delete Venue">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </form>
+                                @else
+                                <span class="p-1 text-slate-300 cursor-not-allowed" title="Cannot delete: linked to {{ $v->batches_count }} batch(es)">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </span>
+                                @endif
+                                @endcan
+
+                                @cannot('update', $v)
+                                @cannot('delete', $v)
+                                <span class="text-slate-300 text-xs">—</span>
+                                @endcannot
+                                @endcannot
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="8" class="px-6 py-8 text-center text-slate-400">
+                            No training venues registered yet.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- 30 Districts of Odisha Table -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between">

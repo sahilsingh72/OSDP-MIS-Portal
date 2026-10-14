@@ -133,7 +133,6 @@ class RoleAndPermissionSeeder extends Seeder
             'master-data.view',
             'training-plans.view',
             'batches.view',
-            'batches.update',
             'participants.view',
             'participants.manage',
             'attendance.view',
