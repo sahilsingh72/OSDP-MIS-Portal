@@ -49,7 +49,14 @@
             </div>
 
             <div>
-                <label class="block font-semibold text-slate-700 mb-1">System Role <span class="text-rose-500">*</span></label>
+                <div class="flex items-center justify-between mb-1">
+                    <label class="block font-semibold text-slate-700">System Role <span class="text-rose-500">*</span></label>
+                    @can('roles.manage')
+                    <a href="{{ route('roles.index') }}" target="_blank" class="text-[11px] text-blue-600 hover:text-blue-800 font-medium">
+                        Manage Role Permissions &rarr;
+                    </a>
+                    @endcan
+                </div>
                 <select name="role" required class="w-full rounded-xl border border-slate-300 p-2.5 text-xs focus:border-blue-500 focus:outline-none">
                     @foreach($roles as $role)
                         <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>

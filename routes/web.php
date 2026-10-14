@@ -9,6 +9,7 @@ use App\Http\Controllers\FieldVerificationController;
 use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\TrainingBatchController;
 use App\Http\Controllers\TrainingModuleController;
@@ -98,6 +99,12 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     // User Management
     Route::resource('users', UserController::class)->except(['show']);
     Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+
+    // Roles & Permissions Governance
+    Route::get('/roles/matrix', [RolePermissionController::class, 'matrix'])->name('roles.matrix');
+    Route::resource('roles', RolePermissionController::class)->except(['show']);
+    Route::get('/roles/{role}/permissions', [RolePermissionController::class, 'edit'])->name('roles.permissions.edit');
+    Route::put('/roles/{role}/permissions', [RolePermissionController::class, 'update'])->name('roles.permissions.update');
 
     // Audit Logs
     Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');

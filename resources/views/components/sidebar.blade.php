@@ -95,6 +95,17 @@
         </a>
         @endcan
 
+        <!-- Roles & Permissions Governance -->
+        @can('roles.manage')
+        <a href="{{ route('roles.index') }}"
+            class="flex items-center px-3 py-2.5 rounded-xl font-medium transition {{ request()->routeIs('roles.*') ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
+            <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            Roles & Permissions
+        </a>
+        @endcan
+
         <!-- Audit Logs -->
         @can('audit-logs.view')
         <a href="{{ route('audit-logs.index') }}"
