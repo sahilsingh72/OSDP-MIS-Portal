@@ -7,6 +7,7 @@ use App\Http\Controllers\BatchReviewController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldVerificationController;
 use App\Http\Controllers\MasterDataController;
+use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RolePermissionController;
@@ -68,10 +69,20 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     Route::resource('batches', TrainingBatchController::class);
     Route::post('/batches/{batch}/submit', [TrainingBatchController::class, 'submitForReview'])->name('batches.submit');
 
-    // Form 2 Participant Attendance Transcription
+    // Form 2 Participant Attendance Transcription & Bulk Upload
     Route::get('/batches/{batch}/attendance', [AttendanceController::class, 'show'])->name('batches.attendance.show');
     Route::post('/batches/{batch}/attendance', [AttendanceController::class, 'update'])->name('batches.attendance.update');
     Route::post('/batches/{batch}/participants', [AttendanceController::class, 'addParticipant'])->name('batches.participants.store');
+    Route::post('/batches/{batch}/participants/bulk-upload', [AttendanceController::class, 'bulkUpload'])->name('batches.participants.bulk-upload');
+    Route::get('/batches/{batch}/participants/template', [AttendanceController::class, 'downloadTemplate'])->name('batches.participants.template');
+
+    // Participants Directory & Bulk Registration
+    Route::get('/participants', [ParticipantController::class, 'index'])->name('participants.index');
+    Route::post('/participants/import', [ParticipantController::class, 'import'])->name('participants.import');
+    Route::get('/participants/template', [ParticipantController::class, 'downloadTemplate'])->name('participants.template');
+    Route::put('/participants/{participant}', [ParticipantController::class, 'update'])->name('participants.update');
+    Route::delete('/participants/{participant}', [ParticipantController::class, 'destroy'])->name('participants.destroy');
+    Route::post('/participants/{id}/restore', [ParticipantController::class, 'restore'])->name('participants.restore');
 
     // Evidence Upload Center & Private File Streaming
     Route::get('/batches/{batch}/evidence', [TrainingUploadController::class, 'index'])->name('batches.evidence.index');
@@ -97,6 +108,7 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     Route::get('/reports/export/csv', [ReportController::class, 'exportCsv'])->name('reports.export.csv');
 
     // User Management
+    Route::post('/users/sync-dlc', [UserController::class, 'syncDlcCoordinators'])->name('users.sync-dlc');
     Route::resource('users', UserController::class)->except(['show']);
     Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
 

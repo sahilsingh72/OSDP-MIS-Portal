@@ -3,36 +3,6 @@
 @section('content')
 <div class="space-y-6">
 
-    <!-- Top Banner & State Context -->
-    <div class="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-900 rounded-2xl p-6 text-white shadow-lg border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-            <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-md bg-orange-500/20 text-orange-400 text-xs font-semibold uppercase tracking-wider mb-2 border border-orange-500/30">
-                <span>OSDP 2.0 Monitoring MIS</span>
-            </div>
-            <h1 class="text-2xl font-bold tracking-tight text-white">
-                Odisha State Data Policy 2.0 Capacity Building
-            </h1>
-            <p class="text-slate-300 text-xs sm:text-sm mt-1 max-w-2xl">
-                Statewide multi-tier training operations, participant attendance tracking, evidence verification, and compliance monitoring across 30 Districts, 314 Blocks, and Gram Panchayats.
-            </p>
-        </div>
-
-        <div class="flex items-center space-x-3 self-start md:self-auto">
-            @can('batches.create')
-            <a href="{{ route('batches.create') }}" class="px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs shadow-md shadow-orange-500/20 transition flex items-center space-x-2">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                <span>Schedule Batch</span>
-            </a>
-            @endcan
-            @can('reports.view')
-            <a href="{{ route('reports.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-xs transition flex items-center space-x-2">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span>Reports</span>
-            </a>
-            @endcan
-        </div>
-    </div>
-
     <!-- Metric Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 

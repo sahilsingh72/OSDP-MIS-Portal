@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             RoleAndPermissionSeeder::class,
             MasterDataSeeder::class,
             TrainingProgrammeSeeder::class,
+            DistrictCoordinatorSeeder::class,
         ]);
     }
 }
