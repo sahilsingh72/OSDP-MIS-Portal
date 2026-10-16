@@ -41,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(TrainingModule::class, TrainingModulePolicy::class);
         Gate::policy(Venue::class, VenuePolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
+        Gate::policy(\App\Models\Participant::class, \App\Policies\ParticipantPolicy::class);
 
         // Implicitly grant "super-admin" role all abilities
         Gate::before(function ($user, $ability) {

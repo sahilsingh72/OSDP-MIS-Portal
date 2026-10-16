@@ -28,10 +28,15 @@ class BatchParticipant extends Model
 
     public function participant(): BelongsTo
     {
-        return $this->belongsTo(Participant::class);
+        return $this->belongsTo(Participant::class)->withTrashed();
     }
 
     public function attendance(): HasOne
+    {
+        return $this->hasOne(AttendanceRecord::class);
+    }
+
+    public function attendanceRecord(): HasOne
     {
         return $this->hasOne(AttendanceRecord::class);
     }

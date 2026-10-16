@@ -182,4 +182,23 @@ class UserController extends Controller
 
         return back()->with('status', "User account for {$user->name} has been " . ($newStatus ? 'activated.' : 'deactivated.'));
     }
+
+    /**
+     * Sync District Coordinators from dlc_mst table into user accounts with district mappings.
+     */
+    public function syncDlcCoordinators(\App\Services\DlcAccountService $service): RedirectResponse
+    {
+        $this->authorize('create', User::class);
+
+        try {
+            $result = $service->syncCoordinators();
+
+            return redirect()->route('users.index')->with(
+                'status',
+                "Successfully synchronized {$result['total']} District Coordinator accounts from DLC Master ({$result['created']} created, {$result['updated']} updated). All coordinators are mapped to their respective district scopes."
+            );
+        } catch (\Throwable $e) {
+            return redirect()->route('users.index')->withErrors(['dlc_sync' => 'DLC sync failed: ' . $e->getMessage()]);
+        }
+    }
 }

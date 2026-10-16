@@ -48,40 +48,122 @@ class AttendanceController extends Controller
             'designation' => ['required', 'string', 'max:255'],
             'department' => ['nullable', 'string', 'max:255'],
             'office_name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:15'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'email' => ['nullable', 'email', 'max:255'],
         ]);
 
-        DB::transaction(function () use ($validated, $batch) {
-            $participant = Participant::create([
-                'name' => $validated['name'],
-                'designation' => $validated['designation'],
-                'department' => $validated['department'] ?? null,
-                'office_name' => $validated['office_name'],
-                'phone_masked' => !empty($validated['phone']) ? substr($validated['phone'], 0, 2) . '******' . substr($validated['phone'], -2) : null,
-            ]);
+        $name = trim($validated['name']);
+        $officeName = trim($validated['office_name']);
+        $designation = trim($validated['designation']);
+        $email = !empty($validated['email']) ? strtolower(trim($validated['email'])) : null;
 
-            $nextSerial = $batch->batchParticipants()->count() + 1;
+        $phone = $validated['phone'] ?? null;
+        $phoneMasked = null;
+        if (!empty($phone)) {
+            $digits = preg_replace('/[^0-9]/', '', $phone);
+            if (strlen($digits) >= 10) {
+                $phoneMasked = substr($digits, 0, 2) . '******' . substr($digits, -2);
+            } else {
+                $phoneMasked = $phone;
+            }
+        }
 
-            $bp = BatchParticipant::create([
-                'training_batch_id' => $batch->id,
-                'participant_id' => $participant->id,
-                'serial_number' => $nextSerial,
-            ]);
+        DB::transaction(function () use ($name, $designation, $officeName, $phoneMasked, $email, $batch) {
+            $participant = Participant::withTrashed()
+                ->where('name', $name)
+                ->where('office_name', $officeName)
+                ->first();
 
-            AttendanceRecord::create([
-                'training_batch_id' => $batch->id,
-                'batch_participant_id' => $bp->id,
-                'morning_present' => true,
-                'afternoon_present' => true,
-                'marked_by' => Auth::id(),
-            ]);
+            if (!$participant) {
+                $participant = Participant::create([
+                    'name' => $name,
+                    'designation' => $designation,
+                    'department' => null,
+                    'office_name' => $officeName,
+                    'phone_masked' => $phoneMasked,
+                    'email' => $email,
+                    'is_active' => true,
+                    'created_by' => Auth::id(),
+                ]);
+            } else {
+                if ($participant->trashed()) {
+                    $participant->restore();
+                }
+                $participant->update([
+                    'designation' => $designation ?: $participant->designation,
+                    'phone_masked' => $phoneMasked ?: $participant->phone_masked,
+                    'email' => $email ?: $participant->email,
+                ]);
+            }
 
-            // Update registered participant count
-            $batch->increment('registered_participants');
-            $this->recalculateCounts($batch);
+            // Check if already enrolled in this batch
+            $bp = BatchParticipant::where('training_batch_id', $batch->id)
+                ->where('participant_id', $participant->id)
+                ->first();
+
+            if (!$bp) {
+                $nextSerial = $batch->batchParticipants()->count() + 1;
+
+                $bp = BatchParticipant::create([
+                    'training_batch_id' => $batch->id,
+                    'participant_id' => $participant->id,
+                    'serial_number' => $nextSerial,
+                ]);
+
+                AttendanceRecord::create([
+                    'training_batch_id' => $batch->id,
+                    'batch_participant_id' => $bp->id,
+                    'morning_present' => true,
+                    'afternoon_present' => true,
+                    'marked_by' => Auth::id(),
+                ]);
+
+                // Update registered participant count
+                $batch->increment('registered_participants');
+                $this->recalculateCounts($batch);
+            }
         });
 
         return back()->with('status', 'Participant added and enrolled into batch successfully.');
+    }
+
+    /**
+     * Bulk upload participants into this batch from Excel.
+     */
+    public function bulkUpload(Request $request, TrainingBatch $batch, \App\Services\ParticipantImportService $importService): RedirectResponse
+    {
+        $this->authorize('update', $batch);
+
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls,csv,txt', 'max:10240'],
+        ], [
+            'file.mimes' => 'The uploaded file must be an Excel spreadsheet (.xlsx, .xls) or CSV file.',
+            'file.max' => 'The uploaded file must not exceed 10 megabytes.',
+        ]);
+
+        try {
+            $result = $importService->importFromExcel($request->file('file'), $batch, Auth::user());
+
+            $msg = "Successfully imported {$result['imported']} participants into batch {$batch->batch_code}";
+            if ($result['skipped'] > 0) {
+                $msg .= " ({$result['skipped']} duplicates/empty skipped)";
+            }
+            $msg .= ". Total registered: {$batch->fresh()->registered_participants}. Participant details saved; please mark attendance manually below.";
+
+            return back()->with('status', $msg);
+        } catch (\Throwable $e) {
+            return back()->withErrors(['file' => 'Excel upload failed: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Download Excel template for this batch.
+     */
+    public function downloadTemplate(TrainingBatch $batch, \App\Services\ParticipantImportService $importService): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $this->authorize('view', $batch);
+
+        return $importService->downloadTemplate($batch);
     }
 
     /**
