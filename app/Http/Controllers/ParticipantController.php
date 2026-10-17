@@ -137,6 +137,15 @@ class ParticipantController extends Controller
         $name = $participant->name;
         $participant->delete();
 
+        // Recalculate batch counts for any batches this participant was enrolled in
+        $batches = TrainingBatch::whereHas('batchParticipants', function ($q) use ($participant) {
+            $q->where('participant_id', $participant->id);
+        })->get();
+
+        foreach ($batches as $batch) {
+            $batch->recalculateCounts();
+        }
+
         AuditLog::record('participant_deleted', $participant, null, ['soft_deleted' => true]);
 
         return back()->with('status', "Participant '{$name}' was deleted (soft-deleted). It can be recovered anytime from the Trashed tab.");
@@ -152,6 +161,15 @@ class ParticipantController extends Controller
         $this->authorize('restore', $participant);
 
         $participant->restore();
+
+        // Recalculate batch counts for any batches this participant is enrolled in
+        $batches = TrainingBatch::whereHas('batchParticipants', function ($q) use ($participant) {
+            $q->where('participant_id', $participant->id);
+        })->get();
+
+        foreach ($batches as $batch) {
+            $batch->recalculateCounts();
+        }
 
         AuditLog::record('participant_restored', $participant, null, ['restored' => true]);
 

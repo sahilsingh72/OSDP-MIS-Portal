@@ -115,11 +115,13 @@ class TrainingBatchPolicy
 
     /**
      * Determine whether the user can submit the batch for review.
+     * Field Trainers and District Coordinators submit for review;
+     * Super Admin, PMU, and OCAC review/verify batches instead.
      */
     public function submit(User $user, TrainingBatch $batch): bool
     {
-        if ($user->hasRole(['super-admin', 'pmu'])) {
-            return true;
+        if ($user->hasRole(['super-admin', 'pmu', 'ocac'])) {
+            return false;
         }
 
         if ($user->hasRole('district-coordinator')) {
@@ -149,6 +151,37 @@ class TrainingBatchPolicy
 
         if ($user->hasRole('district-coordinator')) {
             return $user->can('evidence.review') && $user->isAssignedToDistrict($batch->district_id);
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can enter/edit field training summary and feedback evaluation.
+     * Field Trainers and District Coordinators enter summaries from the field;
+     * Super Admin, PMU, and OCAC view them in read-only mode.
+     */
+    public function manageSummary(User $user, TrainingBatch $batch): bool
+    {
+        if ($user->hasRole(['super-admin', 'pmu', 'ocac'])) {
+            return false;
+        }
+
+        if (!in_array($batch->status, [
+            TrainingBatch::STATUS_SCHEDULED,
+            TrainingBatch::STATUS_IN_PROGRESS,
+            TrainingBatch::STATUS_AWAITING_EVIDENCE,
+            TrainingBatch::STATUS_CORRECTION_REQUIRED,
+        ])) {
+            return false;
+        }
+
+        if ($user->hasRole('district-coordinator')) {
+            return $user->isAssignedToDistrict($batch->district_id);
+        }
+
+        if ($user->hasRole('field-trainer')) {
+            return $user->isAssignedToBatch($batch->id);
         }
 
         return false;

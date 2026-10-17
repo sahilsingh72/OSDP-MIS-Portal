@@ -271,11 +271,17 @@ class ParticipantManagementTest extends TestCase
         $this->assertEquals('Historical Attendee', $bp->participant->name);
         $this->assertTrue($bp->participant->trashed());
 
-        // Attendance screen renders without throwing ModelNotFoundException
+        // Attendance screen renders without throwing ModelNotFoundException and does NOT show soft-deleted participant
         $response = $this->actingAs($this->superAdmin)->get("/batches/{$batch->id}/attendance");
         $response->assertStatus(200);
-        $response->assertSee('Historical Attendee');
-        $response->assertSee('Archived');
+        $response->assertDontSee('Historical Attendee');
+
+        // When restored, participant reappears in attendance
+        $participant->restore();
+        $batch->recalculateCounts();
+        $restoreResponse = $this->actingAs($this->superAdmin)->get("/batches/{$batch->id}/attendance");
+        $restoreResponse->assertStatus(200);
+        $restoreResponse->assertSee('Historical Attendee');
     }
 
     /**
@@ -297,7 +303,7 @@ class ParticipantManagementTest extends TestCase
         ]);
 
         $response->assertRedirect();
-        $response->assertSessionHas('status', 'Participant added and enrolled into batch successfully.');
+        $response->assertSessionHas('status', 'Participant details added and enrolled into batch successfully. Please mark attendance manually on Form 2 below.');
 
         $participant = Participant::where('name', $name)->first();
         $this->assertNotNull($participant);
@@ -312,6 +318,12 @@ class ParticipantManagementTest extends TestCase
             ->where('participant_id', $participant->id)
             ->first();
         $this->assertNotNull($bp);
+
+        // Verify attendance is strictly UNMARKED (not auto-marked as present)
+        $att = $bp->attendanceRecord;
+        $this->assertNotNull($att);
+        $this->assertFalse((bool)$att->morning_present);
+        $this->assertFalse((bool)$att->afternoon_present);
     }
 
     /**

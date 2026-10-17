@@ -18,7 +18,8 @@
         </div>
 
         <div class="flex items-center space-x-3">
-            @if($evidenceStatus['is_complete'] && in_array($batch->status, ['scheduled', 'in_progress', 'awaiting_evidence', 'correction_required']))
+            @if(!auth()->user()->hasRole(['super-admin', 'pmu', 'ocac']) && $evidenceStatus['is_complete'] && in_array($batch->status, ['scheduled', 'in_progress', 'awaiting_evidence', 'correction_required']))
+                @can('submit', $batch)
                 <form action="{{ route('batches.submit', $batch) }}" method="POST" class="inline">
                     @csrf
                     <button type="submit" onclick="return confirm('Confirm submission of batch evidence pack for verification?')"
@@ -26,6 +27,7 @@
                         ✓ Ready - Submit for Verification
                     </button>
                 </form>
+                @endcan
             @endif
             <a href="{{ route('batches.show', $batch) }}" class="text-xs font-semibold text-slate-600 hover:text-slate-900">
                 ← Return to Batch
@@ -49,12 +51,12 @@
                 <label class="block font-semibold text-slate-700 mb-1">Evidence Item Type <span class="text-rose-500">*</span></label>
                 <select name="evidence_type" required class="w-full rounded-xl border border-slate-300 p-2.5 text-xs focus:border-blue-500 focus:outline-none">
                     <option value="">-- Choose Item Type --</option>
-                    <option value="attendance_sheet">1. Attendance Sheet (Form 2 - Both Sides)</option>
+                    <option value="attendance_sheet">1. Attendance Sheet (Form - Both Sides)</option>
                     <option value="photo_1">2. Photograph 1 (Full Group with 8x5 Banner)</option>
                     <option value="photo_2">3. Photograph 2 (Trainer Teaching)</option>
                     <option value="video">4. Short Video Clip (MP4, ~1 min, landscape)</option>
-                    <option value="feedback_forms">5. Feedback Forms (Form 1 - Merged PDF)</option>
-                    <option value="batch_completion_report">6. Batch Completion Report (Form 3 PDF)</option>
+                    <option value="feedback_forms">5. Feedback Forms (Merged PDF)</option>
+                    <option value="batch_completion_report">6. Batch Completion Report (PDF)</option>
                 </select>
             </div>
 
@@ -144,125 +146,317 @@
         </div>
     </div>
 
-    <!-- Structured Data Entry Forms: Form 3 Summary & Form 1 Feedback -->
+    <!-- Structured Data Entry / Read-Only View -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- Form 3 Part C Summary Entry -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider pb-2 border-b border-slate-200">
-                Form 3 Training Summary Entry (Part C)
-            </h3>
+        <!-- Summary Card -->
+        @can('manageSummary', $batch)
+            <!-- Editable Training Summary Form (Field Operators) -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                        Training Summary Entry
+                    </h3>
+                    <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                        Field Form 3
+                    </span>
+                </div>
 
-            <form action="{{ route('batches.summary.store', $batch) }}" method="POST" class="space-y-3 text-xs">
-                @csrf
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Registered</label>
-                        <input type="number" name="registered_count" required value="{{ old('registered_count', $batch->summary?->registered_count ?? $batch->registered_participants) }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                <form action="{{ route('batches.summary.store', $batch) }}" method="POST" class="space-y-3 text-xs">
+                    @csrf
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Registered</label>
+                            <input type="number" name="registered_count" required value="{{ old('registered_count', $batch->summary?->registered_count ?? $batch->registered_participants) }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Present</label>
+                            <input type="number" name="present_count" required value="{{ old('present_count', $batch->summary?->present_count ?? $batch->present_participants) }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Feedback Forms</label>
+                            <input type="number" name="feedback_forms_received" required value="{{ old('feedback_forms_received', $batch->summary?->feedback_forms_received ?? $batch->present_participants) }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Present</label>
-                        <input type="number" name="present_count" required value="{{ old('present_count', $batch->summary?->present_count ?? $batch->present_participants) }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Actual Start Time</label>
+                            <input type="time" name="actual_start_time" value="{{ old('actual_start_time', $batch->summary?->actual_start_time ? substr($batch->summary->actual_start_time, 0, 5) : substr($batch->start_time, 0, 5)) }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Actual End Time</label>
+                            <input type="time" name="actual_end_time" value="{{ old('actual_end_time', $batch->summary?->actual_end_time ? substr($batch->summary->actual_end_time, 0, 5) : substr($batch->end_time, 0, 5)) }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
                     </div>
+
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Feedback Forms</label>
-                        <input type="number" name="feedback_forms_received" required value="{{ old('feedback_forms_received', $batch->summary?->feedback_forms_received ?? $batch->present_participants) }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        <label class="block font-semibold text-slate-700 mb-1">What went well (2-3 lines)</label>
+                        <textarea name="what_went_well" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('what_went_well', $batch->summary?->what_went_well) }}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Problems faced (venue, power, projector, etc.)</label>
+                        <textarea name="problems_faced" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('problems_faced', $batch->summary?->problems_faced) }}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Follow-up actions needed</label>
+                        <textarea name="follow_up_actions" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('follow_up_actions', $batch->summary?->follow_up_actions) }}</textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold transition text-center">
+                        Save Summary
+                    </button>
+                </form>
+            </div>
+        @else
+            <!-- Read-Only Training Summary View (Admin / PMU / OCAC / Reviewers) -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                        Training Summary
+                    </h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+                            Read-Only
+                        </span>
+                        @if($batch->summary)
+                            <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                                ✓ Submitted
+                            </span>
+                        @else
+                            <span class="text-[11px] font-semibold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                                ⏳ Pending Entry
+                            </span>
+                        @endif
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Actual Start Time</label>
-                        <input type="time" name="actual_start_time" value="{{ old('actual_start_time', $batch->summary?->actual_start_time ? substr($batch->summary->actual_start_time, 0, 5) : substr($batch->start_time, 0, 5)) }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                <div class="grid grid-cols-3 gap-3 text-xs">
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-0.5 font-medium">Registered</span>
+                        <span class="text-base font-bold text-slate-900">
+                            {{ $batch->summary?->registered_count ?? $batch->registered_participants }}
+                        </span>
                     </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Actual End Time</label>
-                        <input type="time" name="actual_end_time" value="{{ old('actual_end_time', $batch->summary?->actual_end_time ? substr($batch->summary->actual_end_time, 0, 5) : substr($batch->end_time, 0, 5)) }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-0.5 font-medium">Present</span>
+                        <span class="text-base font-bold text-emerald-600">
+                            {{ $batch->summary?->present_count ?? $batch->present_participants }}
+                        </span>
                     </div>
-                </div>
-
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">What went well (2-3 lines)</label>
-                    <textarea name="what_went_well" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('what_went_well', $batch->summary?->what_went_well) }}</textarea>
-                </div>
-
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Problems faced (venue, power, projector, etc.)</label>
-                    <textarea name="problems_faced" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('problems_faced', $batch->summary?->problems_faced) }}</textarea>
-                </div>
-
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Follow-up actions needed</label>
-                    <textarea name="follow_up_actions" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('follow_up_actions', $batch->summary?->follow_up_actions) }}</textarea>
-                </div>
-
-                <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold transition text-center">
-                    Save Form 3 Summary
-                </button>
-            </form>
-        </div>
-
-        <!-- Form 1 Feedback Metrics Entry -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider pb-2 border-b border-slate-200">
-                Form 1 Feedback Aggregates Entry
-            </h3>
-
-            <form action="{{ route('batches.feedback.store', $batch) }}" method="POST" class="space-y-3 text-xs">
-                @csrf
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Q1 Clarity (1-5)</label>
-                        <input type="number" step="0.01" min="1" max="5" name="q1_clarity_avg" required value="{{ old('q1_clarity_avg', $batch->feedback?->q1_clarity_avg ?? '4.50') }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Q2 Knowledge (1-5)</label>
-                        <input type="number" step="0.01" min="1" max="5" name="q2_knowledge_avg" required value="{{ old('q2_knowledge_avg', $batch->feedback?->q2_knowledge_avg ?? '4.80') }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Q3 Relevance (1-5)</label>
-                        <input type="number" step="0.01" min="1" max="5" name="q3_relevance_avg" required value="{{ old('q3_relevance_avg', $batch->feedback?->q3_relevance_avg ?? '4.60') }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Q4 Handbook (1-5)</label>
-                        <input type="number" step="0.01" min="1" max="5" name="q4_handbook_avg" required value="{{ old('q4_handbook_avg', $batch->feedback?->q4_handbook_avg ?? '4.70') }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Q5 Overall (1-5)</label>
-                        <input type="number" step="0.01" min="1" max="5" name="q5_overall_avg" required value="{{ old('q5_overall_avg', $batch->feedback?->q5_overall_avg ?? '4.75') }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Forms Count</label>
-                        <input type="number" min="1" name="total_forms_analyzed" required value="{{ old('total_forms_analyzed', $batch->feedback?->total_forms_analyzed ?? $batch->present_participants) }}"
-                            class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-0.5 font-medium">Feedback Forms</span>
+                        <span class="text-base font-bold text-blue-600">
+                            {{ $batch->summary?->feedback_forms_received ?? '-' }}
+                        </span>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Key Qualitative Highlights</label>
-                    <textarea name="qualitative_highlights" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('qualitative_highlights', $batch->feedback?->qualitative_highlights) }}</textarea>
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-0.5 font-medium">Actual Start Time</span>
+                        <span class="text-xs font-bold text-slate-800">
+                            {{ $batch->summary?->actual_start_time ? substr($batch->summary->actual_start_time, 0, 5) : ($batch->actual_start_time ? substr($batch->actual_start_time, 0, 5) : 'Not recorded') }}
+                        </span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-0.5 font-medium">Actual End Time</span>
+                        <span class="text-xs font-bold text-slate-800">
+                            {{ $batch->summary?->actual_end_time ? substr($batch->summary->actual_end_time, 0, 5) : ($batch->actual_end_time ? substr($batch->actual_end_time, 0, 5) : 'Not recorded') }}
+                        </span>
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Improvement Suggestions</label>
-                    <textarea name="improvement_suggestions" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('improvement_suggestions', $batch->feedback?->improvement_suggestions) }}</textarea>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <span class="font-semibold text-slate-700 block mb-1">What went well</span>
+                        <p class="text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                            {{ $batch->summary?->what_went_well ?: 'No narrative recorded yet.' }}
+                        </p>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-slate-700 block mb-1">Problems faced</span>
+                        <p class="text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                            {{ $batch->summary?->problems_faced ?: 'No issues reported.' }}
+                        </p>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-slate-700 block mb-1">Follow-up actions needed</span>
+                        <p class="text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                            {{ $batch->summary?->follow_up_actions ?: 'No follow-up actions recorded.' }}
+                        </p>
+                    </div>
                 </div>
 
-                <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold transition text-center">
-                    Save Feedback Evaluation
-                </button>
-            </form>
-        </div>
+                @if($batch->summary)
+                <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+                    <span>Submitted by: <strong class="text-slate-600">{{ $batch->summary->submitted_by_name ?? 'Field Trainer' }}</strong></span>
+                    @if($batch->summary->updated_at)
+                        <span>{{ $batch->summary->updated_at->format('d M Y, h:i A') }}</span>
+                    @endif
+                </div>
+                @else
+                <div class="pt-2 border-t border-slate-100 text-[11px] text-slate-400 text-center">
+                    Field training summary narrative pending submission by trainer.
+                </div>
+                @endif
+            </div>
+        @endcan
+
+        <!-- Feedback Aggregates Card -->
+        @can('manageSummary', $batch)
+            <!-- Editable Feedback Form (Field Operators) -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                        Feedback Aggregates Entry
+                    </h3>
+                    <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                        Field Form 1
+                    </span>
+                </div>
+
+                <form action="{{ route('batches.feedback.store', $batch) }}" method="POST" class="space-y-3 text-xs">
+                    @csrf
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Q1 Clarity (1-5)</label>
+                            <input type="number" step="0.01" min="1" max="5" name="q1_clarity_avg" required value="{{ old('q1_clarity_avg', $batch->feedback?->q1_clarity_avg ?? '4.50') }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Q2 Knowledge (1-5)</label>
+                            <input type="number" step="0.01" min="1" max="5" name="q2_knowledge_avg" required value="{{ old('q2_knowledge_avg', $batch->feedback?->q2_knowledge_avg ?? '4.80') }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Q3 Relevance (1-5)</label>
+                            <input type="number" step="0.01" min="1" max="5" name="q3_relevance_avg" required value="{{ old('q3_relevance_avg', $batch->feedback?->q3_relevance_avg ?? '4.60') }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Q4 Handbook (1-5)</label>
+                            <input type="number" step="0.01" min="1" max="5" name="q4_handbook_avg" required value="{{ old('q4_handbook_avg', $batch->feedback?->q4_handbook_avg ?? '4.70') }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Q5 Overall (1-5)</label>
+                            <input type="number" step="0.01" min="1" max="5" name="q5_overall_avg" required value="{{ old('q5_overall_avg', $batch->feedback?->q5_overall_avg ?? '4.75') }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Forms Count</label>
+                            <input type="number" min="1" name="total_forms_analyzed" required value="{{ old('total_forms_analyzed', $batch->feedback?->total_forms_analyzed ?? $batch->present_participants) }}"
+                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Key Qualitative Highlights</label>
+                        <textarea name="qualitative_highlights" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('qualitative_highlights', $batch->feedback?->qualitative_highlights) }}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Improvement Suggestions</label>
+                        <textarea name="improvement_suggestions" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('improvement_suggestions', $batch->feedback?->improvement_suggestions) }}</textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold transition text-center">
+                        Save Feedback Evaluation
+                    </button>
+                </form>
+            </div>
+        @else
+            <!-- Read-Only Feedback View (Admin / PMU / OCAC / Reviewers) -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                        Feedback Evaluation
+                    </h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+                            Read-Only
+                        </span>
+                        @if($batch->feedback)
+                            <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                                ✓ Submitted
+                            </span>
+                        @else
+                            <span class="text-[11px] font-semibold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                                ⏳ Pending Entry
+                            </span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-center text-xs">
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q1. Clarity</span>
+                        <span class="text-base font-extrabold text-blue-600">
+                            {{ $batch->feedback ? number_format($batch->feedback->q1_clarity_avg, 2) : '-' }}
+                        </span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q2. Knowledge</span>
+                        <span class="text-base font-extrabold text-blue-600">
+                            {{ $batch->feedback ? number_format($batch->feedback->q2_knowledge_avg, 2) : '-' }}
+                        </span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q3. Relevance</span>
+                        <span class="text-base font-extrabold text-blue-600">
+                            {{ $batch->feedback ? number_format($batch->feedback->q3_relevance_avg, 2) : '-' }}
+                        </span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q4. Handbook</span>
+                        <span class="text-base font-extrabold text-blue-600">
+                            {{ $batch->feedback ? number_format($batch->feedback->q4_handbook_avg, 2) : '-' }}
+                        </span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Overall (Q5)</span>
+                        <span class="text-base font-extrabold text-emerald-600">
+                            {{ $batch->feedback ? '★ ' . number_format($batch->feedback->q5_overall_avg, 2) : '-' }}
+                        </span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Forms Count</span>
+                        <span class="text-base font-extrabold text-slate-800">
+                            {{ $batch->feedback?->total_forms_analyzed ?? '-' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <span class="font-semibold text-slate-700 block mb-1">Key Qualitative Highlights</span>
+                        <p class="text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                            {{ $batch->feedback?->qualitative_highlights ?: 'No qualitative highlights recorded yet.' }}
+                        </p>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-slate-700 block mb-1">Improvement Suggestions</span>
+                        <p class="text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                            {{ $batch->feedback?->improvement_suggestions ?: 'No suggestions recorded yet.' }}
+                        </p>
+                    </div>
+                </div>
+
+                @if(!$batch->feedback)
+                <div class="pt-2 border-t border-slate-100 text-[11px] text-slate-400 text-center">
+                    Participant feedback aggregate evaluation pending submission by field team.
+                </div>
+                @endif
+            </div>
+        @endcan
 
     </div>
 

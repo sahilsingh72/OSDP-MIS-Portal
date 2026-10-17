@@ -43,9 +43,15 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(\App\Models\Participant::class, \App\Policies\ParticipantPolicy::class);
 
-        // Implicitly grant "super-admin" role all abilities
+        // Implicitly grant "super-admin" role all abilities except specific field workflow actions (e.g. submitting batches, entering field summaries)
         Gate::before(function ($user, $ability) {
-            return $user->hasRole('super-admin') ? true : null;
+            if ($user->hasRole('super-admin')) {
+                if (in_array($ability, ['submit', 'manageSummary'])) {
+                    return null; // Defer to policy
+                }
+                return true;
+            }
+            return null;
         });
     }
 }

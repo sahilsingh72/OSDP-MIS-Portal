@@ -76,8 +76,8 @@ class ParticipantBulkUploadTest extends TestCase
     {
         $admin = User::where('email', 'admin@osdp.gov.in')->first();
         $batch = TrainingBatch::first();
-        $initialRegistered = $batch->batchParticipants()->count();
-        $batch->update(['registered_participants' => $initialRegistered]);
+        $batch->recalculateCounts();
+        $initialRegistered = $batch->registered_participants;
         $initialPresent = $batch->present_participants;
 
         $uid = uniqid();

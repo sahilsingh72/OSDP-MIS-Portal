@@ -67,6 +67,10 @@
                     class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs focus:border-blue-500 focus:outline-none">
             </div>
 
+            @if(request('overdue_only'))
+                <input type="hidden" name="overdue_only" value="1">
+            @endif
+
             <div class="flex items-end space-x-2">
                 <button type="submit" class="flex-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold transition text-center">
                     Filter
@@ -77,6 +81,19 @@
             </div>
         </form>
     </div>
+
+    @if(request('overdue_only'))
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl text-xs text-rose-800">
+        <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 rounded-lg bg-rose-200 text-rose-900 font-bold uppercase text-[10px]">Filter Active</span>
+            <span class="font-medium">Showing batches with evidence submissions overdue beyond the 48-hour SLA deadline.</span>
+        </div>
+        <a href="{{ route('batches.index') }}" class="inline-flex items-center space-x-1 font-semibold text-rose-700 hover:text-rose-900 underline">
+            <span>Clear Filter (Show All)</span>
+            <span>✕</span>
+        </a>
+    </div>
+    @endif
 
     <!-- Batches Table -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
@@ -120,9 +137,9 @@
                         <td class="px-6 py-4">
                             {{ $batch->trainers->pluck('name')->implode(', ') ?: 'None' }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4 whitespace-nowrap" title="{{ $batch->present_participants }} Present / {{ $batch->registered_participants }} Registered">
                             <span class="font-semibold text-slate-900">{{ $batch->present_participants }}</span>
-                            <span class="text-slate-400 text-[11px]">/ {{ $batch->planned_participants }}</span>
+                            <span class="text-slate-400 text-[11px]">/ {{ $batch->registered_participants }}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <x-status-badge :status="$batch->status" />
