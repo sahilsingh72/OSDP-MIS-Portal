@@ -147,6 +147,7 @@
             <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
                 <thead class="bg-slate-50 text-slate-600 uppercase font-semibold">
                     <tr>
+                        <th class="px-6 py-3.5 w-16">S.No</th>
                         <th class="px-6 py-3.5">Participant Details</th>
                         <th class="px-6 py-3.5">Designation</th>
                         <th class="px-6 py-3.5">Office / Gram Panchayat</th>
@@ -158,6 +159,9 @@
                 <tbody class="divide-y divide-slate-200 text-slate-700">
                     @forelse($participants as $p)
                     <tr class="hover:bg-slate-50 transition {{ $p->trashed() ? 'bg-rose-50/20' : '' }}">
+                        <td class="px-6 py-4 text-slate-500 font-medium whitespace-nowrap">
+                            {{ $participants->firstItem() ? ($participants->firstItem() + $loop->index) : $loop->iteration }}
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-2">
                                 <span class="font-bold text-slate-900">{{ $p->name }}</span>
@@ -233,7 +237,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="7" class="px-6 py-12 text-center text-slate-400">
                             @if($status === 'trashed')
                                 No soft-deleted participants found in Trash.
                             @else
