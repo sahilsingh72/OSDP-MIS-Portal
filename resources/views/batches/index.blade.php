@@ -101,6 +101,7 @@
             <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
                 <thead class="bg-slate-50 text-slate-600 uppercase font-semibold">
                     <tr>
+                        <th class="px-6 py-3.5 w-16">S.No</th>
                         <th class="px-6 py-3.5">Batch Code</th>
                         <th class="px-6 py-3.5">Tier</th>
                         <th class="px-6 py-3.5">District / Block</th>
@@ -115,6 +116,9 @@
                 <tbody class="divide-y divide-slate-200 text-slate-700">
                     @forelse($batches as $batch)
                     <tr class="hover:bg-slate-50/80 transition">
+                        <td class="px-6 py-4 text-slate-500 font-medium whitespace-nowrap">
+                            {{ $batches->firstItem() ? ($batches->firstItem() + $loop->index) : $loop->iteration }}
+                        </td>
                         <td class="px-6 py-4 font-bold text-slate-900 whitespace-nowrap">
                             <a href="{{ route('batches.show', $batch) }}" class="text-blue-600 hover:underline">
                                 {{ $batch->batch_code }}
@@ -160,7 +164,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="9" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="10" class="px-6 py-12 text-center text-slate-400">
                             No training batches match the selected criteria.
                         </td>
                     </tr>
