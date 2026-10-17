@@ -23,12 +23,19 @@ class AttendanceController extends Controller
     {
         $this->authorize('view', $batch);
 
+        $batch->recalculateCounts();
+
         $batch->load([
             'tier',
             'district',
             'block',
             'venue',
             'trainers',
+            'batchParticipants' => function ($q) {
+                $q->whereHas('participant', function ($p) {
+                    $p->whereNull('deleted_at');
+                });
+            },
             'batchParticipants.participant',
             'batchParticipants.attendance',
         ]);
@@ -110,21 +117,21 @@ class AttendanceController extends Controller
                     'serial_number' => $nextSerial,
                 ]);
 
+                // Attendance is NOT marked present automatically; it must be recorded manually on Form 2
                 AttendanceRecord::create([
                     'training_batch_id' => $batch->id,
                     'batch_participant_id' => $bp->id,
-                    'morning_present' => true,
-                    'afternoon_present' => true,
-                    'marked_by' => Auth::id(),
+                    'morning_present' => false,
+                    'afternoon_present' => false,
+                    'marked_by' => null,
                 ]);
 
                 // Update registered participant count
-                $batch->increment('registered_participants');
                 $this->recalculateCounts($batch);
             }
         });
 
-        return back()->with('status', 'Participant added and enrolled into batch successfully.');
+        return back()->with('status', 'Participant details added and enrolled into batch successfully. Please mark attendance manually on Form 2 below.');
     }
 
     /**
@@ -174,7 +181,7 @@ class AttendanceController extends Controller
         $this->authorize('update', $batch);
 
         $validated = $request->validate([
-            'attendance' => ['required', 'array'],
+            'attendance' => ['nullable', 'array'],
             'attendance.*.batch_participant_id' => ['required', 'exists:batch_participants,id'],
             'attendance.*.morning_present' => ['nullable'],
             'attendance.*.afternoon_present' => ['nullable'],
@@ -182,22 +189,24 @@ class AttendanceController extends Controller
         ]);
 
         DB::transaction(function () use ($validated, $batch) {
-            foreach ($validated['attendance'] as $entry) {
-                AttendanceRecord::updateOrCreate(
-                    [
-                        'training_batch_id' => $batch->id,
-                        'batch_participant_id' => $entry['batch_participant_id'],
-                    ],
-                    [
-                        'morning_present' => isset($entry['morning_present']),
-                        'afternoon_present' => isset($entry['afternoon_present']),
-                        'remarks' => $entry['remarks'] ?? null,
-                        'marked_by' => Auth::id(),
-                    ]
-                );
+            if (!empty($validated['attendance'])) {
+                foreach ($validated['attendance'] as $entry) {
+                    AttendanceRecord::updateOrCreate(
+                        [
+                            'training_batch_id' => $batch->id,
+                            'batch_participant_id' => $entry['batch_participant_id'],
+                        ],
+                        [
+                            'morning_present' => isset($entry['morning_present']),
+                            'afternoon_present' => isset($entry['afternoon_present']),
+                            'remarks' => $entry['remarks'] ?? null,
+                            'marked_by' => Auth::id(),
+                        ]
+                    );
+                }
             }
 
-            $this->recalculateCounts($batch);
+            $batch->recalculateCounts();
 
             // If batch was scheduled, transition to in_progress or awaiting_evidence
             if ($batch->status === TrainingBatch::STATUS_SCHEDULED) {
@@ -210,25 +219,14 @@ class AttendanceController extends Controller
             ]);
         });
 
-        return back()->with('status', 'Form 2 attendance records saved successfully.');
+        return back()->with('status', 'Attendance records saved successfully.');
     }
 
     /**
      * Recalculate present and registered participant counts.
      */
-    private function recalculateCounts(TrainingBatch $batch): void
+    public function recalculateCounts(TrainingBatch $batch): void
     {
-        $registered = $batch->batchParticipants()->count();
-        // Participant is present if either morning or afternoon was marked present
-        $present = $batch->attendanceRecords()
-            ->where(function ($q) {
-                $q->where('morning_present', true)->orWhere('afternoon_present', true);
-            })
-            ->count();
-
-        $batch->update([
-            'registered_participants' => $registered,
-            'present_participants' => $present,
-        ]);
+        $batch->recalculateCounts();
     }
 }

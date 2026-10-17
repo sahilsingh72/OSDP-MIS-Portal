@@ -231,17 +231,8 @@ class ParticipantImportService
 
             if ($batch) {
                 // Recalculate registered and present counts
-                $registered = $batch->batchParticipants()->count();
-                $present = $batch->attendanceRecords()
-                    ->where(function ($q) {
-                        $q->where('morning_present', true)->orWhere('afternoon_present', true);
-                    })
-                    ->count();
-
-                $batch->update([
-                    'registered_participants' => $registered,
-                    'present_participants' => $present,
-                ]);
+                $batch->recalculateCounts();
+                $registered = $batch->registered_participants;
 
                 AuditLog::record('participants_bulk_imported', $batch, null, [
                     'imported' => $imported,

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => "Form 2 Attendance - {$batch->batch_code}", 'headerTitle' => 'Participant Attendance (Form 2)'])
+@extends('layouts.app', ['title' => "Attendance - {$batch->batch_code}", 'headerTitle' => 'Participant Attendance'])
 
 @section('content')
 <div class="space-y-6">
@@ -7,7 +7,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <div class="flex items-center space-x-2">
-                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Form 2: Participant Attendance Register</h1>
+                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Participant Attendance Register</h1>
                 <span class="text-xs px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-semibold">{{ $batch->batch_code }}</span>
             </div>
             <p class="text-xs text-slate-500 mt-0.5">
@@ -26,7 +26,7 @@
         <div class="border-b border-slate-200 pb-3 flex items-center justify-between">
             <div>
                 <span class="text-xs font-bold text-orange-600 uppercase tracking-wider block">Odisha State Data Policy 2.0</span>
-                <span class="text-sm font-extrabold text-slate-900">ATTENDANCE SHEET (FORM 2 - SIDES 1 & 2)</span>
+                <span class="text-sm font-extrabold text-slate-900">ATTENDANCE SHEET (FORM - SIDES 1 & 2)</span>
             </div>
             <div class="text-right">
                 <span class="text-xs font-bold text-slate-700">Tier: {{ $batch->tier?->name }}</span>
@@ -236,20 +236,20 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 text-slate-700">
-                    @forelse($batch->batchParticipants as $idx => $bp)
+                    @php
+                        $activeBatchParticipants = $batch->batchParticipants->filter(function ($bp) {
+                            return $bp->participant && !$bp->participant->trashed();
+                        })->values();
+                    @endphp
+                    @forelse($activeBatchParticipants as $idx => $bp)
                     @php $att = $bp->attendance; @endphp
                     <tr class="hover:bg-slate-50/80 transition">
                         <td class="px-5 py-3 text-center font-bold text-slate-500">
-                            {{ $bp->serial_number ?? ($idx + 1) }}
+                            {{ $idx + 1 }}
                             <input type="hidden" name="attendance[{{ $idx }}][batch_participant_id]" value="{{ $bp->id }}">
                         </td>
                         <td class="px-5 py-3 font-bold text-slate-900">
-                            <div class="flex items-center space-x-1.5">
-                                <span>{{ $bp->participant?->name ?? 'Participant Record' }}</span>
-                                @if($bp->participant?->trashed())
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-100 text-rose-700">Archived</span>
-                                @endif
-                            </div>
+                            {{ $bp->participant?->name ?? 'Participant Record' }}
                         </td>
                         <td class="px-5 py-3 text-slate-600">
                             {{ $bp->participant?->designation ?? 'N/A' }}
@@ -284,7 +284,7 @@
                     @empty
                     <tr>
                         <td colspan="7" class="px-6 py-12 text-center text-slate-400">
-                            No participants enrolled yet. Use the "Add New Participant" section above to transcribe the paper sheet.
+                            No active participants enrolled yet. Use the "Add New Participant" section above to transcribe the paper sheet.
                         </td>
                     </tr>
                     @endforelse
@@ -292,13 +292,13 @@
             </table>
         </div>
 
-        @if($batch->batchParticipants->isNotEmpty())
+        @if($activeBatchParticipants->isNotEmpty())
         <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
             <span class="text-xs text-slate-500 font-medium">
                 Note: Updating attendance recalculates total registered and present counts immediately.
             </span>
             <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 transition">
-                Save & Update Form 2 Register
+                Save & Update Attendance
             </button>
         </div>
         @endif

@@ -172,8 +172,11 @@ class TrainingBatchController extends Controller
             $distCode = District::where('id', $validated['district_id'])->value('code') ?? 'DST';
         }
 
-        $seq = TrainingBatch::count() + 1;
-        $batchCode = sprintf('OSDP-%s-%s-%04d', $tierCode, $distCode, $seq);
+        $seq = TrainingBatch::withTrashed()->count() + 1;
+        do {
+            $batchCode = sprintf('OSDP-%s-%s-%04d', $tierCode, $distCode, $seq);
+            $seq++;
+        } while (TrainingBatch::withTrashed()->where('batch_code', $batchCode)->exists());
 
         // Calculate 48-hour submission deadline from end of scheduled session
         $deadlineHours = (int)SystemSetting::get('submission_deadline_hours', 48);

@@ -8,10 +8,12 @@ use App\Models\TrainingModule;
 use App\Models\TrainingTier;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class TrainingBatchWorkflowTest extends TestCase
 {
+    use DatabaseTransactions;
     /**
      * Test authorized user can schedule a new batch.
      */
@@ -126,5 +128,142 @@ class TrainingBatchWorkflowTest extends TestCase
         $this->assertEquals(35, $batch->planned_participants);
         $this->assertTrue($batch->trainers->contains($trainer->id));
         $this->assertEqualsCanonicalizing($selectedModules, $batch->modules->pluck('id')->toArray());
+    }
+
+    /**
+     * Test Super Admin and PMU cannot submit batch for review and do not see the submit button.
+     */
+    public function test_super_admin_and_pmu_cannot_submit_batch_for_review_and_do_not_see_button(): void
+    {
+        $admin = User::where('email', 'admin@osdp.gov.in')->first();
+        $pmu = User::where('email', 'pmu@osdp.gov.in')->first();
+        $batch = TrainingBatch::first();
+
+        // Neither super admin nor PMU have policy permission to submit
+        $this->assertFalse($admin->can('submit', $batch));
+        $this->assertFalse($pmu->can('submit', $batch));
+
+        // Attempting to post to submit route directly returns 403 Forbidden
+        $adminSubmit = $this->actingAs($admin)->post("/batches/{$batch->id}/submit");
+        $adminSubmit->assertStatus(403);
+
+        $pmuSubmit = $this->actingAs($pmu)->post("/batches/{$batch->id}/submit");
+        $pmuSubmit->assertStatus(403);
+
+        // Neither sees "Submit for Review" on batch overview page
+        $adminPage = $this->actingAs($admin)->get("/batches/{$batch->id}");
+        $adminPage->assertDontSee('Submit for Review');
+
+        $pmuPage = $this->actingAs($pmu)->get("/batches/{$batch->id}");
+        $pmuPage->assertDontSee('Submit for Review');
+
+        // Neither sees "Submit for Verification" on evidence management page
+        $adminEvidencePage = $this->actingAs($admin)->get("/batches/{$batch->id}/evidence");
+        $adminEvidencePage->assertDontSee('Submit for Verification');
+
+        $pmuEvidencePage = $this->actingAs($pmu)->get("/batches/{$batch->id}/evidence");
+        $pmuEvidencePage->assertDontSee('Submit for Verification');
+    }
+
+    /**
+     * Test Super Admin, PMU, and OCAC see Summary and Feedback in Read-Only mode and cannot post saves.
+     */
+    public function test_super_admin_pmu_ocac_see_summary_and_feedback_in_read_only_mode_and_cannot_save(): void
+    {
+        $admin = User::where('email', 'admin@osdp.gov.in')->first();
+        $pmu = User::where('email', 'pmu@osdp.gov.in')->first();
+        $ocac = User::where('email', 'ocac@osdp.gov.in')->first();
+        $batch = TrainingBatch::first();
+
+        foreach ([$admin, $pmu, $ocac] as $user) {
+            // Cannot manage/enter summary according to policy
+            $this->assertFalse($user->can('manageSummary', $batch));
+
+            // View evidence page - sees Read-Only mode, neither Save Summary nor Save Feedback Evaluation button
+            $response = $this->actingAs($user)->get("/batches/{$batch->id}/evidence");
+            $response->assertOk();
+            $response->assertSee('Read-Only');
+            $response->assertDontSee('Save Summary');
+            $response->assertDontSee('Save Feedback Evaluation');
+
+            // Attempting to post to summary or feedback endpoints is denied with 403 Forbidden
+            $summaryPost = $this->actingAs($user)->post("/batches/{$batch->id}/summary", [
+                'registered_count' => 10,
+                'present_count' => 10,
+                'feedback_forms_received' => 10,
+            ]);
+            $summaryPost->assertStatus(403);
+
+            $feedbackPost = $this->actingAs($user)->post("/batches/{$batch->id}/feedback", [
+                'q1_clarity_avg' => 4.5,
+                'q2_knowledge_avg' => 4.5,
+                'q3_relevance_avg' => 4.5,
+                'q4_handbook_avg' => 4.5,
+                'q5_overall_avg' => 4.5,
+                'total_forms_analyzed' => 10,
+            ]);
+            $feedbackPost->assertStatus(403);
+        }
+    }
+
+    /**
+     * Test assigned Field Trainer can view edit forms and successfully save summary and feedback.
+     */
+    public function test_assigned_field_trainer_can_view_edit_forms_and_save_summary_and_feedback(): void
+    {
+        $batch = TrainingBatch::find(9);
+        $trainer = User::where('email', 'trainer.mohanty@osdp.gov.in')->first();
+
+        $this->assertTrue($trainer->can('manageSummary', $batch));
+
+        // Assigned trainer sees the entry forms and save buttons
+        $response = $this->actingAs($trainer)->get("/batches/{$batch->id}/evidence");
+        $response->assertOk();
+        $response->assertSee('Save Summary');
+        $response->assertSee('Save Feedback Evaluation');
+
+        // Trainer can submit training summary
+        $summaryPost = $this->actingAs($trainer)->post("/batches/{$batch->id}/summary", [
+            'registered_count' => 5,
+            'present_count' => 1,
+            'feedback_forms_received' => 1,
+            'actual_start_time' => '09:30',
+            'actual_end_time' => '17:00',
+            'what_went_well' => 'Great engagement by participants',
+            'problems_faced' => 'None',
+            'follow_up_actions' => 'None',
+        ]);
+        $summaryPost->assertRedirect();
+
+        $batch->refresh();
+        $this->assertNotNull($batch->summary);
+        $this->assertEquals('Great engagement by participants', $batch->summary->what_went_well);
+
+        // Trainer can submit feedback evaluation
+        $feedbackPost = $this->actingAs($trainer)->post("/batches/{$batch->id}/feedback", [
+            'q1_clarity_avg' => 4.80,
+            'q2_knowledge_avg' => 4.90,
+            'q3_relevance_avg' => 4.70,
+            'q4_handbook_avg' => 4.60,
+            'q5_overall_avg' => 4.85,
+            'total_forms_analyzed' => 1,
+            'qualitative_highlights' => 'Very informative',
+            'improvement_suggestions' => 'More hands-on lab time',
+        ]);
+        $feedbackPost->assertRedirect();
+
+        $batch->refresh();
+        $this->assertNotNull($batch->feedback);
+        $this->assertEquals(4.85, (float)$batch->feedback->q5_overall_avg);
+
+        // After submission, Super Admin viewing evidence page now sees submitted values in Read-Only mode
+        $admin = User::where('email', 'admin@osdp.gov.in')->first();
+        $adminResponse = $this->actingAs($admin)->get("/batches/{$batch->id}/evidence");
+        $adminResponse->assertOk();
+        $adminResponse->assertSee('Submitted');
+        $adminResponse->assertSee('Great engagement by participants');
+        $adminResponse->assertSee('Very informative');
+        $adminResponse->assertDontSee('Save Summary');
+        $adminResponse->assertDontSee('Save Feedback Evaluation');
     }
 }

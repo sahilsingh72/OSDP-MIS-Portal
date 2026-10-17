@@ -4,56 +4,78 @@
 <div class="space-y-6">
 
     <!-- Batch Banner Header -->
-    <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-            <div class="flex items-center space-x-3 mb-2">
-                <span class="text-xl font-extrabold text-slate-900 tracking-tight font-mono">{{ $batch->batch_code }}</span>
-                <x-status-badge :status="$batch->status" />
-                @if($batch->is_overdue)
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-700">
-                        ⚠️ OVERDUE SUBMISSION (>48h)
-                    </span>
-                @endif
-            </div>
-            <div class="text-xs text-slate-500 space-x-4">
-                <span>Tier: <strong class="text-slate-700">{{ $batch->tier?->name }}</strong></span>
-                <span>District: <strong class="text-slate-700">{{ $batch->district?->name ?? 'State Level' }}</strong></span>
-                <span>Block: <strong class="text-slate-700">{{ $batch->block?->name ?? 'N/A' }}</strong></span>
-                <span>Date: <strong class="text-slate-700">{{ $batch->scheduled_date->format('d M Y') }}</strong></span>
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <!-- Top Details Strip -->
+        <div class="p-6">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <h1 class="text-2xl font-black text-slate-900 tracking-tight font-mono whitespace-nowrap">
+                            {{ $batch->batch_code }}
+                        </h1>
+                        <x-status-badge :status="$batch->status" />
+                        @if($batch->is_overdue)
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 whitespace-nowrap">
+                                ⚠️ OVERDUE SUBMISSION (>48h)
+                            </span>
+                        @endif
+                    </div>
+                    <!-- Quick Meta Strip -->
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-2.5 text-xs text-slate-500">
+                        <span>Tier: <strong class="text-slate-800">{{ $batch->tier?->name ?? 'N/A' }}</strong></span>
+                        <span class="text-slate-300">•</span>
+                        <span>District: <strong class="text-slate-800">{{ $batch->district?->name ?? 'State Level' }}</strong></span>
+                        @if($batch->block)
+                            <span class="text-slate-300">•</span>
+                            <span>Block: <strong class="text-slate-800">{{ $batch->block->name }}</strong></span>
+                        @endif
+                        <span class="text-slate-300">•</span>
+                        <span>Date: <strong class="text-slate-800">{{ $batch->scheduled_date->format('d M Y') }}</strong></span>
+                        <span class="text-slate-300">•</span>
+                        <span>Roster: <strong class="text-emerald-700 font-bold">{{ $batch->present_participants }} Present / {{ $batch->registered_participants }} Registered</strong></span>
+                    </div>
+                </div>
+
+                <!-- Edit Action -->
+                @can('update', $batch)
+                <div class="self-start lg:self-center">
+                    <a href="{{ route('batches.edit', $batch) }}" class="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 transition">
+                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        <span>Edit Batch Details</span>
+                    </a>
+                </div>
+                @endcan
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex items-center space-x-2 self-start md:self-auto flex-wrap gap-2">
-            @can('update', $batch)
-            <a href="{{ route('batches.attendance.show', $batch) }}" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-sm transition flex items-center space-x-1.5">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                <span>Form 2 Attendance</span>
-            </a>
-            @endcan
-
-            <a href="{{ route('batches.evidence.index', $batch) }}" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-sm transition flex items-center space-x-1.5">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                <span>Upload Evidence</span>
-            </a>
-
-            @if($evidenceStatus['is_complete'] && in_array($batch->status, ['scheduled', 'in_progress', 'awaiting_evidence', 'correction_required']))
-                @can('submit', $batch)
-                <form action="{{ route('batches.submit', $batch) }}" method="POST" class="inline">
-                    @csrf
-                    <button type="submit" onclick="return confirm('Confirm submission of batch evidence pack for verification?')"
-                        class="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs shadow-sm transition">
-                        Submit for Review →
-                    </button>
-                </form>
+        <!-- Workflow Action Toolbar -->
+        <div class="bg-slate-50/80 px-6 py-3.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Workflow & Field Operations</span>
+            <div class="flex flex-wrap items-center gap-2.5">
+                @can('update', $batch)
+                <a href="{{ route('batches.attendance.show', $batch) }}" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-sm shadow-emerald-600/20 transition whitespace-nowrap">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    <span>Participants & Attendance</span>
+                </a>
                 @endcan
-            @endif
 
-            @can('update', $batch)
-            <a href="{{ route('batches.edit', $batch) }}" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition">
-                Edit
-            </a>
-            @endcan
+                <a href="{{ route('batches.evidence.index', $batch) }}" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-sm shadow-indigo-600/20 transition whitespace-nowrap">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                    <span>Upload Evidence</span>
+                </a>
+
+                @if(!auth()->user()->hasRole(['super-admin', 'pmu', 'ocac']) && $evidenceStatus['is_complete'] && in_array($batch->status, ['scheduled', 'in_progress', 'awaiting_evidence', 'correction_required']))
+                    @can('submit', $batch)
+                    <form action="{{ route('batches.submit', $batch) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" onclick="return confirm('Confirm submission of batch evidence pack for verification?')"
+                            class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-sm shadow-orange-500/20 transition whitespace-nowrap">
+                            <span>Submit for Review →</span>
+                        </button>
+                    </form>
+                    @endcan
+                @endif
+            </div>
         </div>
     </div>
 
@@ -76,12 +98,12 @@
         <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             @php
                 $checklistConfig = [
-                    'attendance_sheet' => ['name' => '1. Attendance Sheet (Form 2)', 'desc' => 'Signed both sides (2 images or 1 PDF)'],
+                    'attendance_sheet' => ['name' => '1. Attendance Sheet', 'desc' => 'Signed both sides (2 images or 1 PDF)'],
                     'photo_1' => ['name' => '2. Photo 1 (Group with Banner)', 'desc' => 'Full room view with 8x5 banner'],
                     'photo_2' => ['name' => '3. Photo 2 (Trainer Teaching)', 'desc' => 'Trainer instructing in progress'],
                     'video' => ['name' => '4. Video Clip (MP4)', 'desc' => '~1 min short clip, landscape mode'],
-                    'feedback_forms' => ['name' => '5. Feedback Forms (Form 1)', 'desc' => 'Merged single PDF of all forms'],
-                    'batch_completion_report' => ['name' => '6. Form 3 Completion Report', 'desc' => 'Form 3 PDF & Training summary'],
+                    'feedback_forms' => ['name' => '5. Feedback Forms', 'desc' => 'Merged single PDF of all forms'],
+                    'batch_completion_report' => ['name' => '6. Completion Report', 'desc' => 'Form 3 PDF & Training summary'],
                 ];
             @endphp
 
@@ -161,11 +183,11 @@
                 </div>
             </div>
 
-            <!-- Form 3 Training Summary (Part C) -->
+            <!-- Training Summary-->
             @if($batch->summary)
             <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
                 <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center justify-between">
-                    <span>Form 3 Training Summary (Part C)</span>
+                    <span>Training Summary</span>
                     <span class="text-xs text-slate-400 font-normal">Submitted by: {{ $batch->summary->submitted_by_name ?? 'Trainer' }}</span>
                 </h3>
 
@@ -194,11 +216,11 @@
             </div>
             @endif
 
-            <!-- Form 1 Participant Feedback Scorecard -->
+            <!-- Participant Feedback Scorecard -->
             @if($batch->feedback)
             <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
                 <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-200 flex items-center justify-between">
-                    <span>Form 1 Participant Feedback Evaluation</span>
+                    <span>Participant Feedback Evaluation</span>
                     <span class="text-xs text-slate-400 font-normal">{{ $batch->feedback->total_forms_analyzed }} Forms Analyzed</span>
                 </h3>
 

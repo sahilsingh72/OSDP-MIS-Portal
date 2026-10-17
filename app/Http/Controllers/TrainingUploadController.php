@@ -195,7 +195,7 @@ class TrainingUploadController extends Controller
      */
     public function saveSummary(Request $request, TrainingBatch $batch): RedirectResponse
     {
-        $this->authorize('update', $batch);
+        $this->authorize('manageSummary', $batch);
 
         $validated = $request->validate([
             'registered_count' => ['required', 'integer', 'min:0'],
@@ -242,7 +242,7 @@ class TrainingUploadController extends Controller
      */
     public function saveFeedback(Request $request, TrainingBatch $batch): RedirectResponse
     {
-        $this->authorize('update', $batch);
+        $this->authorize('manageSummary', $batch);
 
         $validated = $request->validate([
             'q1_clarity_avg' => ['required', 'numeric', 'min:1', 'max:5'],

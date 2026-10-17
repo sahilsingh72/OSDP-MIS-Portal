@@ -224,4 +224,31 @@ class TrainingBatch extends Model
 
         return $query->whereRaw('1 = 0'); // Deny by default
     }
+
+    /**
+     * Recalculate registered and present counts excluding soft-deleted participants.
+     */
+    public function recalculateCounts(): void
+    {
+        $registered = $this->batchParticipants()
+            ->whereHas('participant', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->count();
+
+        $present = $this->attendanceRecords()
+            ->whereHas('batchParticipant.participant', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->where(function ($q) {
+                $q->where('morning_present', true)->orWhere('afternoon_present', true);
+            })
+            ->count();
+
+        $this->update([
+            'registered_participants' => $registered,
+            'present_participants' => $present,
+        ]);
+    }
 }
+
