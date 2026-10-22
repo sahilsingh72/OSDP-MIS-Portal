@@ -155,6 +155,123 @@ class TrainingUploadController extends Controller
     }
 
     /**
+     * Update an existing evidence upload (replace file, update evidence type, or edit remarks).
+     */
+    public function update(Request $request, TrainingUpload $upload): RedirectResponse
+    {
+        $this->authorize('update', $upload);
+
+        $batch = $upload->batch;
+
+        $validated = $request->validate([
+            'evidence_type' => [
+                'required',
+                'in:attendance_sheet,photo_1,photo_2,video,feedback_forms,batch_completion_report',
+            ],
+            'file' => ['nullable', 'file'],
+            'remarks' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $newType = $validated['evidence_type'];
+        $oldAttributes = $upload->only(['evidence_type', 'original_filename', 'file_size_bytes', 'remarks', 'version']);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $originalName = $file->getClientOriginalName();
+            $mimeType = $file->getMimeType();
+            $fileSize = $file->getSize();
+
+            // Strict MIME type & size verification by type
+            $maxPhotoBytes = (int)SystemSetting::get('max_photo_size_mb', 10) * 1024 * 1024;
+            $maxVideoBytes = (int)SystemSetting::get('max_video_size_mb', 100) * 1024 * 1024;
+            $maxPdfBytes = (int)SystemSetting::get('max_pdf_size_mb', 25) * 1024 * 1024;
+
+            if (in_array($newType, ['photo_1', 'photo_2'])) {
+                if (!in_array($mimeType, ['image/jpeg', 'image/png', 'image/jpg'])) {
+                    return back()->withErrors(['file' => 'Photographs must be valid JPEG or PNG images.'])->withInput();
+                }
+                if ($fileSize > $maxPhotoBytes) {
+                    return back()->withErrors(['file' => "Photo size exceeds the maximum limit of " . SystemSetting::get('max_photo_size_mb', 10) . " MB."])->withInput();
+                }
+            } elseif ($newType === 'video') {
+                if (!in_array($mimeType, ['video/mp4', 'video/quicktime', 'video/x-msvideo'])) {
+                    return back()->withErrors(['file' => 'Video recording must be a valid MP4 video clip.'])->withInput();
+                }
+                if ($fileSize > $maxVideoBytes) {
+                    return back()->withErrors(['file' => "Video size exceeds the maximum limit of " . SystemSetting::get('max_video_size_mb', 100) . " MB."])->withInput();
+                }
+            } else {
+                if (!in_array($mimeType, ['application/pdf', 'image/jpeg', 'image/png'])) {
+                    return back()->withErrors(['file' => 'Document must be a valid PDF file (or scanned image for attendance sheet).'])->withInput();
+                }
+                if ($fileSize > $maxPdfBytes) {
+                    return back()->withErrors(['file' => "Document size exceeds the maximum limit of " . SystemSetting::get('max_pdf_size_mb', 25) . " MB."])->withInput();
+                }
+            }
+
+            // Compute SHA-256 integrity hash
+            $fileHash = hash_file('sha256', $file->getRealPath());
+
+            // Generate randomized storage path
+            $extension = $file->getClientOriginalExtension() ?: 'bin';
+            $storageDir = 'batches/' . $batch->batch_code;
+            $filename = Str::uuid()->toString() . '.' . $extension;
+            $storagePath = $storageDir . '/' . $filename;
+
+            // Store new file onto private disk
+            Storage::disk('evidence')->putFileAs($storageDir, $file, $filename);
+
+            // Clean up old file if exists
+            if ($upload->file_path && Storage::disk('evidence')->exists($upload->file_path)) {
+                Storage::disk('evidence')->delete($upload->file_path);
+            }
+
+            // If switching evidence type to another type, deactivate any existing upload of that target type
+            if ($newType !== $upload->evidence_type) {
+                TrainingUpload::where('training_batch_id', $batch->id)
+                    ->where('evidence_type', $newType)
+                    ->where('id', '!=', $upload->id)
+                    ->update(['is_valid' => false]);
+            }
+
+            $upload->update([
+                'evidence_type' => $newType,
+                'original_filename' => $originalName,
+                'file_path' => $storagePath,
+                'mime_type' => $mimeType,
+                'file_size_bytes' => $fileSize,
+                'file_hash' => $fileHash,
+                'version' => $upload->version + 1,
+                'remarks' => $validated['remarks'] ?? null,
+                'is_valid' => true,
+            ]);
+        } else {
+            // If switching evidence type without new file, deactivate any conflicting upload of that target type
+            if ($newType !== $upload->evidence_type) {
+                TrainingUpload::where('training_batch_id', $batch->id)
+                    ->where('evidence_type', $newType)
+                    ->where('id', '!=', $upload->id)
+                    ->update(['is_valid' => false]);
+            }
+
+            $upload->update([
+                'evidence_type' => $newType,
+                'remarks' => $validated['remarks'] ?? null,
+            ]);
+        }
+
+        AuditLog::record('evidence_updated', $upload, $oldAttributes, [
+            'batch_id' => $batch->id,
+            'evidence_type' => $upload->evidence_type,
+            'file_name' => $upload->original_filename,
+            'version' => $upload->version,
+            'file_replaced' => $request->hasFile('file'),
+        ]);
+
+        return back()->with('status', 'Evidence item updated successfully!');
+    }
+
+    /**
      * Securely download or stream private evidence file.
      */
     public function download(TrainingUpload $upload): StreamedResponse|RedirectResponse

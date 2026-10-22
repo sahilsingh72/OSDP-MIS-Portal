@@ -87,6 +87,7 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     // Evidence Upload Center & Private File Streaming
     Route::get('/batches/{batch}/evidence', [TrainingUploadController::class, 'index'])->name('batches.evidence.index');
     Route::post('/batches/{batch}/evidence', [TrainingUploadController::class, 'store'])->name('batches.evidence.store');
+    Route::put('/evidence/{upload}', [TrainingUploadController::class, 'update'])->name('evidence.update');
     Route::delete('/evidence/{upload}', [TrainingUploadController::class, 'destroy'])->name('evidence.destroy');
     Route::get('/evidence/{upload}/download', [TrainingUploadController::class, 'download'])->name('evidence.download');
 
