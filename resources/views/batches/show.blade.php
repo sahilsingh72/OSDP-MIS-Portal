@@ -1,7 +1,28 @@
 @extends('layouts.app', ['title' => "Batch {$batch->batch_code}", 'headerTitle' => 'Batch Overview'])
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-6" x-data="{
+    editModalOpen: false,
+    editForm: {
+        id: '',
+        evidence_type: '',
+        original_filename: '',
+        formatted_size: '',
+        remarks: '',
+        actionUrl: ''
+    },
+    openEdit(upload, actionUrl) {
+        this.editForm = {
+            id: upload.id,
+            evidence_type: upload.evidence_type,
+            original_filename: upload.original_filename || '',
+            formatted_size: upload.formatted_size || '',
+            remarks: upload.remarks || '',
+            actionUrl: actionUrl
+        };
+        this.editModalOpen = true;
+    }
+}">
 
     <!-- Batch Banner Header -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
@@ -108,22 +129,80 @@
             @endphp
 
             @foreach($checklistConfig as $key => $item)
-                @php $hasUploaded = $evidenceStatus['items'][$key] ?? false; @endphp
-                <div class="p-3.5 rounded-xl border {{ $hasUploaded ? 'bg-emerald-50/40 border-emerald-200' : 'bg-slate-50 border-slate-200' }} flex items-start space-x-3 transition">
-                    <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold {{ $hasUploaded ? 'bg-emerald-500 text-white' : 'bg-slate-300 text-slate-600' }}">
-                        {{ $hasUploaded ? '✓' : '✗' }}
-                    </span>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold {{ $hasUploaded ? 'text-emerald-900' : 'text-slate-800' }} truncate">{{ $item['name'] }}</p>
-                        <p class="text-[11px] text-slate-500 truncate">{{ $item['desc'] }}</p>
+                @php
+                    $primaryUpload = $batch->uploads->where('evidence_type', $key)->first();
+                    $hasUploaded = ($evidenceStatus['items'][$key] ?? false) || ($primaryUpload !== null);
+
+                    if ($primaryUpload) {
+                        $targetUrl = route('evidence.download', $primaryUpload);
+                        $targetTitle = "Open {$primaryUpload->original_filename} in a new tab";
+                    } elseif ($key === 'batch_completion_report' && $batch->summary) {
+                        $targetUrl = route('batches.evidence.index', $batch) . '#training-summary';
+                        $targetTitle = "Open Training Summary in a new tab";
+                    } else {
+                        $targetUrl = route('batches.evidence.index', $batch);
+                        $targetTitle = "Open Evidence Upload Center to attach {$item['name']} in a new tab";
+                    }
+                @endphp
+                <div class="group p-3.5 rounded-xl border {{ $hasUploaded ? 'bg-emerald-50/40 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-md' : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:bg-slate-100/70 hover:shadow-sm' }} flex items-start justify-between space-x-3 transition-all duration-150 hover:-translate-y-0.5">
+                    <a href="{{ $targetUrl }}" target="_blank" rel="noopener noreferrer" title="{{ $targetTitle }}"
+                       class="flex items-start space-x-3 min-w-0 flex-1">
+                        <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold {{ $hasUploaded ? 'bg-emerald-500 text-white shadow-2xs' : 'bg-slate-300 text-slate-600' }}">
+                            {{ $hasUploaded ? '✓' : '✗' }}
+                        </span>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold {{ $hasUploaded ? 'text-emerald-900 group-hover:text-emerald-950' : 'text-slate-800 group-hover:text-slate-900' }} truncate">
+                                {{ $item['name'] }}
+                            </p>
+                            <p class="text-[11px] text-slate-500 truncate">{{ $item['desc'] }}</p>
+                            @if($primaryUpload)
+                                <p class="text-[10px] text-emerald-700/80 font-medium truncate mt-0.5 flex items-center space-x-1">
+                                    <span class="truncate">{{ $primaryUpload->original_filename }}</span>
+                                    @if($primaryUpload->formatted_size)
+                                        <span class="text-emerald-600/60 font-mono">&bull; {{ $primaryUpload->formatted_size }}</span>
+                                    @endif
+                                </p>
+                            @elseif($key === 'batch_completion_report' && $batch->summary)
+                                <p class="text-[10px] text-emerald-700 font-medium mt-0.5">Form 3 Summary recorded</p>
+                            @else
+                                <p class="text-[10px] text-slate-400 font-medium mt-0.5 group-hover:text-slate-600 transition">Click to upload ↗</p>
+                            @endif
+                        </div>
+                    </a>
+
+                    <div class="shrink-0 flex items-center space-x-1.5 mt-0.5">
+                        @if($primaryUpload)
+                            @can('update', $primaryUpload)
+                            <button type="button"
+                                @click="openEdit({{ json_encode($primaryUpload) }}, '{{ route('evidence.update', $primaryUpload) }}')"
+                                class="px-2 py-1 rounded-lg bg-white hover:bg-amber-50 text-slate-600 hover:text-amber-700 font-semibold text-[11px] border border-slate-200 hover:border-amber-300 transition flex items-center space-x-1 shadow-2xs"
+                                title="Edit / Replace Evidence">
+                                <svg class="w-3 h-3 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                <span>Edit</span>
+                            </button>
+                            @endcan
+                        @endif
+
+                        <a href="{{ $targetUrl }}" target="_blank" rel="noopener noreferrer" title="{{ $targetTitle }}"
+                           class="p-1 rounded-lg hover:bg-white/60 {{ $hasUploaded ? 'text-emerald-600/70 hover:text-emerald-800' : 'text-slate-400 hover:text-slate-600' }} transition">
+                            <svg class="w-4 h-4 transform hover:translate-x-0.5 hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
                     </div>
                 </div>
             @endforeach
         </div>
 
         <div class="mt-4 text-center sm:text-right">
-            <a href="{{ route('batches.evidence.index', $batch) }}" class="text-xs font-semibold text-blue-600 hover:underline">
-                Manage Evidence Files in Upload Center →
+            <a href="{{ route('batches.evidence.index', $batch) }}" target="_blank" rel="noopener noreferrer"
+               class="text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline inline-flex items-center space-x-1 transition">
+                <span>Manage Evidence Files in Upload Center</span>
+                <svg class="w-3.5 h-3.5 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
             </a>
         </div>
     </div>
@@ -332,6 +411,100 @@
 
         </div>
 
+    </div>
+
+    <!-- Edit Evidence Modal -->
+    <div x-show="editModalOpen"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
+         style="display: none;"
+         @keydown.escape.window="editModalOpen = false">
+
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-200 relative"
+             @click.away="editModalOpen = false">
+
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900">Edit Evidence Item</h3>
+                        <p class="text-[11px] text-slate-500">Update evidence type, replace file, or amend remarks</p>
+                    </div>
+                </div>
+                <button type="button" @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <form :action="editForm.actionUrl" method="POST" enctype="multipart/form-data" class="mt-4 space-y-4 text-xs">
+                @csrf
+                @method('PUT')
+
+                <!-- Current file preview -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Current Attached File</span>
+                        <span class="font-mono text-xs font-semibold text-slate-800 truncate block max-w-xs" x-text="editForm.original_filename"></span>
+                    </div>
+                    <span class="text-[11px] font-semibold text-slate-500 font-mono" x-text="editForm.formatted_size"></span>
+                </div>
+
+                <!-- Evidence Type Selection -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Evidence Item Type <span class="text-rose-500">*</span></label>
+                    <select name="evidence_type" x-model="editForm.evidence_type" required
+                        class="w-full rounded-xl border border-slate-300 p-2.5 text-xs focus:border-blue-500 focus:outline-none">
+                        <option value="attendance_sheet">1. Attendance Sheet (Form - Both Sides)</option>
+                        <option value="photo_1">2. Photograph 1 (Full Group with 8x5 Banner)</option>
+                        <option value="photo_2">3. Photograph 2 (Trainer Teaching)</option>
+                        <option value="video">4. Short Video Clip (MP4, ~1 min, landscape)</option>
+                        <option value="feedback_forms">5. Feedback Forms (Merged PDF)</option>
+                        <option value="batch_completion_report">6. Batch Completion Report (PDF)</option>
+                    </select>
+                </div>
+
+                <!-- Replace File (Optional) -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">
+                        Replace File <span class="text-slate-400 font-normal">(Optional — leave blank to keep current file)</span>
+                    </label>
+                    <input type="file" name="file"
+                        class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <p class="text-[11px] text-slate-400 mt-1">
+                        Allowed file sizes: Photos (≤ {{ \App\Models\SystemSetting::get('max_photo_size_mb', 10) }} MB), Video (≤ {{ \App\Models\SystemSetting::get('max_video_size_mb', 100) }} MB), PDFs (≤ {{ \App\Models\SystemSetting::get('max_pdf_size_mb', 25) }} MB).
+                    </p>
+                </div>
+
+                <!-- Remarks -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Remarks / Notes</label>
+                    <textarea name="remarks" x-model="editForm.remarks" rows="2" placeholder="Optional remarks on this evidence item..."
+                        class="w-full rounded-xl border border-slate-300 p-2.5 text-xs focus:border-blue-500 focus:outline-none"></textarea>
+                </div>
+
+                <!-- Modal Actions -->
+                <div class="flex items-center justify-end space-x-2 pt-3 border-t border-slate-200">
+                    <button type="button" @click="editModalOpen = false"
+                        class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold text-xs hover:bg-slate-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-600/20 transition flex items-center space-x-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>Save Changes</span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
 </div>

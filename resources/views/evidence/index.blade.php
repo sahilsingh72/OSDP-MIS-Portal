@@ -1,7 +1,28 @@
 @extends('layouts.app', ['title' => "Evidence Upload Center - {$batch->batch_code}", 'headerTitle' => 'Evidence Management'])
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-6" x-data="{
+    editModalOpen: false,
+    editForm: {
+        id: '',
+        evidence_type: '',
+        original_filename: '',
+        formatted_size: '',
+        remarks: '',
+        actionUrl: ''
+    },
+    openEdit(upload, actionUrl) {
+        this.editForm = {
+            id: upload.id,
+            evidence_type: upload.evidence_type,
+            original_filename: upload.original_filename || '',
+            formatted_size: upload.formatted_size || '',
+            remarks: upload.remarks || '',
+            actionUrl: actionUrl
+        };
+        this.editModalOpen = true;
+    }
+}">
 
     <!-- Top Header & SLA Tracker -->
     <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -68,7 +89,7 @@
 
             <div class="flex items-end">
                 <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition shadow-md shadow-blue-500/20 text-center">
-                    Upload & Hash Verify File
+                    Upload File
                 </button>
             </div>
         </form>
@@ -119,10 +140,22 @@
                             {{ $upload->created_at->format('d M Y, h:i A') }}
                         </td>
                         <td class="px-6 py-4 text-right whitespace-nowrap space-x-2">
-                            <a href="{{ route('evidence.download', $upload) }}"
-                                class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold transition">
-                                ⬇ Download
+                            <a href="{{ route('evidence.download', $upload) }}" target="_blank" rel="noopener noreferrer"
+                                class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold transition">
+                                <span>⬇ Download</span>
+                                <svg class="w-3 h-3 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             </a>
+                            @can('update', $upload)
+                            <button type="button"
+                                @click="openEdit({{ json_encode($upload) }}, '{{ route('evidence.update', $upload) }}')"
+                                class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 font-semibold transition"
+                                title="Edit / Replace Evidence">
+                                <svg class="w-3.5 h-3.5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                <span>Edit</span>
+                            </button>
+                            @endcan
                             @can('delete', $upload)
                             <form action="{{ route('evidence.destroy', $upload) }}" method="POST" class="inline" onsubmit="return confirm('Remove this evidence item?')">
                                 @csrf
@@ -458,6 +491,100 @@
             </div>
         @endcan
 
+    </div>
+
+    <!-- Edit Evidence Modal -->
+    <div x-show="editModalOpen"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
+         style="display: none;"
+         @keydown.escape.window="editModalOpen = false">
+
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-200 relative"
+             @click.away="editModalOpen = false">
+
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900">Edit Evidence Item</h3>
+                        <p class="text-[11px] text-slate-500">Update evidence type, replace file, or amend remarks</p>
+                    </div>
+                </div>
+                <button type="button" @click="editModalOpen = false" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <form :action="editForm.actionUrl" method="POST" enctype="multipart/form-data" class="mt-4 space-y-4 text-xs">
+                @csrf
+                @method('PUT')
+
+                <!-- Current file preview -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Current Attached File</span>
+                        <span class="font-mono text-xs font-semibold text-slate-800 truncate block max-w-xs" x-text="editForm.original_filename"></span>
+                    </div>
+                    <span class="text-[11px] font-semibold text-slate-500 font-mono" x-text="editForm.formatted_size"></span>
+                </div>
+
+                <!-- Evidence Type Selection -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Evidence Item Type <span class="text-rose-500">*</span></label>
+                    <select name="evidence_type" x-model="editForm.evidence_type" required
+                        class="w-full rounded-xl border border-slate-300 p-2.5 text-xs focus:border-blue-500 focus:outline-none">
+                        <option value="attendance_sheet">1. Attendance Sheet (Form - Both Sides)</option>
+                        <option value="photo_1">2. Photograph 1 (Full Group with 8x5 Banner)</option>
+                        <option value="photo_2">3. Photograph 2 (Trainer Teaching)</option>
+                        <option value="video">4. Short Video Clip (MP4, ~1 min, landscape)</option>
+                        <option value="feedback_forms">5. Feedback Forms (Merged PDF)</option>
+                        <option value="batch_completion_report">6. Batch Completion Report (PDF)</option>
+                    </select>
+                </div>
+
+                <!-- Replace File (Optional) -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">
+                        Replace File <span class="text-slate-400 font-normal">(Optional — leave blank to keep current file)</span>
+                    </label>
+                    <input type="file" name="file"
+                        class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <p class="text-[11px] text-slate-400 mt-1">
+                        Allowed file sizes: Photos (≤ {{ $maxPhotoMb ?? 10 }} MB), Video (≤ {{ $maxVideoMb ?? 100 }} MB), PDFs (≤ {{ $maxPdfMb ?? 25 }} MB).
+                    </p>
+                </div>
+
+                <!-- Remarks -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Remarks / Notes</label>
+                    <textarea name="remarks" x-model="editForm.remarks" rows="2" placeholder="Optional remarks on this evidence item..."
+                        class="w-full rounded-xl border border-slate-300 p-2.5 text-xs focus:border-blue-500 focus:outline-none"></textarea>
+                </div>
+
+                <!-- Modal Actions -->
+                <div class="flex items-center justify-end space-x-2 pt-3 border-t border-slate-200">
+                    <button type="button" @click="editModalOpen = false"
+                        class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold text-xs hover:bg-slate-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-600/20 transition flex items-center space-x-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>Save Changes</span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
 </div>

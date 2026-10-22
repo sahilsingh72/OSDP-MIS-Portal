@@ -49,6 +49,40 @@ class TrainingUploadPolicy
     }
 
     /**
+     * Determine whether the user can update the upload (replace file, change type, or edit remarks).
+     */
+    public function update(User $user, TrainingUpload $upload): bool
+    {
+        if (!$user->can('evidence.upload')) {
+            return false;
+        }
+
+        $batch = $upload->batch;
+        if (!$batch || in_array($batch->status, ['verified', 'closed'])) {
+            return false; // Verified batches are locked
+        }
+
+        if ($user->hasRole(['super-admin', 'pmu'])) {
+            return true;
+        }
+
+        if ($user->hasRole('district-coordinator')) {
+            return $user->isAssignedToDistrict($batch->district_id);
+        }
+
+        if ($user->hasRole('field-trainer')) {
+            return $user->isAssignedToBatch($batch->id) && in_array($batch->status, [
+                \App\Models\TrainingBatch::STATUS_SCHEDULED,
+                \App\Models\TrainingBatch::STATUS_IN_PROGRESS,
+                \App\Models\TrainingBatch::STATUS_AWAITING_EVIDENCE,
+                \App\Models\TrainingBatch::STATUS_CORRECTION_REQUIRED,
+            ]);
+        }
+
+        return false;
+    }
+
+    /**
      * Determine whether the user can delete / invalidate the upload.
      */
     public function delete(User $user, TrainingUpload $upload): bool
