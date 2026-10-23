@@ -3,8 +3,20 @@
 @section('content')
 <div class="space-y-6" x-data="{
     uploadModalOpen: false,
+    createModalOpen: {{ $errors->hasAny(['name', 'designation', 'office_name', 'department', 'phone', 'email', 'batch_id']) ? 'true' : 'false' }},
     editModalOpen: false,
     deleteModalOpen: false,
+    restoreModalOpen: false,
+    createForm: {
+        name: '{{ addslashes(old('name', '')) }}',
+        designation: '{{ addslashes(old('designation', '')) }}',
+        office_name: '{{ addslashes(old('office_name', '')) }}',
+        department: '{{ addslashes(old('department', '')) }}',
+        phone: '{{ addslashes(old('phone', '')) }}',
+        email: '{{ addslashes(old('email', '')) }}',
+        batch_id: '{{ old('batch_id', request('batch_id', '')) }}',
+        is_active: true
+    },
     editForm: {
         id: '',
         name: '',
@@ -20,10 +32,22 @@
         name: '',
         actionUrl: ''
     },
-    restoreModalOpen: false,
     restoreForm: {
         name: '',
         actionUrl: ''
+    },
+    openCreate() {
+        this.createForm = {
+            name: '',
+            designation: '',
+            office_name: '',
+            department: '',
+            phone: '',
+            email: '',
+            batch_id: '{{ request('batch_id', '') }}',
+            is_active: true
+        };
+        this.createModalOpen = true;
     },
     openEdit(participant, url) {
         this.editForm = {
@@ -77,6 +101,14 @@
             </a>
 
             @can('participants.manage')
+            <button type="button" @click="openCreate()"
+                class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-600/20 transition flex items-center space-x-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                <span>Add Participant</span>
+            </button>
+
             <button type="button" @click="uploadModalOpen = true"
                 class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 transition flex items-center space-x-2">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -241,7 +273,7 @@
                             @if($status === 'trashed')
                                 No soft-deleted participants found in Trash.
                             @else
-                                No participants found matching your criteria. Use the "Bulk Upload (Excel)" button to register participants.
+                                No participants found matching your criteria. Use "+ Add Participant" or "Bulk Upload (Excel)" to register participants.
                             @endif
                         </td>
                     </tr>
@@ -255,6 +287,129 @@
             {{ $participants->links() }}
         </div>
         @endif
+    </div>
+
+    <!-- Add Single Participant Modal -->
+    <div x-show="createModalOpen"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 overflow-y-auto"
+        style="display: none;">
+        <div class="flex items-center justify-center min-h-screen px-4 py-8 text-center sm:p-0">
+            <!-- Backdrop -->
+            <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-xs" @click="createModalOpen = false"></div>
+
+            <!-- Modal Card -->
+            <div class="relative inline-block w-full max-w-lg my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl rounded-3xl border border-slate-100">
+                <!-- Header -->
+                <div class="relative px-6 pt-6 pb-5 bg-gradient-to-b from-blue-50/50 via-white to-white border-b border-slate-100 flex items-start justify-between">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center shadow-inner border border-blue-500/20">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 tracking-tight">Add Single Participant</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Register a trainee into the roster & assign to batch</p>
+                        </div>
+                    </div>
+                    <button type="button" @click="createModalOpen = false" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form action="{{ route('participants.store') }}" method="POST" class="p-6 space-y-4 text-xs">
+                    @csrf
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div class="sm:col-span-2">
+                            <label class="block font-semibold text-slate-700 mb-1">Participant Name <span class="text-rose-500">*</span></label>
+                            <input type="text" name="name" x-model="createForm.name" required placeholder="e.g. Rajesh Kumar Mohapatra"
+                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+                        </div>
+
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Designation <span class="text-rose-500">*</span></label>
+                            <input type="text" name="designation" x-model="createForm.designation" required placeholder="e.g. Panchayat Executive Officer"
+                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+                        </div>
+
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Office / Gram Panchayat <span class="text-rose-500">*</span></label>
+                            <input type="text" name="office_name" x-model="createForm.office_name" required placeholder="e.g. Baranga GP Office"
+                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+                        </div>
+
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Department <span class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input type="text" name="department" x-model="createForm.department" placeholder="e.g. PR & DW"
+                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+                        </div>
+
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Contact Phone <span class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input type="tel" name="phone" x-model="createForm.phone" placeholder="e.g. 9861012345" maxlength="20"
+                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="block font-semibold text-slate-700 mb-1">Email ID <span class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input type="email" name="email" x-model="createForm.email" placeholder="e.g. trainee@odisha.gov.in"
+                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+                        </div>
+
+                        <!-- Target Training Batch (Optional) -->
+                        <div class="sm:col-span-2">
+                            <label class="block font-semibold text-slate-700 mb-1">
+                                Target Training Batch <span class="text-slate-400 font-normal">(Optional instant enrollment)</span>
+                            </label>
+                            <div class="relative">
+                                <select name="batch_id" x-model="createForm.batch_id"
+                                    class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition">
+                                    <option value="">-- General Roster (No specific batch) --</option>
+                                    @foreach($batches as $b)
+                                        <option value="{{ $b->id }}">
+                                            {{ $b->batch_code }} &bull; {{ $b->district?->name }} ({{ $b->scheduled_date->format('d/m/Y') }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2 pt-1">
+                            <label class="inline-flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" name="is_active" value="1" x-model="createForm.is_active" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                <span class="font-medium text-slate-700">Account is Active and eligible for batch nominations</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Footer Buttons -->
+                    <div class="flex items-center justify-end space-x-2.5 pt-3 border-t border-slate-100">
+                        <button type="button" @click="createModalOpen = false"
+                            class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200 shadow-2xs transition">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-600/20 transition flex items-center space-x-1.5">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            <span>Save Participant</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Edit Participant Modal -->

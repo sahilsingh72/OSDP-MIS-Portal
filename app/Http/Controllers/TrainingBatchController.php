@@ -57,7 +57,21 @@ class TrainingBatchController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
+            $status = $request->input('status');
+            if ($status === 'in_progress') {
+                $query->whereIn('status', [
+                    TrainingBatch::STATUS_IN_PROGRESS,
+                    TrainingBatch::STATUS_AWAITING_EVIDENCE,
+                    TrainingBatch::STATUS_CORRECTION_REQUIRED,
+                ]);
+            } elseif ($status === 'submitted') {
+                $query->whereIn('status', [
+                    TrainingBatch::STATUS_SUBMITTED,
+                    TrainingBatch::STATUS_UNDER_REVIEW,
+                ]);
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         if ($request->filled('date_from')) {

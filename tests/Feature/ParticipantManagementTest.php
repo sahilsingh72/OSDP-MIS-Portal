@@ -523,4 +523,112 @@ class ParticipantManagementTest extends TestCase
         $delResp->assertStatus(403);
         $this->assertFalse($participant->fresh()->trashed());
     }
+
+    /**
+     * Test user can add a single participant to the general directory.
+     */
+    public function test_user_can_add_single_participant_to_directory(): void
+    {
+        $uid = uniqid();
+        $name = "Individual Trainee {$uid}";
+        $email = "trainee_{$uid}@odisha.gov.in";
+
+        $response = $this->actingAs($this->superAdmin)->post('/participants', [
+            'name' => $name,
+            'designation' => 'Executive Officer',
+            'office_name' => 'Baranga GP Office',
+            'department' => 'PR & DW',
+            'phone' => '9861234567',
+            'email' => $email,
+            'is_active' => 1,
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('status');
+
+        $participant = Participant::where('name', $name)->first();
+        $this->assertNotNull($participant);
+        $this->assertEquals('Executive Officer', $participant->designation);
+        $this->assertEquals('Baranga GP Office', $participant->office_name);
+        $this->assertEquals('PR & DW', $participant->department);
+        $this->assertEquals('98******67', $participant->phone_masked);
+        $this->assertEquals($email, $participant->email);
+        $this->assertTrue((bool) $participant->is_active);
+        $this->assertEquals($this->superAdmin->id, $participant->created_by);
+    }
+
+    /**
+     * Test user can add a single participant and enroll directly into a batch.
+     */
+    public function test_user_can_add_single_participant_and_enroll_in_batch(): void
+    {
+        $batch = TrainingBatch::first();
+        $initialRegistered = $batch->registered_participants;
+
+        $uid = uniqid();
+        $name = "Enrolled Trainee {$uid}";
+
+        $response = $this->actingAs($this->superAdmin)->post('/participants', [
+            'name' => $name,
+            'designation' => 'Gram Panchayat Officer',
+            'office_name' => 'Cuttack Sadar GP',
+            'department' => 'Rural Dev',
+            'phone' => '9437123456',
+            'email' => "enrolled_{$uid}@odisha.gov.in",
+            'batch_id' => $batch->id,
+            'is_active' => 1,
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('status');
+
+        $participant = Participant::where('name', $name)->first();
+        $this->assertNotNull($participant);
+
+        $bp = BatchParticipant::where('training_batch_id', $batch->id)
+            ->where('participant_id', $participant->id)
+            ->first();
+        $this->assertNotNull($bp);
+        $this->assertGreaterThan(0, $bp->serial_number);
+
+        // Verify attendance record initialized unmarked
+        $att = AttendanceRecord::where('training_batch_id', $batch->id)
+            ->where('batch_participant_id', $bp->id)
+            ->first();
+        $this->assertNotNull($att);
+        $this->assertFalse((bool) $att->morning_present);
+        $this->assertFalse((bool) $att->afternoon_present);
+
+        // Verify batch counts updated
+        $batch->refresh();
+        $this->assertEquals($initialRegistered + 1, $batch->registered_participants);
+    }
+
+    /**
+     * Test single participant validation requires name, designation, and office.
+     */
+    public function test_single_participant_validation_rules(): void
+    {
+        $response = $this->actingAs($this->superAdmin)->post('/participants', [
+            'name' => '',
+            'designation' => '',
+            'office_name' => '',
+        ]);
+
+        $response->assertSessionHasErrors(['name', 'designation', 'office_name']);
+    }
+
+    /**
+     * Test guest cannot store participant.
+     */
+    public function test_guest_cannot_store_participant(): void
+    {
+        $response = $this->post('/participants', [
+            'name' => 'Guest Participant',
+            'designation' => 'Staff',
+            'office_name' => 'GP Office',
+        ]);
+
+        $response->assertRedirect('/login');
+    }
 }

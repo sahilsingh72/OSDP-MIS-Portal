@@ -76,8 +76,9 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     Route::post('/batches/{batch}/participants/bulk-upload', [AttendanceController::class, 'bulkUpload'])->name('batches.participants.bulk-upload');
     Route::get('/batches/{batch}/participants/template', [AttendanceController::class, 'downloadTemplate'])->name('batches.participants.template');
 
-    // Participants Directory & Bulk Registration
+    // Participants Directory & Registration
     Route::get('/participants', [ParticipantController::class, 'index'])->name('participants.index');
+    Route::post('/participants', [ParticipantController::class, 'store'])->name('participants.store');
     Route::post('/participants/import', [ParticipantController::class, 'import'])->name('participants.import');
     Route::get('/participants/template', [ParticipantController::class, 'downloadTemplate'])->name('participants.template');
     Route::put('/participants/{participant}', [ParticipantController::class, 'update'])->name('participants.update');
