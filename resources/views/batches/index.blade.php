@@ -88,8 +88,25 @@
             <span class="px-2 py-0.5 rounded-lg bg-rose-200 text-rose-900 font-bold uppercase text-[10px]">Filter Active</span>
             <span class="font-medium">Showing batches with evidence submissions overdue beyond the 48-hour SLA deadline.</span>
         </div>
-        <a href="{{ route('batches.index') }}" class="inline-flex items-center space-x-1 font-semibold text-rose-700 hover:text-rose-900 underline">
+        <a href="{{ route('batches.index', request()->except('overdue_only')) }}" class="inline-flex items-center space-x-1 font-semibold text-rose-700 hover:text-rose-900 underline">
             <span>Clear Filter (Show All)</span>
+            <span>✕</span>
+        </a>
+    </div>
+    @endif
+
+    @if(request('status'))
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3.5 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-900">
+        <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 rounded-lg bg-amber-200 text-amber-900 font-bold uppercase text-[10px]">Filter Active</span>
+            <span class="font-medium">
+                Filtering by status: 
+                <strong>{{ request('status') === 'in_progress' ? 'In Progress' : (request('status') === 'submitted' ? 'Submitted' : ucfirst(str_replace('_', ' ', request('status')))) }}</strong>
+                ({{ $batches->total() }} {{ \Illuminate\Support\Str::plural('batch', $batches->total()) }} found).
+            </span>
+        </div>
+        <a href="{{ route('batches.index', request()->except('status')) }}" class="inline-flex items-center space-x-1 font-semibold text-amber-800 hover:text-amber-950 underline">
+            <span>Clear Status Filter</span>
             <span>✕</span>
         </a>
     </div>

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceRecord;
 use App\Models\AuditLog;
+use App\Models\BatchParticipant;
 use App\Models\Participant;
 use App\Models\TrainingBatch;
 use App\Services\ParticipantImportService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -78,6 +81,136 @@ class ParticipantController extends Controller
             ->get();
 
         return view('participants.index', compact('participants', 'batches', 'activeCount', 'trashedCount', 'status'));
+    }
+
+    /**
+     * Store a newly created single participant in the directory.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $this->authorize('create', Participant::class);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'designation' => ['required', 'string', 'max:255'],
+            'office_name' => ['required', 'string', 'max:255'],
+            'department' => ['nullable', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'batch_id' => ['nullable', 'exists:training_batches,id'],
+            'is_active' => ['nullable', 'boolean'],
+        ]);
+
+        $batch = null;
+        if (!empty($validated['batch_id'])) {
+            $batch = TrainingBatch::findOrFail($validated['batch_id']);
+            $this->authorize('update', $batch);
+        }
+
+        $name = trim($validated['name']);
+        $designation = trim($validated['designation']);
+        $officeName = trim($validated['office_name']);
+        $department = !empty($validated['department']) ? trim($validated['department']) : null;
+        $email = !empty($validated['email']) ? strtolower(trim($validated['email'])) : null;
+        $isActive = $request->has('is_active') ? $request->boolean('is_active') : true;
+
+        $phone = $validated['phone'] ?? null;
+        $phoneMasked = null;
+        if (!empty($phone) && !str_contains($phone, '*')) {
+            $digits = preg_replace('/[^0-9]/', '', $phone);
+            if (strlen($digits) >= 10) {
+                $phoneMasked = substr($digits, 0, 2) . '******' . substr($digits, -2);
+            } else {
+                $phoneMasked = $phone;
+            }
+        } elseif (!empty($phone)) {
+            $phoneMasked = $phone;
+        }
+
+        $enrollmentStatus = '';
+
+        $participant = DB::transaction(function () use (
+            $name,
+            $designation,
+            $officeName,
+            $department,
+            $phoneMasked,
+            $email,
+            $isActive,
+            $batch,
+            &$enrollmentStatus
+        ) {
+            $participant = Participant::withTrashed()
+                ->where('name', $name)
+                ->where('office_name', $officeName)
+                ->first();
+
+            if (!$participant) {
+                $participant = Participant::create([
+                    'name' => $name,
+                    'designation' => $designation,
+                    'department' => $department,
+                    'office_name' => $officeName,
+                    'phone_masked' => $phoneMasked,
+                    'email' => $email,
+                    'is_active' => $isActive,
+                    'created_by' => Auth::id(),
+                ]);
+
+                AuditLog::record('participant_created', $participant, null, $participant->toArray());
+                $enrollmentStatus = "Participant '{$participant->name}' added successfully";
+            } else {
+                if ($participant->trashed()) {
+                    $participant->restore();
+                }
+
+                $oldData = $participant->toArray();
+                $participant->update([
+                    'designation' => $designation ?: $participant->designation,
+                    'department' => $department ?: $participant->department,
+                    'phone_masked' => $phoneMasked ?: $participant->phone_masked,
+                    'email' => $email ?: $participant->email,
+                    'is_active' => $isActive,
+                ]);
+
+                AuditLog::record('participant_updated', $participant, $oldData, $participant->getChanges());
+                $enrollmentStatus = "Participant '{$participant->name}' record updated";
+            }
+
+            if ($batch) {
+                $alreadyEnrolled = BatchParticipant::where('training_batch_id', $batch->id)
+                    ->where('participant_id', $participant->id)
+                    ->first();
+
+                if (!$alreadyEnrolled) {
+                    $nextSerial = $batch->batchParticipants()->count() + 1;
+
+                    $bp = BatchParticipant::create([
+                        'training_batch_id' => $batch->id,
+                        'participant_id' => $participant->id,
+                        'serial_number' => $nextSerial,
+                    ]);
+
+                    AttendanceRecord::create([
+                        'training_batch_id' => $batch->id,
+                        'batch_participant_id' => $bp->id,
+                        'morning_present' => false,
+                        'afternoon_present' => false,
+                        'remarks' => null,
+                        'marked_by' => null,
+                    ]);
+
+                    $batch->recalculateCounts();
+                    $enrollmentStatus .= " and enrolled into batch {$batch->batch_code}";
+                } else {
+                    $enrollmentStatus .= " (already enrolled in batch {$batch->batch_code})";
+                }
+            }
+
+            return $participant;
+        });
+
+        return back()->with('status', $enrollmentStatus . '.');
     }
 
     /**

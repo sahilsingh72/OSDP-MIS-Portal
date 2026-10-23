@@ -266,4 +266,22 @@ class TrainingBatchWorkflowTest extends TestCase
         $adminResponse->assertDontSee('Save Summary');
         $adminResponse->assertDontSee('Save Feedback Evaluation');
     }
+
+    /**
+     * Test filtering batches by in_progress status returns active lifecycle batches (including awaiting_evidence).
+     */
+    public function test_batches_directory_filters_in_progress_lifecycle_correctly(): void
+    {
+        $admin = User::where('email', 'admin@osdp.gov.in')->first();
+
+        // Ensure there is at least one batch with awaiting_evidence
+        $batch = TrainingBatch::first();
+        $batch->update(['status' => TrainingBatch::STATUS_AWAITING_EVIDENCE]);
+
+        $response = $this->actingAs($admin)->get('/batches?status=in_progress');
+        $response->assertOk();
+        $response->assertSee($batch->batch_code);
+        $response->assertSee('Awaiting Evidence');
+        $response->assertSee('Filter Active');
+    }
 }
