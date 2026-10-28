@@ -7,12 +7,15 @@ use Tests\TestCase;
 class ExampleTest extends TestCase
 {
     /**
-     * Test that guests are redirected to the login page.
+     * Test that the landing page renders successfully for guests.
      */
-    public function test_guest_is_redirected_to_login(): void
+    public function test_landing_page_renders_successfully(): void
     {
         $response = $this->get('/');
-        $response->assertRedirect('/login');
+        $response->assertStatus(200);
+        $response->assertSee('OSDP 2.0');
+        $response->assertSee('Odisha State Data Policy');
+        $response->assertSee('Officer Sign In');
     }
 
     /**

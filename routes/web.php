@@ -16,9 +16,17 @@ use App\Http\Controllers\TrainingBatchController;
 use App\Http\Controllers\TrainingModuleController;
 use App\Http\Controllers\TrainingUploadController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\VenueController;
 use App\Http\Middleware\CheckActiveUser;
 use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Public Landing Page Route
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [LandingPageController::class, 'index'])->name('welcome');
 
 /*
 |--------------------------------------------------------------------------
@@ -46,8 +54,8 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/home', fn () => redirect()->route('dashboard'))->name('home');
 
     // Profile & Password Management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -212,6 +212,7 @@ class TrainingBatchWorkflowTest extends TestCase
     public function test_assigned_field_trainer_can_view_edit_forms_and_save_summary_and_feedback(): void
     {
         $batch = TrainingBatch::find(9);
+        $batch->update(['status' => TrainingBatch::STATUS_IN_PROGRESS]);
         $trainer = User::where('email', 'trainer.mohanty@osdp.gov.in')->first();
 
         $this->assertTrue($trainer->can('manageSummary', $batch));
@@ -283,5 +284,46 @@ class TrainingBatchWorkflowTest extends TestCase
         $response->assertSee($batch->batch_code);
         $response->assertSee('Awaiting Evidence');
         $response->assertSee('Filter Active');
+    }
+
+    /**
+     * Test DLC only sees 'Mark Physical Pack Checked (DC)' option in Review Decision Engine.
+     */
+    public function test_dlc_only_sees_mark_physical_pack_checked_option(): void
+    {
+        $dc = User::where('email', 'dc.khordha@osdp.gov.in')->first();
+        $this->assertNotNull($dc);
+
+        $district = $dc->assignedDistricts()->first();
+        $this->assertNotNull($district);
+
+        $batch = TrainingBatch::where('district_id', $district->id)->first();
+        $this->assertNotNull($batch);
+        $batch->update(['status' => TrainingBatch::STATUS_SUBMITTED]);
+
+        // View as DLC
+        $response = $this->actingAs($dc)->get("/batches/{$batch->id}");
+        $response->assertOk();
+        $response->assertSee('✓ Mark Physical Pack Checked (DC)');
+        $response->assertDontSee('Approve & Verify Evidence Pack');
+        $response->assertDontSee('Request Resubmission / Correction');
+        $response->assertDontSee('Reject Submission');
+
+        // DLC cannot submit 'verified'
+        $postResponse = $this->actingAs($dc)->post("/batches/{$batch->id}/reviews", [
+            'decision' => 'verified',
+            'remarks' => 'Attempting unauthorized verification',
+        ]);
+        $postResponse->assertSessionHasErrors('decision');
+
+        // DLC can submit 'pack_checked'
+        $validResponse = $this->actingAs($dc)->post("/batches/{$batch->id}/reviews", [
+            'decision' => 'pack_checked',
+            'remarks' => 'Physical evidence packet received and verified by DC.',
+        ]);
+        $validResponse->assertRedirect("/batches/{$batch->id}");
+
+        $batch->refresh();
+        $this->assertEquals(TrainingBatch::STATUS_UNDER_REVIEW, $batch->status);
     }
 }

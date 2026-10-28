@@ -33,6 +33,10 @@ class ParticipantController extends Controller
 
         // Status tab filtering (active vs trashed / deleted)
         $status = $request->input('status', 'active');
+        if ($user->hasRole('ocac')) {
+            $status = 'active';
+        }
+
         if ($status === 'trashed') {
             $query->onlyTrashed();
         } elseif ($status === 'all') {
@@ -54,7 +58,7 @@ class ParticipantController extends Controller
             $trashedCount = Participant::onlyTrashed()->where($scopeUser)->count();
         } else {
             $activeCount = Participant::count();
-            $trashedCount = Participant::onlyTrashed()->count();
+            $trashedCount = $user->hasRole('ocac') ? 0 : Participant::onlyTrashed()->count();
         }
 
         if ($request->filled('search')) {
