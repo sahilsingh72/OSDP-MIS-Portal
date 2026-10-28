@@ -84,7 +84,7 @@
         <div>
             <div class="flex items-center space-x-2">
                 <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 uppercase tracking-wider">
-                    Form 2 Trainee Roster
+                    Trainee Roster
                 </span>
                 <span class="text-xs text-slate-400 font-medium">OSDP MIS Policy 2.0</span>
             </div>
@@ -93,12 +93,12 @@
         </div>
 
         <div class="flex items-center space-x-3">
-            <a href="{{ route('participants.template') }}" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-sm transition flex items-center space-x-1.5">
+            <!-- <a href="{{ route('participants.template') }}" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-200/90 shadow-sm transition flex items-center space-x-1.5">
                 <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 <span>Download Excel Template</span>
-            </a>
+            </a> -->
 
             @can('participants.manage')
             <button type="button" @click="openCreate()"
@@ -127,12 +127,14 @@
             <span>Active Participants</span>
             <span class="px-1.5 py-0.5 rounded-full text-[10px] {{ $status !== 'trashed' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700 font-bold' }}">{{ number_format($activeCount) }}</span>
         </a>
+        @unless(auth()->user()->hasRole('ocac'))
         <a href="{{ route('participants.index', array_merge(request()->except(['status', 'page']), ['status' => 'trashed'])) }}"
             class="px-3.5 py-1.5 rounded-xl font-semibold text-xs transition flex items-center space-x-2 {{ $status === 'trashed' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
             <span>Trash / Deleted</span>
             <span class="px-1.5 py-0.5 rounded-full text-[10px] {{ $status === 'trashed' ? 'bg-white/20 text-white' : 'bg-rose-100 text-rose-700 font-bold' }}">{{ number_format($trashedCount) }}</span>
         </a>
+        @endunless
     </div>
 
     <!-- Filter & Search Toolbar -->

@@ -48,8 +48,13 @@ class BatchReviewController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
+        $allowedDecisions = ['verified', 'correction_requested', 'rejected', 'pack_checked'];
+        if ($user->hasRole('district-coordinator') && !$user->hasRole(['super-admin', 'pmu'])) {
+            $allowedDecisions = ['pack_checked'];
+        }
+
         $validated = $request->validate([
-            'decision' => ['required', 'in:verified,correction_requested,rejected,pack_checked'],
+            'decision' => ['required', 'in:' . implode(',', $allowedDecisions)],
             'remarks' => ['required', 'string', 'max:1000'],
             'checklist' => ['nullable', 'array'],
         ]);

@@ -631,4 +631,51 @@ class ParticipantManagementTest extends TestCase
 
         $response->assertRedirect('/login');
     }
+
+    /**
+     * Test OCAC does not see Trash / Deleted tab and cannot view trashed participants.
+     */
+    public function test_ocac_cannot_see_trash_tab_or_view_trashed_participants(): void
+    {
+        $ocac = User::firstOrCreate(
+            ['email' => 'ocac@osdp.gov.in'],
+            [
+                'name' => 'OCAC Nodal Officer',
+                'password' => Hash::make('password123'),
+                'is_active' => true,
+            ]
+        );
+        $ocacRole = Role::findOrCreate('ocac');
+        $ocacRole->givePermissionTo('participants.view');
+        if (!$ocac->hasRole('ocac')) {
+            $ocac->assignRole('ocac');
+        }
+
+        // Create a trashed participant
+        $trashedParticipant = Participant::create([
+            'name' => 'Deleted Trainee XYZ',
+            'designation' => 'Panchayat Officer',
+            'office_name' => 'Block Office',
+            'is_active' => false,
+            'created_by' => $this->superAdmin->id,
+        ]);
+        $trashedParticipant->delete();
+
+        // 1. OCAC viewing participants index should NOT see Trash / Deleted tab
+        $response = $this->actingAs($ocac)->get('/participants');
+        $response->assertOk();
+        $response->assertSee('Active Participants');
+        $response->assertDontSee('Trash / Deleted');
+
+        // 2. OCAC querying ?status=trashed should be forced to active and NOT see deleted participant
+        $trashedQueryResponse = $this->actingAs($ocac)->get('/participants?status=trashed');
+        $trashedQueryResponse->assertOk();
+        $trashedQueryResponse->assertDontSee('Deleted Trainee XYZ');
+        $trashedQueryResponse->assertDontSee('Trash / Deleted');
+
+        // 3. Super Admin viewing participants index DOES see Trash / Deleted tab
+        $adminResponse = $this->actingAs($this->superAdmin)->get('/participants');
+        $adminResponse->assertOk();
+        $adminResponse->assertSee('Trash / Deleted');
+    }
 }

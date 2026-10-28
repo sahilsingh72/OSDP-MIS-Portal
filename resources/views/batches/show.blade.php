@@ -346,12 +346,13 @@
                         <label class="block font-semibold text-slate-700 mb-1">Review Decision <span class="text-rose-500">*</span></label>
                         <select name="decision" required class="w-full rounded-xl border border-slate-300 p-2.5 text-xs focus:border-blue-500 focus:outline-none">
                             <option value="">-- Choose Review Decision --</option>
-                            @if(auth()->user()->hasRole('district-coordinator'))
+                            @if(auth()->user()->hasRole('district-coordinator') && !auth()->user()->hasRole(['super-admin', 'pmu']))
                                 <option value="pack_checked">✓ Mark Physical Pack Checked (DC)</option>
+                            @else
+                                <option value="verified">✅ Approve & Verify Evidence Pack</option>
+                                <option value="correction_requested">⚠️ Request Resubmission / Correction</option>
+                                <option value="rejected">❌ Reject Submission</option>
                             @endif
-                            <option value="verified">✅ Approve & Verify Evidence Pack</option>
-                            <option value="correction_requested">⚠️ Request Resubmission / Correction</option>
-                            <option value="rejected">❌ Reject Submission</option>
                         </select>
                     </div>
 
