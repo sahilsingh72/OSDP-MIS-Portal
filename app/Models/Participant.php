@@ -19,14 +19,35 @@ class Participant extends Model
         'department',
         'office_name',
         'phone_masked',
+        'phone',
         'email',
         'is_active',
         'created_by',
     ];
 
+    protected $appends = [
+        'phone',
+    ];
+
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    /**
+     * Accessor for unmasked phone number.
+     */
+    public function getPhoneAttribute(): ?string
+    {
+        return $this->phone_masked;
+    }
+
+    /**
+     * Mutator for phone number.
+     */
+    public function setPhoneAttribute(?string $value): void
+    {
+        $this->attributes['phone_masked'] = $value ? trim($value) : null;
+    }
 
     public function creator(): BelongsTo
     {

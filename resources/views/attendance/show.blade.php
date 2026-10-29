@@ -199,8 +199,10 @@
                         class="w-full rounded-xl border border-slate-200 bg-slate-50/60 p-2.5 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Phone (Optional)</label>
-                    <input type="text" name="phone" placeholder="e.g. 9861012345"
+                    <label class="block font-semibold text-slate-700 mb-1">Phone <span class="text-slate-400 font-normal">(Optional)</span></label>
+                    <input type="tel" name="phone" placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
+                        pattern="[6-9][0-9]{9}" title="Must be a valid 10-digit mobile number starting with 6, 7, 8, or 9"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
                         class="w-full rounded-xl border border-slate-200 bg-slate-50/60 p-2.5 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none">
                 </div>
                 <div>
@@ -239,7 +241,9 @@
                     @php
                         $activeBatchParticipants = $batch->batchParticipants->filter(function ($bp) {
                             return $bp->participant && !$bp->participant->trashed();
-                        })->values();
+                        })->sortBy(function ($bp) {
+                            return strtolower(trim($bp->participant?->name ?? ''));
+                        }, SORT_NATURAL | SORT_FLAG_CASE)->values();
                     @endphp
                     @forelse($activeBatchParticipants as $idx => $bp)
                     @php $att = $bp->attendance; @endphp
@@ -249,7 +253,10 @@
                             <input type="hidden" name="attendance[{{ $idx }}][batch_participant_id]" value="{{ $bp->id }}">
                         </td>
                         <td class="px-5 py-3 font-bold text-slate-900">
-                            {{ $bp->participant?->name ?? 'Participant Record' }}
+                            <div>{{ $bp->participant?->name ?? 'Participant Record' }}</div>
+                            @if($bp->participant?->phone)
+                                <div class="text-[11px] font-normal font-mono text-slate-500">{{ $bp->participant->phone }}</div>
+                            @endif
                         </td>
                         <td class="px-5 py-3 text-slate-600">
                             {{ $bp->participant?->designation ?? 'N/A' }}

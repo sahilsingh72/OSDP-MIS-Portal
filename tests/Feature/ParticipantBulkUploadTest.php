@@ -136,7 +136,8 @@ class ParticipantBulkUploadTest extends TestCase
         $this->assertNotNull($p1);
         $this->assertEquals('Panchayat Executive Officer', $p1->designation);
         $this->assertEquals('Janla GP', $p1->office_name);
-        $this->assertEquals('98******55', $p1->phone_masked);
+        $this->assertEquals('9861055555', $p1->phone_masked);
+        $this->assertEquals('9861055555', $p1->phone);
 
         $p2 = Participant::where('name', $name2)->first();
         $this->assertNotNull($p2);

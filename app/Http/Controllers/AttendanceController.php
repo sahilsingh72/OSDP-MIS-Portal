@@ -32,9 +32,10 @@ class AttendanceController extends Controller
             'venue',
             'trainers',
             'batchParticipants' => function ($q) {
-                $q->whereHas('participant', function ($p) {
-                    $p->whereNull('deleted_at');
-                });
+                $q->join('participants', 'batch_participants.participant_id', '=', 'participants.id')
+                    ->whereNull('participants.deleted_at')
+                    ->orderByRaw('LOWER(participants.name) ASC')
+                    ->select('batch_participants.*');
             },
             'batchParticipants.participant',
             'batchParticipants.attendance',
@@ -55,8 +56,10 @@ class AttendanceController extends Controller
             'designation' => ['required', 'string', 'max:255'],
             'department' => ['nullable', 'string', 'max:255'],
             'office_name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'phone' => ['nullable', 'string', 'regex:/^[6-9]\d{9}$/'],
             'email' => ['nullable', 'email', 'max:255'],
+        ], [
+            'phone.regex' => 'Contact phone number must be a valid 10-digit mobile number starting with 6, 7, 8, or 9.',
         ]);
 
         $name = trim($validated['name']);
@@ -64,18 +67,14 @@ class AttendanceController extends Controller
         $designation = trim($validated['designation']);
         $email = !empty($validated['email']) ? strtolower(trim($validated['email'])) : null;
 
-        $phone = $validated['phone'] ?? null;
-        $phoneMasked = null;
+        $phone = !empty($validated['phone']) ? trim($validated['phone']) : null;
+        $cleanPhone = null;
         if (!empty($phone)) {
-            $digits = preg_replace('/[^0-9]/', '', $phone);
-            if (strlen($digits) >= 10) {
-                $phoneMasked = substr($digits, 0, 2) . '******' . substr($digits, -2);
-            } else {
-                $phoneMasked = $phone;
-            }
+            $digits = preg_replace('/[^0-9+]/', '', $phone);
+            $cleanPhone = !empty($digits) ? $digits : $phone;
         }
 
-        DB::transaction(function () use ($name, $designation, $officeName, $phoneMasked, $email, $batch) {
+        DB::transaction(function () use ($name, $designation, $officeName, $cleanPhone, $email, $batch) {
             $participant = Participant::withTrashed()
                 ->where('name', $name)
                 ->where('office_name', $officeName)
@@ -87,7 +86,7 @@ class AttendanceController extends Controller
                     'designation' => $designation,
                     'department' => null,
                     'office_name' => $officeName,
-                    'phone_masked' => $phoneMasked,
+                    'phone_masked' => $cleanPhone,
                     'email' => $email,
                     'is_active' => true,
                     'created_by' => Auth::id(),
@@ -98,7 +97,7 @@ class AttendanceController extends Controller
                 }
                 $participant->update([
                     'designation' => $designation ?: $participant->designation,
-                    'phone_masked' => $phoneMasked ?: $participant->phone_masked,
+                    'phone_masked' => $cleanPhone ?: $participant->phone_masked,
                     'email' => $email ?: $participant->email,
                 ]);
             }

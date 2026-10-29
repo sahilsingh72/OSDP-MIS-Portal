@@ -50,14 +50,16 @@
         this.createModalOpen = true;
     },
     openEdit(participant, url) {
+        const currentBatchId = (participant.batches && participant.batches.length > 0) ? String(participant.batches[0].id) : '';
         this.editForm = {
             id: participant.id,
             name: participant.name,
             designation: participant.designation || '',
             department: participant.department || '',
             office_name: participant.office_name || '',
-            phone: participant.phone_masked || '',
+            phone: participant.phone || participant.phone_masked || '',
             email: participant.email || '',
+            batch_id: currentBatchId,
             is_active: Boolean(participant.is_active),
             actionUrl: url
         };
@@ -222,7 +224,7 @@
                             <div class="font-medium text-slate-800">{{ $p->office_name }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap font-mono text-[11px] text-slate-600">
-                            <div>{{ $p->phone_masked ?? 'No phone' }}</div>
+                            <div>{{ $p->phone ?? $p->phone_masked ?? 'No phone' }}</div>
                             @if($p->email)
                             <div class="text-slate-400 text-[10px]">{{ $p->email }}</div>
                             @endif
@@ -356,7 +358,9 @@
 
                         <div>
                             <label class="block font-semibold text-slate-700 mb-1">Contact Phone <span class="text-slate-400 font-normal">(Optional)</span></label>
-                            <input type="tel" name="phone" x-model="createForm.phone" placeholder="e.g. 9861012345" maxlength="20"
+                            <input type="tel" name="phone" x-model="createForm.phone" placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
+                                pattern="[6-9][0-9]{9}" title="Must be a valid 10-digit mobile number starting with 6, 7, 8, or 9"
+                                @input="createForm.phone = createForm.phone.replace(/[^0-9]/g, '').slice(0, 10)"
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
                         </div>
 
@@ -473,8 +477,10 @@
                         </div>
 
                         <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Contact Phone</label>
-                            <input type="text" name="phone" x-model="editForm.phone" placeholder="e.g. 9861012345"
+                            <label class="block font-semibold text-slate-700 mb-1">Contact Phone <span class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input type="tel" name="phone" x-model="editForm.phone" placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
+                                pattern="[6-9][0-9]{9}" title="Must be a valid 10-digit mobile number starting with 6, 7, 8, or 9"
+                                @input="editForm.phone = editForm.phone.replace(/[^0-9]/g, '').slice(0, 10)"
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                         </div>
 
@@ -482,6 +488,27 @@
                             <label class="block font-semibold text-slate-700 mb-1">Email ID</label>
                             <input type="email" name="email" x-model="editForm.email" placeholder="e.g. trainee@gov.in"
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        </div>
+
+                        <!-- Assigned Training Batch Selection -->
+                        <div class="sm:col-span-2">
+                            <label class="block font-semibold text-slate-700 mb-1">
+                                Assigned Training Batch <span class="text-slate-400 font-normal">(Optional batch enrollment)</span>
+                            </label>
+                            <div class="relative">
+                                <select name="batch_id" x-model="editForm.batch_id"
+                                    class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition">
+                                    <option value="">-- General Roster (No specific batch) --</option>
+                                    @foreach($batches as $b)
+                                        <option value="{{ $b->id }}">
+                                            {{ $b->batch_code }} &bull; {{ $b->district?->name }} ({{ $b->scheduled_date->format('d/m/Y') }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="sm:col-span-2 pt-1">

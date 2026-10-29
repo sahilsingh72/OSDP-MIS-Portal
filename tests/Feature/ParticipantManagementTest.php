@@ -97,7 +97,8 @@ class ParticipantManagementTest extends TestCase
 
         $this->assertEquals('Updated Name By Creator', $participant->name);
         $this->assertEquals('Senior Officer', $participant->designation);
-        $this->assertEquals('98******10', $participant->phone_masked);
+        $this->assertEquals('9876543210', $participant->phone_masked);
+        $this->assertEquals('9876543210', $participant->phone);
     }
 
     /**
@@ -310,7 +311,8 @@ class ParticipantManagementTest extends TestCase
         $this->assertEquals('Panchayat Officer', $participant->designation);
         $this->assertEquals('Khurda Sadar GP', $participant->office_name);
         $this->assertEquals($email, $participant->email);
-        $this->assertEquals('98******87', $participant->phone_masked);
+        $this->assertEquals('9861099887', $participant->phone_masked);
+        $this->assertEquals('9861099887', $participant->phone);
         $this->assertEquals($this->superAdmin->id, $participant->created_by);
 
         // Verify enrolled in batch
@@ -551,7 +553,8 @@ class ParticipantManagementTest extends TestCase
         $this->assertEquals('Executive Officer', $participant->designation);
         $this->assertEquals('Baranga GP Office', $participant->office_name);
         $this->assertEquals('PR & DW', $participant->department);
-        $this->assertEquals('98******67', $participant->phone_masked);
+        $this->assertEquals('9861234567', $participant->phone_masked);
+        $this->assertEquals('9861234567', $participant->phone);
         $this->assertEquals($email, $participant->email);
         $this->assertTrue((bool) $participant->is_active);
         $this->assertEquals($this->superAdmin->id, $participant->created_by);
@@ -584,6 +587,8 @@ class ParticipantManagementTest extends TestCase
 
         $participant = Participant::where('name', $name)->first();
         $this->assertNotNull($participant);
+        $this->assertEquals('9437123456', $participant->phone_masked);
+        $this->assertEquals('9437123456', $participant->phone);
 
         $bp = BatchParticipant::where('training_batch_id', $batch->id)
             ->where('participant_id', $participant->id)
@@ -616,6 +621,40 @@ class ParticipantManagementTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors(['name', 'designation', 'office_name']);
+    }
+
+    /**
+     * Test participant contact number validation: must be 10 digits starting with 6, 7, 8, or 9.
+     */
+    public function test_participant_phone_validation_rules(): void
+    {
+        // 1. Valid numbers starting with 6, 7, 8, 9 pass
+        $validPhones = ['9856565677', '8765432109', '7012345678', '6234567890'];
+        foreach ($validPhones as $phone) {
+            $response = $this->actingAs($this->superAdmin)->post('/participants', [
+                'name' => 'Valid Phone ' . uniqid(),
+                'designation' => 'Staff',
+                'office_name' => 'GP Office',
+                'phone' => $phone,
+            ]);
+            $response->assertSessionHasNoErrors();
+        }
+
+        // 2. Invalid numbers fail with phone error:
+        // - Starting with 1, 2, 3, 4, 5
+        // - Fewer than 10 digits
+        // - More than 10 digits
+        // - Letters / symbols
+        $invalidPhones = ['5987654321', '1234567890', '98565', '98565656771', '98565abcde'];
+        foreach ($invalidPhones as $badPhone) {
+            $response = $this->actingAs($this->superAdmin)->post('/participants', [
+                'name' => 'Invalid Phone ' . uniqid(),
+                'designation' => 'Staff',
+                'office_name' => 'GP Office',
+                'phone' => $badPhone,
+            ]);
+            $response->assertSessionHasErrors('phone');
+        }
     }
 
     /**
@@ -677,5 +716,137 @@ class ParticipantManagementTest extends TestCase
         $adminResponse = $this->actingAs($this->superAdmin)->get('/participants');
         $adminResponse->assertOk();
         $adminResponse->assertSee('Trash / Deleted');
+    }
+
+    /**
+     * Test participant phone number is stored unmasked (e.g. 9856565677) without asterisks.
+     */
+    public function test_participant_phone_is_stored_unmasked_without_asterisks(): void
+    {
+        $uid = uniqid();
+        $response = $this->actingAs($this->superAdmin)->post('/participants', [
+            'name' => "Unmasked Trainee {$uid}",
+            'designation' => 'Panchayat Officer',
+            'office_name' => 'Khurda GP',
+            'phone' => '9856565677',
+            'email' => "unmasked_{$uid}@test.com",
+            'is_active' => 1,
+        ]);
+
+        $response->assertRedirect();
+        $participant = Participant::where('name', "Unmasked Trainee {$uid}")->first();
+        $this->assertNotNull($participant);
+        $this->assertEquals('9856565677', $participant->phone_masked);
+        $this->assertEquals('9856565677', $participant->phone);
+    }
+
+    /**
+     * Test participant list on batch attendance sheet is ordered by name ascending.
+     */
+    public function test_batch_attendance_participant_list_is_ordered_by_name_ascending(): void
+    {
+        $batch = TrainingBatch::first();
+        // Clear existing batch participants for this test
+        $batch->batchParticipants()->delete();
+
+        $names = ['shayam', 'don', 'Manoj Kumar Dash', 'king'];
+        foreach ($names as $idx => $name) {
+            $p = Participant::create([
+                'name' => $name,
+                'designation' => 'Staff',
+                'office_name' => 'GP Office',
+                'is_active' => true,
+                'created_by' => $this->superAdmin->id,
+            ]);
+            BatchParticipant::create([
+                'training_batch_id' => $batch->id,
+                'participant_id' => $p->id,
+                'serial_number' => $idx + 1,
+            ]);
+        }
+
+        $response = $this->actingAs($this->superAdmin)->get("/batches/{$batch->id}/attendance");
+        $response->assertOk();
+
+        // Check that names appear in case-insensitive alphabetical order: don, king, Manoj Kumar Dash, shayam
+        $content = $response->getContent();
+        $posDon = strpos($content, '<div>don</div>');
+        $posKing = strpos($content, '<div>king</div>');
+        $posManoj = strpos($content, '<div>Manoj Kumar Dash</div>');
+        $posShayam = strpos($content, '<div>shayam</div>');
+
+        $this->assertNotFalse($posDon, "'<div>don</div>' must exist in response");
+        $this->assertNotFalse($posKing, "'<div>king</div>' must exist in response");
+        $this->assertNotFalse($posManoj, "'<div>Manoj Kumar Dash</div>' must exist in response");
+        $this->assertNotFalse($posShayam, "'<div>shayam</div>' must exist in response");
+
+        $this->assertTrue($posDon < $posKing, "'don' must appear before 'king'");
+        $this->assertTrue($posKing < $posManoj, "'king' must appear before 'Manoj Kumar Dash'");
+        $this->assertTrue($posManoj < $posShayam, "'Manoj Kumar Dash' must appear before 'shayam'");
+    }
+
+    /**
+     * Test editing participant can assign or change their training batch.
+     */
+    public function test_edit_participant_can_change_or_assign_batch(): void
+    {
+        $batch1 = TrainingBatch::first();
+        $batch2 = TrainingBatch::skip(1)->first();
+        $this->assertNotNull($batch1);
+        $this->assertNotNull($batch2);
+
+        $uid = uniqid();
+        $participant = Participant::create([
+            'name' => "Batch Move Trainee {$uid}",
+            'designation' => 'PEO',
+            'office_name' => 'Block Office',
+            'phone_masked' => '9856565677',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+
+        // 1. Assign participant to Batch 1 via edit
+        $response1 = $this->actingAs($this->superAdmin)->put("/participants/{$participant->id}", [
+            'name' => $participant->name,
+            'designation' => $participant->designation,
+            'office_name' => $participant->office_name,
+            'phone' => '9856565677',
+            'batch_id' => $batch1->id,
+            'is_active' => 1,
+        ]);
+        $response1->assertRedirect();
+
+        $bp1 = BatchParticipant::where('participant_id', $participant->id)->first();
+        $this->assertNotNull($bp1);
+        $this->assertEquals($batch1->id, $bp1->training_batch_id);
+
+        // 2. Change participant to Batch 2 via edit
+        $response2 = $this->actingAs($this->superAdmin)->put("/participants/{$participant->id}", [
+            'name' => $participant->name,
+            'designation' => $participant->designation,
+            'office_name' => $participant->office_name,
+            'phone' => '9856565677',
+            'batch_id' => $batch2->id,
+            'is_active' => 1,
+        ]);
+        $response2->assertRedirect();
+
+        $bp2 = BatchParticipant::where('participant_id', $participant->id)->first();
+        $this->assertNotNull($bp2);
+        $this->assertEquals($batch2->id, $bp2->training_batch_id);
+        $this->assertEquals(0, BatchParticipant::where('participant_id', $participant->id)->where('training_batch_id', $batch1->id)->count());
+
+        // 3. Unassign batch (move to general roster) via edit
+        $response3 = $this->actingAs($this->superAdmin)->put("/participants/{$participant->id}", [
+            'name' => $participant->name,
+            'designation' => $participant->designation,
+            'office_name' => $participant->office_name,
+            'phone' => '9856565677',
+            'batch_id' => '',
+            'is_active' => 1,
+        ]);
+        $response3->assertRedirect();
+
+        $this->assertEquals(0, BatchParticipant::where('participant_id', $participant->id)->count());
     }
 }
