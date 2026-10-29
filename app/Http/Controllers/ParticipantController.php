@@ -152,17 +152,15 @@ class ParticipantController extends Controller
             'department' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'regex:/^[6-9]\d{9}$/'],
             'email' => ['nullable', 'email', 'max:255'],
-            'batch_id' => ['nullable', 'exists:training_batches,id'],
+            'batch_id' => ['required', 'exists:training_batches,id'],
             'is_active' => ['nullable', 'boolean'],
         ], [
+            'batch_id.required' => 'Target training batch selection is mandatory.',
             'phone.regex' => 'Contact phone number must be a valid 10-digit mobile number starting with 6, 7, 8, or 9.',
         ]);
 
-        $batch = null;
-        if (!empty($validated['batch_id'])) {
-            $batch = TrainingBatch::findOrFail($validated['batch_id']);
-            $this->authorize('update', $batch);
-        }
+        $batch = TrainingBatch::findOrFail($validated['batch_id']);
+        $this->authorize('update', $batch);
 
         $name = trim($validated['name']);
         $designation = trim($validated['designation']);
@@ -413,17 +411,15 @@ class ParticipantController extends Controller
 
         $validated = $request->validate([
             'file' => ['required', 'file', 'mimes:xlsx,xls,csv,txt', 'max:10240'],
-            'batch_id' => ['nullable', 'exists:training_batches,id'],
+            'batch_id' => ['required', 'exists:training_batches,id'],
         ], [
+            'batch_id.required' => 'Target training batch selection is mandatory.',
             'file.mimes' => 'The uploaded file must be an Excel spreadsheet (.xlsx, .xls) or CSV file.',
             'file.max' => 'The uploaded file must not exceed 10 megabytes.',
         ]);
 
-        $batch = null;
-        if (!empty($validated['batch_id'])) {
-            $batch = TrainingBatch::findOrFail($validated['batch_id']);
-            $this->authorize('update', $batch);
-        }
+        $batch = TrainingBatch::findOrFail($validated['batch_id']);
+        $this->authorize('update', $batch);
 
         try {
             $result = $importService->importFromExcel($request->file('file'), $batch, Auth::user());

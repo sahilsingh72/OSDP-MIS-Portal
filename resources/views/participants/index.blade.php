@@ -111,6 +111,7 @@
             </a> -->
 
             @can('participants.manage')
+            @unless(auth()->user()->hasRole('super-admin'))
             <button type="button" @click="openCreate()"
                 class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-600/20 transition flex items-center space-x-2">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -126,6 +127,7 @@
                 </svg>
                 <span>Bulk Upload (Excel)</span>
             </button>
+            @endunless
             @endcan
         </div>
     </div>
@@ -302,10 +304,12 @@
                             <span>Form 2 Attendance</span>
                         </a>
 
+                        @unless(auth()->user()->hasRole('super-admin'))
                         <button type="button" @click="createForm.batch_id = '{{ $b->id }}'; createModalOpen = true" class="text-blue-600 hover:text-blue-700 font-medium transition inline-flex items-center space-x-0.5">
                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             <span>Add Trainee</span>
                         </button>
+                        @endunless
                     </div>
                 </div>
             </div>
@@ -555,9 +559,15 @@
                                 @if($status === 'trashed')
                                     No soft-deleted participants found in Trash.
                                 @elseif($selectedBatch)
-                                    No participants enrolled in batch {{ $selectedBatch->batch_code }} yet. Click "+ Add Participant" or "Bulk Upload (Excel)" to enroll participants.
+                                    No participants enrolled in batch {{ $selectedBatch->batch_code }} yet.
+                                    @unless(auth()->user()->hasRole('super-admin'))
+                                        Click "+ Add Participant" or "Bulk Upload (Excel)" to enroll participants.
+                                    @endunless
                                 @else
-                                    No participants found matching your criteria. Use "+ Add Participant" or "Bulk Upload (Excel)" to register participants.
+                                    No participants found matching your criteria.
+                                    @unless(auth()->user()->hasRole('super-admin'))
+                                        Use "+ Add Participant" or "Bulk Upload (Excel)" to register participants.
+                                    @endunless
                                 @endif
                             </td>
                         </tr>
@@ -651,18 +661,18 @@
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
                         </div>
 
-                        <!-- Target Training Batch (Optional) -->
+                        <!-- Target Training Batch (Mandatory) -->
                         <div class="sm:col-span-2">
                             <label class="block font-semibold text-slate-700 mb-1">
-                                Target Training Batch <span class="text-slate-400 font-normal">(Optional instant enrollment)</span>
+                                Target Training Batch <span class="text-rose-500">*</span>
                             </label>
                             <div class="relative">
-                                <select name="batch_id" x-model="createForm.batch_id"
+                                <select name="batch_id" x-model="createForm.batch_id" required
                                     class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition">
-                                    <option value="">-- General Roster (No specific batch) --</option>
+                                    <option value="" disabled :selected="!createForm.batch_id">-- Select Target Training Batch (Mandatory) --</option>
                                     @foreach($batches as $b)
                                         <option value="{{ $b->id }}">
-                                            {{ $b->batch_code }} &bull; {{ $b->district?->name }} ({{ $b->scheduled_date->format('d/m/Y') }})
+                                            {{ $b->batch_code }} &bull; {{ $b->district?->name }} ({{ $b->scheduled_date ? $b->scheduled_date->format('d/m/Y') : 'TBD' }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -990,14 +1000,14 @@
                         </a>
                     </div>
 
-                    <!-- Target Training Batch (Optional) -->
+                    <!-- Target Training Batch (Mandatory) -->
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1.5">
-                            Target Training Batch <span class="text-slate-400 font-normal">(Optional enrollment)</span>
+                            Target Training Batch <span class="text-rose-500">*</span>
                         </label>
                         <div class="relative">
-                            <select name="batch_id" class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition">
-                                <option value="">-- General Roster (No specific batch) --</option>
+                            <select name="batch_id" required class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition">
+                                <option value="" disabled {{ empty($selectedBatch?->id ?? request('batch_id')) ? 'selected' : '' }}>-- Select Target Training Batch (Mandatory) --</option>
                                 @foreach($batches as $b)
                                     <option value="{{ $b->id }}" {{ ($selectedBatch?->id ?? request('batch_id')) == $b->id ? 'selected' : '' }}>
                                         {{ $b->batch_code }} &bull; {{ $b->district?->name }} ({{ $b->scheduled_date ? $b->scheduled_date->format('d/m/Y') : 'TBD' }})

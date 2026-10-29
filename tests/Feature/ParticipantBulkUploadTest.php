@@ -209,9 +209,11 @@ class ParticipantBulkUploadTest extends TestCase
         ];
 
         $file = $this->createTestExcelFile($rows);
+        $batch = TrainingBatch::first();
 
         $response = $this->actingAs($admin)->post('/participants/import', [
             'file' => $file,
+            'batch_id' => $batch->id,
         ]);
 
         $response->assertRedirect();

@@ -54,6 +54,7 @@
     </div>
 
     <!-- Participant Enrollment (Bulk Excel Upload & Manual Transcription) -->
+    @unless(auth()->user()->hasRole('super-admin'))
     <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm" x-data="{ mode: 'excel' }">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
             <div class="flex items-center space-x-3">
@@ -219,6 +220,7 @@
             </form>
         </div>
     </div>
+    @endunless
 
     <!-- Attendance Transcription Form -->
     <form action="{{ route('batches.attendance.update', $batch) }}" method="POST" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
@@ -291,7 +293,10 @@
                     @empty
                     <tr>
                         <td colspan="7" class="px-6 py-12 text-center text-slate-400">
-                            No active participants enrolled yet. Use the "Add New Participant" section above to transcribe the paper sheet.
+                            No active participants enrolled yet.
+                            @unless(auth()->user()->hasRole('super-admin'))
+                                Use the enrollment section above to add attendees or import an Excel sheet.
+                            @endunless
                         </td>
                     </tr>
                     @endforelse

@@ -531,6 +531,7 @@ class ParticipantManagementTest extends TestCase
      */
     public function test_user_can_add_single_participant_to_directory(): void
     {
+        $batch = TrainingBatch::first();
         $uid = uniqid();
         $name = "Individual Trainee {$uid}";
         $email = "trainee_{$uid}@odisha.gov.in";
@@ -542,6 +543,7 @@ class ParticipantManagementTest extends TestCase
             'department' => 'PR & DW',
             'phone' => '9861234567',
             'email' => $email,
+            'batch_id' => $batch->id,
             'is_active' => 1,
         ]);
 
@@ -620,7 +622,7 @@ class ParticipantManagementTest extends TestCase
             'office_name' => '',
         ]);
 
-        $response->assertSessionHasErrors(['name', 'designation', 'office_name']);
+        $response->assertSessionHasErrors(['name', 'designation', 'office_name', 'batch_id']);
     }
 
     /**
@@ -628,6 +630,8 @@ class ParticipantManagementTest extends TestCase
      */
     public function test_participant_phone_validation_rules(): void
     {
+        $batch = TrainingBatch::first();
+
         // 1. Valid numbers starting with 6, 7, 8, 9 pass
         $validPhones = ['9856565677', '8765432109', '7012345678', '6234567890'];
         foreach ($validPhones as $phone) {
@@ -636,6 +640,7 @@ class ParticipantManagementTest extends TestCase
                 'designation' => 'Staff',
                 'office_name' => 'GP Office',
                 'phone' => $phone,
+                'batch_id' => $batch->id,
             ]);
             $response->assertSessionHasNoErrors();
         }
@@ -652,6 +657,7 @@ class ParticipantManagementTest extends TestCase
                 'designation' => 'Staff',
                 'office_name' => 'GP Office',
                 'phone' => $badPhone,
+                'batch_id' => $batch->id,
             ]);
             $response->assertSessionHasErrors('phone');
         }
@@ -723,6 +729,7 @@ class ParticipantManagementTest extends TestCase
      */
     public function test_participant_phone_is_stored_unmasked_without_asterisks(): void
     {
+        $batch = TrainingBatch::first();
         $uid = uniqid();
         $response = $this->actingAs($this->superAdmin)->post('/participants', [
             'name' => "Unmasked Trainee {$uid}",
@@ -730,6 +737,7 @@ class ParticipantManagementTest extends TestCase
             'office_name' => 'Khurda GP',
             'phone' => '9856565677',
             'email' => "unmasked_{$uid}@test.com",
+            'batch_id' => $batch->id,
             'is_active' => 1,
         ]);
 
@@ -960,5 +968,67 @@ class ParticipantManagementTest extends TestCase
         $testedBatch = $batches->firstWhere('id', $batch->id);
         $this->assertNotNull($testedBatch);
         $this->assertEquals(2, $testedBatch->batch_participants_count);
+    }
+
+    /**
+     * Test target training batch selection is strictly mandatory for both single add and bulk import.
+     */
+    public function test_batch_id_is_strictly_mandatory_for_single_add_and_bulk_upload(): void
+    {
+        // 1. Single participant without batch_id
+        $singleResponse = $this->actingAs($this->superAdmin)->post('/participants', [
+            'name' => 'Batchless Trainee',
+            'designation' => 'Staff',
+            'office_name' => 'GP Office',
+            'phone' => '9876543210',
+        ]);
+        $singleResponse->assertSessionHasErrors(['batch_id' => 'Target training batch selection is mandatory.']);
+
+        // 2. Bulk upload without batch_id
+        $file = \Illuminate\Http\UploadedFile::fake()->create('participants.csv', 100, 'text/csv');
+        $bulkResponse = $this->actingAs($this->superAdmin)->post('/participants/import', [
+            'file' => $file,
+        ]);
+        $bulkResponse->assertSessionHasErrors(['batch_id' => 'Target training batch selection is mandatory.']);
+    }
+
+    /**
+     * Test super admin cannot see the Add Participant or Bulk Upload options on participants index.
+     */
+    public function test_super_admin_does_not_see_add_participant_or_bulk_upload_options(): void
+    {
+        // Super admin should not see the add or bulk upload options
+        $adminResponse = $this->actingAs($this->superAdmin)->get('/participants');
+        $adminResponse->assertOk();
+        $adminResponse->assertDontSee('Add Participant');
+        $adminResponse->assertDontSee('Bulk Upload (Excel)');
+        $adminResponse->assertDontSee('Add Trainee');
+
+        // District coordinator or other authorized managers should see them
+        $batch = TrainingBatch::first();
+        $this->creatorUser->assignedDistricts()->sync([$batch->district_id]);
+
+        $coordinatorResponse = $this->actingAs($this->creatorUser)->get('/participants');
+        $coordinatorResponse->assertOk();
+        $coordinatorResponse->assertSee('Add Participant');
+        $coordinatorResponse->assertSee('Bulk Upload (Excel)');
+        $coordinatorResponse->assertSee('Add Trainee');
+
+        // Check Participant Attendance Register (/batches/{id}/attendance)
+        $adminAttendanceResp = $this->actingAs($this->superAdmin)->get("/batches/{$batch->id}/attendance");
+        $adminAttendanceResp->assertOk();
+        $adminAttendanceResp->assertDontSee('Enroll Participants into Batch');
+        $adminAttendanceResp->assertDontSee('Bulk Upload (Excel)');
+        $adminAttendanceResp->assertDontSee('Single Entry');
+        $adminAttendanceResp->assertDontSee('Import & Enroll');
+        $adminAttendanceResp->assertDontSee('Add & Enroll');
+
+        $coordAttendanceResp = $this->actingAs($this->creatorUser)->get("/batches/{$batch->id}/attendance");
+        $coordAttendanceResp->assertOk();
+        $coordAttendanceResp->assertSee('Enroll Participants into Batch');
+        $coordAttendanceResp->assertSee('Bulk Upload (Excel)');
+        $coordAttendanceResp->assertSee('Single Entry');
+        $coordAttendanceResp->assertSee('Import & Enroll', false);
+        $coordAttendanceResp->assertSee('Add & Enroll', false);
     }
 }
