@@ -113,6 +113,13 @@ class TrainingBatch extends Model
         return $this->hasMany(BatchParticipant::class);
     }
 
+    public function activeBatchParticipants(): HasMany
+    {
+        return $this->hasMany(BatchParticipant::class)->whereHas('participant', function ($q) {
+            $q->whereNull('deleted_at');
+        });
+    }
+
     public function attendanceRecords(): HasMany
     {
         return $this->hasMany(AttendanceRecord::class);

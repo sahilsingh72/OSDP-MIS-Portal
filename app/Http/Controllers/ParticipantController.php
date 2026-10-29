@@ -61,6 +61,46 @@ class ParticipantController extends Controller
             $trashedCount = $user->hasRole('ocac') ? 0 : Participant::onlyTrashed()->count();
         }
 
+        // Batches query for batch selection screen and dropdowns
+        $batchQuery = TrainingBatch::forUserScope($user)
+            ->with(['district', 'block', 'tier', 'venue'])
+            ->withCount(['activeBatchParticipants as batch_participants_count']);
+
+        if ($request->filled('batch_search')) {
+            $bSearch = $request->input('batch_search');
+            $batchQuery->where(function ($q) use ($bSearch) {
+                $q->where('batch_code', 'like', "%{$bSearch}%")
+                  ->orWhereHas('district', fn($d) => $d->where('name', 'like', "%{$bSearch}%"))
+                  ->orWhereHas('block', fn($bl) => $bl->where('name', 'like', "%{$bSearch}%"))
+                  ->orWhereHas('venue', fn($v) => $v->where('name', 'like', "%{$bSearch}%"));
+            });
+        }
+
+        if ($request->filled('tier_id')) {
+            $batchQuery->where('training_tier_id', $request->input('tier_id'));
+        }
+
+        $batches = (clone $batchQuery)->orderByDesc('scheduled_date')->get();
+
+        // Selected batch detection
+        $selectedBatchId = $request->input('batch_id');
+        $selectedBatch = null;
+        if (!empty($selectedBatchId)) {
+            $selectedBatch = TrainingBatch::forUserScope($user)
+                ->with(['district', 'block', 'tier', 'venue'])
+                ->withCount(['activeBatchParticipants as batch_participants_count'])
+                ->find($selectedBatchId);
+        }
+
+        // Determine if batch selection should be presented first
+        // Shows batches first when:
+        // 1. No batch is selected
+        // 2. Not explicitly viewing all participants (?all_participants=1)
+        // 3. Not searching participants directly (?search=...)
+        // 4. Not viewing trashed participants (?status=trashed)
+        $isAllView = $request->boolean('all_participants') || ($request->filled('search') && empty($selectedBatchId));
+        $showBatchesFirst = empty($selectedBatch) && !$isAllView && $status !== 'trashed';
+
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
@@ -71,20 +111,31 @@ class ParticipantController extends Controller
             });
         }
 
-        if ($request->filled('batch_id')) {
+        if ($selectedBatch) {
+            $query->whereHas('batches', function ($q) use ($selectedBatch) {
+                $q->where('training_batches.id', $selectedBatch->id);
+            });
+        } elseif ($request->filled('batch_id')) {
             $query->whereHas('batches', function ($q) use ($request) {
                 $q->where('training_batches.id', $request->input('batch_id'));
             });
         }
 
-        $participants = $query->orderBy('name')->paginate(20)->withQueryString();
+        $participants = $query->orderByRaw('LOWER(name) ASC')->paginate(20)->withQueryString();
 
-        $batches = TrainingBatch::forUserScope($user)
-            ->orderByDesc('scheduled_date')
-            ->limit(100)
-            ->get();
+        $tiers = \App\Models\TrainingTier::orderBy('id')->get();
 
-        return view('participants.index', compact('participants', 'batches', 'activeCount', 'trashedCount', 'status'));
+        return view('participants.index', compact(
+            'participants',
+            'batches',
+            'selectedBatch',
+            'showBatchesFirst',
+            'isAllView',
+            'tiers',
+            'activeCount',
+            'trashedCount',
+            'status'
+        ));
     }
 
     /**
@@ -99,17 +150,17 @@ class ParticipantController extends Controller
             'designation' => ['required', 'string', 'max:255'],
             'office_name' => ['required', 'string', 'max:255'],
             'department' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'phone' => ['nullable', 'string', 'regex:/^[6-9]\d{9}$/'],
             'email' => ['nullable', 'email', 'max:255'],
-            'batch_id' => ['nullable', 'exists:training_batches,id'],
+            'batch_id' => ['required', 'exists:training_batches,id'],
             'is_active' => ['nullable', 'boolean'],
+        ], [
+            'batch_id.required' => 'Target training batch selection is mandatory.',
+            'phone.regex' => 'Contact phone number must be a valid 10-digit mobile number starting with 6, 7, 8, or 9.',
         ]);
 
-        $batch = null;
-        if (!empty($validated['batch_id'])) {
-            $batch = TrainingBatch::findOrFail($validated['batch_id']);
-            $this->authorize('update', $batch);
-        }
+        $batch = TrainingBatch::findOrFail($validated['batch_id']);
+        $this->authorize('update', $batch);
 
         $name = trim($validated['name']);
         $designation = trim($validated['designation']);
@@ -118,17 +169,11 @@ class ParticipantController extends Controller
         $email = !empty($validated['email']) ? strtolower(trim($validated['email'])) : null;
         $isActive = $request->has('is_active') ? $request->boolean('is_active') : true;
 
-        $phone = $validated['phone'] ?? null;
-        $phoneMasked = null;
-        if (!empty($phone) && !str_contains($phone, '*')) {
-            $digits = preg_replace('/[^0-9]/', '', $phone);
-            if (strlen($digits) >= 10) {
-                $phoneMasked = substr($digits, 0, 2) . '******' . substr($digits, -2);
-            } else {
-                $phoneMasked = $phone;
-            }
-        } elseif (!empty($phone)) {
-            $phoneMasked = $phone;
+        $phone = !empty($validated['phone']) ? trim($validated['phone']) : null;
+        $cleanPhone = null;
+        if (!empty($phone)) {
+            $digits = preg_replace('/[^0-9+]/', '', $phone);
+            $cleanPhone = !empty($digits) ? $digits : $phone;
         }
 
         $enrollmentStatus = '';
@@ -138,7 +183,7 @@ class ParticipantController extends Controller
             $designation,
             $officeName,
             $department,
-            $phoneMasked,
+            $cleanPhone,
             $email,
             $isActive,
             $batch,
@@ -155,7 +200,7 @@ class ParticipantController extends Controller
                     'designation' => $designation,
                     'department' => $department,
                     'office_name' => $officeName,
-                    'phone_masked' => $phoneMasked,
+                    'phone_masked' => $cleanPhone,
                     'email' => $email,
                     'is_active' => $isActive,
                     'created_by' => Auth::id(),
@@ -172,7 +217,7 @@ class ParticipantController extends Controller
                 $participant->update([
                     'designation' => $designation ?: $participant->designation,
                     'department' => $department ?: $participant->department,
-                    'phone_masked' => $phoneMasked ?: $participant->phone_masked,
+                    'phone_masked' => $cleanPhone ?: $participant->phone_masked,
                     'email' => $email ?: $participant->email,
                     'is_active' => $isActive,
                 ]);
@@ -229,37 +274,81 @@ class ParticipantController extends Controller
             'designation' => ['required', 'string', 'max:255'],
             'office_name' => ['required', 'string', 'max:255'],
             'department' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'phone' => ['nullable', 'string', 'regex:/^[6-9]\d{9}$/'],
             'email' => ['nullable', 'email', 'max:255'],
+            'batch_id' => ['nullable', 'exists:training_batches,id'],
             'is_active' => ['nullable', 'boolean'],
+        ], [
+            'phone.regex' => 'Contact phone number must be a valid 10-digit mobile number starting with 6, 7, 8, or 9.',
         ]);
 
-        $phone = $validated['phone'] ?? null;
-        $phoneMasked = $participant->phone_masked;
+        $newBatch = null;
+        if (!empty($validated['batch_id'])) {
+            $newBatch = TrainingBatch::findOrFail($validated['batch_id']);
+            $this->authorize('update', $newBatch);
+        }
+
+        $phone = !empty($validated['phone']) ? trim($validated['phone']) : null;
+        $cleanPhone = $participant->phone_masked;
         if (!empty($phone) && !str_contains($phone, '*')) {
-            $digits = preg_replace('/[^0-9]/', '', $phone);
-            if (strlen($digits) >= 10) {
-                $phoneMasked = substr($digits, 0, 2) . '******' . substr($digits, -2);
-            } else {
-                $phoneMasked = $phone;
-            }
+            $digits = preg_replace('/[^0-9+]/', '', $phone);
+            $cleanPhone = !empty($digits) ? $digits : $phone;
         } elseif (empty($phone)) {
-            $phoneMasked = null;
+            $cleanPhone = null;
         }
 
         $oldData = $participant->toArray();
 
-        $participant->update([
-            'name' => $validated['name'],
-            'designation' => $validated['designation'],
-            'office_name' => $validated['office_name'],
-            'department' => $validated['department'] ?? null,
-            'phone_masked' => $phoneMasked,
-            'email' => !empty($validated['email']) ? strtolower(trim($validated['email'])) : null,
-            'is_active' => $request->has('is_active') ? $request->boolean('is_active') : $participant->is_active,
-        ]);
+        DB::transaction(function () use ($participant, $validated, $cleanPhone, $request, $newBatch, $oldData) {
+            $participant->update([
+                'name' => $validated['name'],
+                'designation' => $validated['designation'],
+                'office_name' => $validated['office_name'],
+                'department' => $validated['department'] ?? null,
+                'phone_masked' => $cleanPhone,
+                'email' => !empty($validated['email']) ? strtolower(trim($validated['email'])) : null,
+                'is_active' => $request->has('is_active') ? $request->boolean('is_active') : $participant->is_active,
+            ]);
 
-        AuditLog::record('participant_updated', $participant, $oldData, $participant->getChanges());
+            // Handle Batch Allocation Change ONLY if batch_id field is present in the request
+            if ($request->has('batch_id')) {
+                $newBatchId = $newBatch?->id;
+                $currentBp = BatchParticipant::where('participant_id', $participant->id)->first();
+                $currentBatchId = $currentBp?->training_batch_id;
+
+                if ($newBatchId !== $currentBatchId) {
+                    // If enrolled in an old batch, remove and recalculate
+                    if ($currentBp) {
+                        $oldBatch = TrainingBatch::find($currentBatchId);
+                        $currentBp->delete();
+                        $oldBatch?->recalculateCounts();
+                    }
+
+                    // If enrolled in a new batch, create enrollment and initialize attendance
+                    if ($newBatch) {
+                        $nextSerial = $newBatch->batchParticipants()->count() + 1;
+                        $newBp = BatchParticipant::create([
+                            'training_batch_id' => $newBatch->id,
+                            'participant_id' => $participant->id,
+                            'serial_number' => $nextSerial,
+                        ]);
+
+                        AttendanceRecord::create([
+                            'training_batch_id' => $newBatch->id,
+                            'batch_participant_id' => $newBp->id,
+                            'morning_present' => false,
+                            'afternoon_present' => false,
+                            'remarks' => null,
+                            'marked_by' => null,
+                        ]);
+
+                        $newBatch->recalculateCounts();
+                    }
+                }
+            }
+
+            AuditLog::record('participant_updated', $participant, $oldData, $participant->getChanges());
+        });
 
         return back()->with('status', "Participant '{$participant->name}' updated successfully.");
     }
@@ -322,17 +411,15 @@ class ParticipantController extends Controller
 
         $validated = $request->validate([
             'file' => ['required', 'file', 'mimes:xlsx,xls,csv,txt', 'max:10240'],
-            'batch_id' => ['nullable', 'exists:training_batches,id'],
+            'batch_id' => ['required', 'exists:training_batches,id'],
         ], [
+            'batch_id.required' => 'Target training batch selection is mandatory.',
             'file.mimes' => 'The uploaded file must be an Excel spreadsheet (.xlsx, .xls) or CSV file.',
             'file.max' => 'The uploaded file must not exceed 10 megabytes.',
         ]);
 
-        $batch = null;
-        if (!empty($validated['batch_id'])) {
-            $batch = TrainingBatch::findOrFail($validated['batch_id']);
-            $this->authorize('update', $batch);
-        }
+        $batch = TrainingBatch::findOrFail($validated['batch_id']);
+        $this->authorize('update', $batch);
 
         try {
             $result = $importService->importFromExcel($request->file('file'), $batch, Auth::user());

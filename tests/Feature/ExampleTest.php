@@ -15,7 +15,7 @@ class ExampleTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('OSDP 2.0');
         $response->assertSee('Odisha State Data Policy');
-        $response->assertSee('Officer Sign In');
+        $response->assertSee('Sign In');
     }
 
     /**

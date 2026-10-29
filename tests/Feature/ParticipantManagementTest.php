@@ -97,7 +97,8 @@ class ParticipantManagementTest extends TestCase
 
         $this->assertEquals('Updated Name By Creator', $participant->name);
         $this->assertEquals('Senior Officer', $participant->designation);
-        $this->assertEquals('98******10', $participant->phone_masked);
+        $this->assertEquals('9876543210', $participant->phone_masked);
+        $this->assertEquals('9876543210', $participant->phone);
     }
 
     /**
@@ -310,7 +311,8 @@ class ParticipantManagementTest extends TestCase
         $this->assertEquals('Panchayat Officer', $participant->designation);
         $this->assertEquals('Khurda Sadar GP', $participant->office_name);
         $this->assertEquals($email, $participant->email);
-        $this->assertEquals('98******87', $participant->phone_masked);
+        $this->assertEquals('9861099887', $participant->phone_masked);
+        $this->assertEquals('9861099887', $participant->phone);
         $this->assertEquals($this->superAdmin->id, $participant->created_by);
 
         // Verify enrolled in batch
@@ -529,6 +531,7 @@ class ParticipantManagementTest extends TestCase
      */
     public function test_user_can_add_single_participant_to_directory(): void
     {
+        $batch = TrainingBatch::first();
         $uid = uniqid();
         $name = "Individual Trainee {$uid}";
         $email = "trainee_{$uid}@odisha.gov.in";
@@ -540,6 +543,7 @@ class ParticipantManagementTest extends TestCase
             'department' => 'PR & DW',
             'phone' => '9861234567',
             'email' => $email,
+            'batch_id' => $batch->id,
             'is_active' => 1,
         ]);
 
@@ -551,7 +555,8 @@ class ParticipantManagementTest extends TestCase
         $this->assertEquals('Executive Officer', $participant->designation);
         $this->assertEquals('Baranga GP Office', $participant->office_name);
         $this->assertEquals('PR & DW', $participant->department);
-        $this->assertEquals('98******67', $participant->phone_masked);
+        $this->assertEquals('9861234567', $participant->phone_masked);
+        $this->assertEquals('9861234567', $participant->phone);
         $this->assertEquals($email, $participant->email);
         $this->assertTrue((bool) $participant->is_active);
         $this->assertEquals($this->superAdmin->id, $participant->created_by);
@@ -584,6 +589,8 @@ class ParticipantManagementTest extends TestCase
 
         $participant = Participant::where('name', $name)->first();
         $this->assertNotNull($participant);
+        $this->assertEquals('9437123456', $participant->phone_masked);
+        $this->assertEquals('9437123456', $participant->phone);
 
         $bp = BatchParticipant::where('training_batch_id', $batch->id)
             ->where('participant_id', $participant->id)
@@ -615,7 +622,45 @@ class ParticipantManagementTest extends TestCase
             'office_name' => '',
         ]);
 
-        $response->assertSessionHasErrors(['name', 'designation', 'office_name']);
+        $response->assertSessionHasErrors(['name', 'designation', 'office_name', 'batch_id']);
+    }
+
+    /**
+     * Test participant contact number validation: must be 10 digits starting with 6, 7, 8, or 9.
+     */
+    public function test_participant_phone_validation_rules(): void
+    {
+        $batch = TrainingBatch::first();
+
+        // 1. Valid numbers starting with 6, 7, 8, 9 pass
+        $validPhones = ['9856565677', '8765432109', '7012345678', '6234567890'];
+        foreach ($validPhones as $phone) {
+            $response = $this->actingAs($this->superAdmin)->post('/participants', [
+                'name' => 'Valid Phone ' . uniqid(),
+                'designation' => 'Staff',
+                'office_name' => 'GP Office',
+                'phone' => $phone,
+                'batch_id' => $batch->id,
+            ]);
+            $response->assertSessionHasNoErrors();
+        }
+
+        // 2. Invalid numbers fail with phone error:
+        // - Starting with 1, 2, 3, 4, 5
+        // - Fewer than 10 digits
+        // - More than 10 digits
+        // - Letters / symbols
+        $invalidPhones = ['5987654321', '1234567890', '98565', '98565656771', '98565abcde'];
+        foreach ($invalidPhones as $badPhone) {
+            $response = $this->actingAs($this->superAdmin)->post('/participants', [
+                'name' => 'Invalid Phone ' . uniqid(),
+                'designation' => 'Staff',
+                'office_name' => 'GP Office',
+                'phone' => $badPhone,
+                'batch_id' => $batch->id,
+            ]);
+            $response->assertSessionHasErrors('phone');
+        }
     }
 
     /**
@@ -677,5 +722,313 @@ class ParticipantManagementTest extends TestCase
         $adminResponse = $this->actingAs($this->superAdmin)->get('/participants');
         $adminResponse->assertOk();
         $adminResponse->assertSee('Trash / Deleted');
+    }
+
+    /**
+     * Test participant phone number is stored unmasked (e.g. 9856565677) without asterisks.
+     */
+    public function test_participant_phone_is_stored_unmasked_without_asterisks(): void
+    {
+        $batch = TrainingBatch::first();
+        $uid = uniqid();
+        $response = $this->actingAs($this->superAdmin)->post('/participants', [
+            'name' => "Unmasked Trainee {$uid}",
+            'designation' => 'Panchayat Officer',
+            'office_name' => 'Khurda GP',
+            'phone' => '9856565677',
+            'email' => "unmasked_{$uid}@test.com",
+            'batch_id' => $batch->id,
+            'is_active' => 1,
+        ]);
+
+        $response->assertRedirect();
+        $participant = Participant::where('name', "Unmasked Trainee {$uid}")->first();
+        $this->assertNotNull($participant);
+        $this->assertEquals('9856565677', $participant->phone_masked);
+        $this->assertEquals('9856565677', $participant->phone);
+    }
+
+    /**
+     * Test participant list on batch attendance sheet is ordered by name ascending.
+     */
+    public function test_batch_attendance_participant_list_is_ordered_by_name_ascending(): void
+    {
+        $batch = TrainingBatch::first();
+        // Clear existing batch participants for this test
+        $batch->batchParticipants()->delete();
+
+        $names = ['shayam', 'don', 'Manoj Kumar Dash', 'king'];
+        foreach ($names as $idx => $name) {
+            $p = Participant::create([
+                'name' => $name,
+                'designation' => 'Staff',
+                'office_name' => 'GP Office',
+                'is_active' => true,
+                'created_by' => $this->superAdmin->id,
+            ]);
+            BatchParticipant::create([
+                'training_batch_id' => $batch->id,
+                'participant_id' => $p->id,
+                'serial_number' => $idx + 1,
+            ]);
+        }
+
+        $response = $this->actingAs($this->superAdmin)->get("/batches/{$batch->id}/attendance");
+        $response->assertOk();
+
+        // Check that names appear in case-insensitive alphabetical order: don, king, Manoj Kumar Dash, shayam
+        $content = $response->getContent();
+        $posDon = strpos($content, '<div>don</div>');
+        $posKing = strpos($content, '<div>king</div>');
+        $posManoj = strpos($content, '<div>Manoj Kumar Dash</div>');
+        $posShayam = strpos($content, '<div>shayam</div>');
+
+        $this->assertNotFalse($posDon, "'<div>don</div>' must exist in response");
+        $this->assertNotFalse($posKing, "'<div>king</div>' must exist in response");
+        $this->assertNotFalse($posManoj, "'<div>Manoj Kumar Dash</div>' must exist in response");
+        $this->assertNotFalse($posShayam, "'<div>shayam</div>' must exist in response");
+
+        $this->assertTrue($posDon < $posKing, "'don' must appear before 'king'");
+        $this->assertTrue($posKing < $posManoj, "'king' must appear before 'Manoj Kumar Dash'");
+        $this->assertTrue($posManoj < $posShayam, "'Manoj Kumar Dash' must appear before 'shayam'");
+    }
+
+    /**
+     * Test editing participant can assign or change their training batch.
+     */
+    public function test_edit_participant_can_change_or_assign_batch(): void
+    {
+        $batch1 = TrainingBatch::first();
+        $batch2 = TrainingBatch::skip(1)->first();
+        $this->assertNotNull($batch1);
+        $this->assertNotNull($batch2);
+
+        $uid = uniqid();
+        $participant = Participant::create([
+            'name' => "Batch Move Trainee {$uid}",
+            'designation' => 'PEO',
+            'office_name' => 'Block Office',
+            'phone_masked' => '9856565677',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+
+        // 1. Assign participant to Batch 1 via edit
+        $response1 = $this->actingAs($this->superAdmin)->put("/participants/{$participant->id}", [
+            'name' => $participant->name,
+            'designation' => $participant->designation,
+            'office_name' => $participant->office_name,
+            'phone' => '9856565677',
+            'batch_id' => $batch1->id,
+            'is_active' => 1,
+        ]);
+        $response1->assertRedirect();
+
+        $bp1 = BatchParticipant::where('participant_id', $participant->id)->first();
+        $this->assertNotNull($bp1);
+        $this->assertEquals($batch1->id, $bp1->training_batch_id);
+
+        // 2. Change participant to Batch 2 via edit
+        $response2 = $this->actingAs($this->superAdmin)->put("/participants/{$participant->id}", [
+            'name' => $participant->name,
+            'designation' => $participant->designation,
+            'office_name' => $participant->office_name,
+            'phone' => '9856565677',
+            'batch_id' => $batch2->id,
+            'is_active' => 1,
+        ]);
+        $response2->assertRedirect();
+
+        $bp2 = BatchParticipant::where('participant_id', $participant->id)->first();
+        $this->assertNotNull($bp2);
+        $this->assertEquals($batch2->id, $bp2->training_batch_id);
+        $this->assertEquals(0, BatchParticipant::where('participant_id', $participant->id)->where('training_batch_id', $batch1->id)->count());
+
+        // 3. Unassign batch (move to general roster) via edit
+        $response3 = $this->actingAs($this->superAdmin)->put("/participants/{$participant->id}", [
+            'name' => $participant->name,
+            'designation' => $participant->designation,
+            'office_name' => $participant->office_name,
+            'phone' => '9856565677',
+            'batch_id' => '',
+            'is_active' => 1,
+        ]);
+        $response3->assertRedirect();
+
+        $this->assertEquals(0, BatchParticipant::where('participant_id', $participant->id)->count());
+    }
+
+    /**
+     * Test Participants Directory shows batches first before a batch is selected.
+     */
+    public function test_participants_directory_shows_batches_first_before_batch_is_selected(): void
+    {
+        $batch = TrainingBatch::first();
+        $this->assertNotNull($batch);
+
+        $response = $this->actingAs($this->superAdmin)->get('/participants');
+        $response->assertOk();
+        $response->assertViewHas('showBatchesFirst', true);
+        $response->assertSee('Step 1: Choose a Training Batch');
+        $response->assertSee('Select Batch & View Trainees', false);
+        $response->assertSee($batch->batch_code);
+    }
+
+    /**
+     * Test selecting a batch shows participants roster for that specific batch.
+     */
+    public function test_selecting_batch_shows_participants_for_that_batch(): void
+    {
+        $batch = TrainingBatch::first();
+        $this->assertNotNull($batch);
+
+        $uid = uniqid();
+        $participant = Participant::create([
+            'name' => "Batch Specific Trainee {$uid}",
+            'designation' => 'Panchayat Officer',
+            'office_name' => 'Khurda GP Office',
+            'phone_masked' => '9856565677',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+
+        BatchParticipant::create([
+            'training_batch_id' => $batch->id,
+            'participant_id' => $participant->id,
+            'serial_number' => 1,
+        ]);
+
+        $response = $this->actingAs($this->superAdmin)->get("/participants?batch_id={$batch->id}");
+        $response->assertOk();
+        $response->assertViewHas('showBatchesFirst', false);
+        $response->assertSee('Active Batch Roster');
+        $response->assertSee('Switch Batch');
+        $response->assertSee("Batch Specific Trainee {$uid}");
+    }
+
+    /**
+     * Test viewing all participants via all_participants parameter shows master roster.
+     */
+    public function test_view_all_participants_shows_master_roster(): void
+    {
+        $response = $this->actingAs($this->superAdmin)->get('/participants?all_participants=1');
+        $response->assertOk();
+        $response->assertViewHas('showBatchesFirst', false);
+        $response->assertSee('All Participants Directory (General Master Roster)');
+    }
+
+    /**
+     * Test soft-deleted participants are not included in the enrolled trainees count.
+     */
+    public function test_deleted_participants_are_not_included_in_enrolled_trainees_count(): void
+    {
+        $batch = TrainingBatch::first();
+        $this->assertNotNull($batch);
+
+        // Clear existing participants in this batch for deterministic count test
+        $batch->batchParticipants()->delete();
+
+        // Create 2 active participants
+        $p1 = Participant::create([
+            'name' => 'Active Trainee 1',
+            'designation' => 'Staff',
+            'office_name' => 'GP Office',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+        $p2 = Participant::create([
+            'name' => 'Active Trainee 2',
+            'designation' => 'Staff',
+            'office_name' => 'GP Office',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+
+        // Create 1 deleted participant
+        $p3 = Participant::create([
+            'name' => 'Deleted Trainee 3',
+            'designation' => 'Staff',
+            'office_name' => 'GP Office',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+
+        BatchParticipant::create(['training_batch_id' => $batch->id, 'participant_id' => $p1->id, 'serial_number' => 1]);
+        BatchParticipant::create(['training_batch_id' => $batch->id, 'participant_id' => $p2->id, 'serial_number' => 2]);
+        BatchParticipant::create(['training_batch_id' => $batch->id, 'participant_id' => $p3->id, 'serial_number' => 3]);
+
+        // Soft-delete participant 3
+        $p3->delete();
+
+        $response = $this->actingAs($this->superAdmin)->get('/participants');
+        $response->assertOk();
+
+        // Batches view must report 2 active participants, NOT 3
+        $batches = $response->viewData('batches');
+        $testedBatch = $batches->firstWhere('id', $batch->id);
+        $this->assertNotNull($testedBatch);
+        $this->assertEquals(2, $testedBatch->batch_participants_count);
+    }
+
+    /**
+     * Test target training batch selection is strictly mandatory for both single add and bulk import.
+     */
+    public function test_batch_id_is_strictly_mandatory_for_single_add_and_bulk_upload(): void
+    {
+        // 1. Single participant without batch_id
+        $singleResponse = $this->actingAs($this->superAdmin)->post('/participants', [
+            'name' => 'Batchless Trainee',
+            'designation' => 'Staff',
+            'office_name' => 'GP Office',
+            'phone' => '9876543210',
+        ]);
+        $singleResponse->assertSessionHasErrors(['batch_id' => 'Target training batch selection is mandatory.']);
+
+        // 2. Bulk upload without batch_id
+        $file = \Illuminate\Http\UploadedFile::fake()->create('participants.csv', 100, 'text/csv');
+        $bulkResponse = $this->actingAs($this->superAdmin)->post('/participants/import', [
+            'file' => $file,
+        ]);
+        $bulkResponse->assertSessionHasErrors(['batch_id' => 'Target training batch selection is mandatory.']);
+    }
+
+    /**
+     * Test super admin cannot see the Add Participant or Bulk Upload options on participants index.
+     */
+    public function test_super_admin_does_not_see_add_participant_or_bulk_upload_options(): void
+    {
+        // Super admin should not see the add or bulk upload options
+        $adminResponse = $this->actingAs($this->superAdmin)->get('/participants');
+        $adminResponse->assertOk();
+        $adminResponse->assertDontSee('Add Participant');
+        $adminResponse->assertDontSee('Bulk Upload (Excel)');
+        $adminResponse->assertDontSee('Add Trainee');
+
+        // District coordinator or other authorized managers should see them
+        $batch = TrainingBatch::first();
+        $this->creatorUser->assignedDistricts()->sync([$batch->district_id]);
+
+        $coordinatorResponse = $this->actingAs($this->creatorUser)->get('/participants');
+        $coordinatorResponse->assertOk();
+        $coordinatorResponse->assertSee('Add Participant');
+        $coordinatorResponse->assertSee('Bulk Upload (Excel)');
+        $coordinatorResponse->assertSee('Add Trainee');
+
+        // Check Participant Attendance Register (/batches/{id}/attendance)
+        $adminAttendanceResp = $this->actingAs($this->superAdmin)->get("/batches/{$batch->id}/attendance");
+        $adminAttendanceResp->assertOk();
+        $adminAttendanceResp->assertDontSee('Enroll Participants into Batch');
+        $adminAttendanceResp->assertDontSee('Bulk Upload (Excel)');
+        $adminAttendanceResp->assertDontSee('Single Entry');
+        $adminAttendanceResp->assertDontSee('Import & Enroll');
+        $adminAttendanceResp->assertDontSee('Add & Enroll');
+
+        $coordAttendanceResp = $this->actingAs($this->creatorUser)->get("/batches/{$batch->id}/attendance");
+        $coordAttendanceResp->assertOk();
+        $coordAttendanceResp->assertSee('Enroll Participants into Batch');
+        $coordAttendanceResp->assertSee('Bulk Upload (Excel)');
+        $coordAttendanceResp->assertSee('Single Entry');
+        $coordAttendanceResp->assertSee('Import & Enroll', false);
+        $coordAttendanceResp->assertSee('Add & Enroll', false);
     }
 }

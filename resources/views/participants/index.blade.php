@@ -14,7 +14,7 @@
         department: '{{ addslashes(old('department', '')) }}',
         phone: '{{ addslashes(old('phone', '')) }}',
         email: '{{ addslashes(old('email', '')) }}',
-        batch_id: '{{ old('batch_id', request('batch_id', '')) }}',
+        batch_id: '{{ old('batch_id', $selectedBatch?->id ?? request('batch_id', '')) }}',
         is_active: true
     },
     editForm: {
@@ -44,20 +44,22 @@
             department: '',
             phone: '',
             email: '',
-            batch_id: '{{ request('batch_id', '') }}',
+            batch_id: '{{ $selectedBatch?->id ?? request('batch_id', '') }}',
             is_active: true
         };
         this.createModalOpen = true;
     },
     openEdit(participant, url) {
+        const currentBatchId = (participant.batches && participant.batches.length > 0) ? String(participant.batches[0].id) : '';
         this.editForm = {
             id: participant.id,
             name: participant.name,
             designation: participant.designation || '',
             department: participant.department || '',
             office_name: participant.office_name || '',
-            phone: participant.phone_masked || '',
+            phone: participant.phone || participant.phone_masked || '',
             email: participant.email || '',
+            batch_id: currentBatchId,
             is_active: Boolean(participant.is_active),
             actionUrl: url
         };
@@ -89,7 +91,15 @@
                 <span class="text-xs text-slate-400 font-medium">OSDP MIS Policy 2.0</span>
             </div>
             <h1 class="text-xl font-bold text-slate-900 tracking-tight mt-1">Participants Directory & Roster</h1>
-            <p class="text-xs text-slate-500 mt-0.5">Manage trainee accounts, office affiliations, and batch enrollments across all tiers</p>
+            <p class="text-xs text-slate-500 mt-0.5">
+                @if($showBatchesFirst)
+                    Firstly select a training batch to view enrolled participants, or browse the complete master roster
+                @elseif($selectedBatch)
+                    Viewing enrolled trainees for batch {{ $selectedBatch->batch_code }} ({{ $selectedBatch->district?->name }})
+                @else
+                    Manage trainee accounts, office affiliations, and batch enrollments across all tiers
+                @endif
+            </p>
         </div>
 
         <div class="flex items-center space-x-3">
@@ -101,6 +111,7 @@
             </a> -->
 
             @can('participants.manage')
+            @unless(auth()->user()->hasRole('super-admin'))
             <button type="button" @click="openCreate()"
                 class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-600/20 transition flex items-center space-x-2">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,6 +127,7 @@
                 </svg>
                 <span>Bulk Upload (Excel)</span>
             </button>
+            @endunless
             @endcan
         </div>
     </div>
@@ -137,159 +149,440 @@
         @endunless
     </div>
 
-    <!-- Filter & Search Toolbar -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm">
-        <form method="GET" action="{{ route('participants.index') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <input type="hidden" name="status" value="{{ $status }}">
+    @if($showBatchesFirst)
+        <!-- ======================================================== -->
+        <!-- STEP 1: BATCH SELECTION VIEW (Batch-First Interaction)   -->
+        <!-- ======================================================== -->
 
-            <div class="sm:col-span-2 relative">
-                <input type="text" name="search" value="{{ request('search') }}"
-                    placeholder="Search participant by name, designation, or Gram Panchayat..."
-                    class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50/60 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:outline-none">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <!-- Batch Search & Filter Toolbar -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm">
+            <form method="GET" action="{{ route('participants.index') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <input type="hidden" name="status" value="{{ $status }}">
+
+                <div class="sm:col-span-2 relative">
+                    <input type="text" name="batch_search" value="{{ request('batch_search') }}"
+                        placeholder="Search batch code, district, block, or venue..."
+                        class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50/60 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:outline-none">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                </div>
+
+                <div>
+                    <select name="tier_id" class="w-full py-2 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none">
+                        <option value="">All Training Tiers</option>
+                        @foreach($tiers as $t)
+                            <option value="{{ $t->id }}" {{ request('tier_id') == $t->id ? 'selected' : '' }}>
+                                {{ $t->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold transition">
+                        Find Batches
+                    </button>
+                    @if(request()->hasAny(['batch_search', 'tier_id']))
+                    <a href="{{ route('participants.index', ['status' => $status]) }}" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition" title="Clear Filters">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </a>
+                    @endif
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 1 Guidance Banner -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-blue-50/80 via-white to-blue-50/40 border border-blue-200/80 rounded-2xl p-4 shadow-2xs">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold text-slate-900">Step 1: Choose a Training Batch</h2>
+                    <p class="text-xs text-slate-600">Select any batch below to view its enrolled participants, update trainee details, or enter attendance.</p>
                 </div>
             </div>
-
             <div>
-                <select name="batch_id" class="w-full py-2 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none">
-                    <option value="">All Batches</option>
-                    @foreach($batches as $b)
-                        <option value="{{ $b->id }}" {{ request('batch_id') == $b->id ? 'selected' : '' }}>
-                            {{ $b->batch_code }} ({{ $b->district?->name }})
-                        </option>
-                    @endforeach
-                </select>
+                <a href="{{ route('participants.index', ['all_participants' => 1]) }}"
+                    class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-300 shadow-2xs transition inline-flex items-center space-x-1.5 whitespace-nowrap">
+                    <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                    <span>View All Participants (Master Roster) &rarr;</span>
+                </a>
             </div>
+        </div>
 
-            <div class="flex items-center space-x-2">
-                <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold transition">
-                    Filter
-                </button>
-                @if(request()->hasAny(['search', 'batch_id']))
-                <a href="{{ route('participants.index', ['status' => $status]) }}" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition" title="Clear Filters">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <!-- Batches Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            @forelse($batches as $b)
+            @php
+                $enrolled = $b->batch_participants_count ?? $b->registered_participants ?? 0;
+                $planned = $b->planned_participants > 0 ? $b->planned_participants : 40;
+                $percent = min(100, round(($enrolled / $planned) * 100));
+
+                $statusClasses = match($b->status) {
+                    'in_progress' => 'bg-amber-50 text-amber-700 border-amber-200',
+                    'verified', 'completed' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                    'scheduled' => 'bg-blue-50 text-blue-700 border-blue-200',
+                    'submitted', 'under_review' => 'bg-purple-50 text-purple-700 border-purple-200',
+                    default => 'bg-slate-100 text-slate-700 border-slate-200',
+                };
+            @endphp
+            <div class="bg-white rounded-2xl border border-slate-200/90 hover:border-blue-400 p-5 shadow-xs hover:shadow-md transition flex flex-col justify-between group">
+                <div class="space-y-3">
+                    <!-- Top Row: Batch Code & Status -->
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200 uppercase tracking-wider mb-1">
+                                {{ $b->tier?->name ?? 'Training Tier' }}
+                            </span>
+                            <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition tracking-tight">
+                                {{ $b->batch_code }}
+                            </h3>
+                        </div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border {{ $statusClasses }} shrink-0 capitalize">
+                            {{ str_replace('_', ' ', $b->status) }}
+                        </span>
+                    </div>
+
+                    <!-- Location & Venue Details -->
+                    <div class="space-y-1.5 text-xs text-slate-600">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span class="font-medium text-slate-800">{{ $b->district?->name ?? 'District TBD' }}</span>
+                            @if($b->block)
+                                <span class="text-slate-300">&bull;</span>
+                                <span class="text-slate-600">{{ $b->block->name }}</span>
+                            @endif
+                        </div>
+
+                        <div class="flex items-center space-x-2 text-[11px] text-slate-500">
+                            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            <span class="truncate">{{ $b->venue?->name ?? 'Venue to be assigned' }}</span>
+                        </div>
+
+                        <div class="flex items-center space-x-2 text-[11px] text-slate-500">
+                            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>{{ $b->scheduled_date ? $b->scheduled_date->format('d M Y') : 'Date to be scheduled' }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Trainee Capacity Progress -->
+                    <div class="pt-2 border-t border-slate-100">
+                        <div class="flex items-center justify-between text-[11px] mb-1">
+                            <span class="font-medium text-slate-700">Enrolled Trainees</span>
+                            <span class="font-bold text-slate-900">{{ $enrolled }} <span class="text-slate-400 font-normal">/ {{ $planned }}</span></span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                            <div class="h-1.5 rounded-full transition-all duration-300 {{ $percent >= 100 ? 'bg-emerald-500' : ($percent >= 60 ? 'bg-blue-600' : 'bg-amber-500') }}" style="width: {{ $percent }}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Actions -->
+                <div class="pt-4 mt-3 border-t border-slate-100 space-y-2">
+                    <a href="{{ route('participants.index', ['batch_id' => $b->id]) }}"
+                        class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs text-center shadow-xs hover:shadow-blue-600/20 transition flex items-center justify-center space-x-2">
+                        <span>Select Batch & View Trainees</span>
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </a>
+
+                    <div class="flex items-center justify-between text-[11px] pt-0.5">
+                        <a href="{{ route('batches.attendance.show', $b) }}" class="text-slate-500 hover:text-blue-600 font-medium transition inline-flex items-center space-x-1">
+                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <span>Form 2 Attendance</span>
+                        </a>
+
+                        @unless(auth()->user()->hasRole('super-admin'))
+                        <button type="button" @click="createForm.batch_id = '{{ $b->id }}'; createModalOpen = true" class="text-blue-600 hover:text-blue-700 font-medium transition inline-flex items-center space-x-0.5">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            <span>Add Trainee</span>
+                        </button>
+                        @endunless
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="col-span-full bg-white rounded-2xl border border-slate-200/80 p-12 text-center">
+                <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <h3 class="text-sm font-bold text-slate-800">No training batches found</h3>
+                <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                    No batches match your current filter or user scope. Try resetting filters or search terms.
+                </p>
+                @if(request()->hasAny(['batch_search', 'tier_id']))
+                <a href="{{ route('participants.index', ['status' => $status]) }}" class="mt-4 inline-flex items-center px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition">
+                    Reset Filters
                 </a>
                 @endif
             </div>
-        </form>
-    </div>
+            @endforelse
+        </div>
 
-    <!-- Participants Table -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
-                <thead class="bg-slate-50 text-slate-600 uppercase font-semibold">
-                    <tr>
-                        <th class="px-6 py-3.5 w-16">S.No</th>
-                        <th class="px-6 py-3.5">Participant Details</th>
-                        <th class="px-6 py-3.5">Designation</th>
-                        <th class="px-6 py-3.5">Office / Gram Panchayat</th>
-                        <th class="px-6 py-3.5">Contact</th>
-                        <th class="px-6 py-3.5">Enrolled Batches</th>
-                        <th class="px-6 py-3.5 text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-200 text-slate-700">
-                    @forelse($participants as $p)
-                    <tr class="hover:bg-slate-50 transition {{ $p->trashed() ? 'bg-rose-50/20' : '' }}">
-                        <td class="px-6 py-4 text-slate-500 font-medium whitespace-nowrap">
-                            {{ $participants->firstItem() ? ($participants->firstItem() + $loop->index) : $loop->iteration }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center space-x-2">
-                                <span class="font-bold text-slate-900">{{ $p->name }}</span>
-                                @if($p->trashed())
-                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700">Deleted</span>
-                                @elseif(!$p->is_active)
-                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-500">Inactive</span>
-                                @endif
-                            </div>
-                            <div class="text-[11px] text-slate-400 flex items-center space-x-1.5 mt-0.5">
-                                <span>{{ $p->department ?? 'General Administration' }}</span>
-                                @if($p->creator)
-                                    <span class="text-slate-300">&bull;</span>
-                                    <span class="text-slate-400 font-medium">Added by {{ $p->creator->name }}</span>
-                                @endif
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                                {{ $p->designation ?? 'Trainee' }}
+    @else
+        <!-- ======================================================== -->
+        <!-- STEP 2: PARTICIPANT ROSTER VIEW (Batch or Master Roster) -->
+        <!-- ======================================================== -->
+
+        @if($selectedBatch)
+            <!-- Selected Batch Information Card -->
+            <div class="bg-gradient-to-r from-blue-50/90 via-white to-blue-50/40 rounded-2xl border border-blue-200/90 p-5 shadow-xs">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-600 text-white uppercase tracking-wider">
+                                Active Batch Roster
                             </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="font-medium text-slate-800">{{ $p->office_name }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap font-mono text-[11px] text-slate-600">
-                            <div>{{ $p->phone_masked ?? 'No phone' }}</div>
-                            @if($p->email)
-                            <div class="text-slate-400 text-[10px]">{{ $p->email }}</div>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex flex-wrap gap-1.5">
-                                @forelse($p->batches as $batch)
-                                <a href="{{ route('batches.attendance.show', $batch) }}" class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition">
-                                    {{ $batch->batch_code }} ({{ $batch->district?->name }})
-                                </a>
-                                @empty
-                                <span class="text-slate-400 text-[11px]">Not enrolled in active batch</span>
-                                @endforelse
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right">
-                            <div class="flex items-center justify-end space-x-1.5">
-                                @if($p->trashed())
-                                    @can('restore', $p)
-                                    <button type="button"
-                                        @click="openRestore('{{ addslashes($p->name) }}', '{{ route('participants.restore', $p->id) }}')"
-                                        class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs border border-emerald-200 transition flex items-center space-x-1 shadow-2xs" title="Restore this participant">
-                                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                                        <span>Restore</span>
-                                    </button>
-                                    @endcan
-                                @else
-                                    @can('update', $p)
-                                    <button type="button"
-                                        @click="openEdit({{ json_encode($p) }}, '{{ route('participants.update', $p) }}')"
-                                        class="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition" title="Edit Participant">
-                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    </button>
-                                    @endcan
+                            <span class="text-xs font-semibold text-blue-900">{{ $selectedBatch->tier?->name }}</span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <h2 class="text-lg font-bold text-slate-900 tracking-tight">{{ $selectedBatch->batch_code }}</h2>
+                            <span class="text-slate-300">&bull;</span>
+                            <span class="text-xs font-medium text-slate-700">{{ $selectedBatch->district?->name }} ({{ $selectedBatch->block?->name ?? 'District HQ' }})</span>
+                            <span class="text-slate-300">&bull;</span>
+                            <span class="text-xs text-slate-600">{{ $selectedBatch->venue?->name ?? 'Venue TBD' }}</span>
+                            <span class="text-slate-300">&bull;</span>
+                            <span class="text-xs text-slate-600 font-medium">{{ $selectedBatch->scheduled_date?->format('d M Y') }}</span>
+                        </div>
+                        <div class="text-xs text-slate-500 flex items-center space-x-2 pt-0.5">
+                            <span>Total Enrolled in this Batch: <strong class="text-slate-800">{{ $selectedBatch->batch_participants_count ?? $selectedBatch->registered_participants ?? $participants->total() }}</strong> / {{ $selectedBatch->planned_participants }} planned</span>
+                            <span class="text-slate-300">&bull;</span>
+                            <span class="capitalize text-slate-600">Status: <strong>{{ str_replace('_', ' ', $selectedBatch->status) }}</strong></span>
+                        </div>
+                    </div>
 
-                                    @can('delete', $p)
-                                    <button type="button"
-                                        @click="openDelete('{{ addslashes($p->name) }}', '{{ route('participants.destroy', $p) }}')"
-                                        class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition" title="Delete Participant">
-                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    </button>
-                                    @endcan
-                                @endif
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-slate-400">
-                            @if($status === 'trashed')
-                                No soft-deleted participants found in Trash.
-                            @else
-                                No participants found matching your criteria. Use "+ Add Participant" or "Bulk Upload (Excel)" to register participants.
-                            @endif
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <a href="{{ route('participants.index') }}"
+                            class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-300 shadow-2xs transition flex items-center space-x-1.5">
+                            <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            <span>Switch Batch</span>
+                        </a>
 
-        @if($participants->hasPages())
-        <div class="p-4 border-t border-slate-200">
-            {{ $participants->links() }}
-        </div>
+                        <a href="{{ route('batches.attendance.show', $selectedBatch) }}"
+                            class="px-3.5 py-2 rounded-xl bg-white hover:bg-blue-50 text-blue-700 font-semibold text-xs border border-blue-200 shadow-2xs transition flex items-center space-x-1.5">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                            <span>Form 2 Attendance</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @elseif(!empty($isAllView))
+            <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-200">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xs font-bold text-slate-800">All Participants Directory (General Master Roster)</h2>
+                        <p class="text-[11px] text-slate-500">Showing all registered participants across all training batches and unassigned trainees</p>
+                    </div>
+                </div>
+                <a href="{{ route('participants.index') }}"
+                    class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200 shadow-2xs transition inline-flex items-center space-x-1.5 shrink-0">
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    <span>Back to Batch Selection</span>
+                </a>
+            </div>
+        @elseif($status === 'trashed')
+            <div class="bg-rose-50/70 rounded-2xl border border-rose-200 p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center border border-rose-200">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xs font-bold text-rose-900">Trash / Deleted Participants Roster</h2>
+                        <p class="text-[11px] text-rose-700">Trainees in trash can be restored at any time without data loss</p>
+                    </div>
+                </div>
+                <a href="{{ route('participants.index') }}"
+                    class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200 shadow-2xs transition inline-flex items-center space-x-1.5 shrink-0">
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    <span>Back to Batch Selection</span>
+                </a>
+            </div>
         @endif
-    </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm">
+            <form method="GET" action="{{ route('participants.index') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <input type="hidden" name="status" value="{{ $status }}">
+                @if(request()->boolean('all_participants'))
+                    <input type="hidden" name="all_participants" value="1">
+                @endif
+
+                <div class="sm:col-span-2 relative">
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        placeholder="Search participant by name, designation, or Gram Panchayat..."
+                        class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50/60 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:outline-none">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                </div>
+
+                <div>
+                    <select name="batch_id" class="w-full py-2 px-3 rounded-xl border border-slate-200 bg-slate-50/60 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none">
+                        <option value="">-- All Batches (or Switch Batch) --</option>
+                        @foreach($batches as $b)
+                            <option value="{{ $b->id }}" {{ ($selectedBatch?->id ?? request('batch_id')) == $b->id ? 'selected' : '' }}>
+                                {{ $b->batch_code }} ({{ $b->district?->name }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold transition">
+                        Filter
+                    </button>
+                    @if(request()->hasAny(['search', 'batch_id', 'all_participants']))
+                    <a href="{{ route('participants.index', array_merge(['status' => $status], $selectedBatch ? ['batch_id' => $selectedBatch->id] : [])) }}" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition" title="Clear Filters">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </a>
+                    @endif
+                </div>
+            </form>
+        </div>
+
+        <!-- Participants Table -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
+                    <thead class="bg-slate-50 text-slate-600 uppercase font-semibold">
+                        <tr>
+                            <th class="px-6 py-3.5 w-16">S.No</th>
+                            <th class="px-6 py-3.5">Participant Details</th>
+                            <th class="px-6 py-3.5">Designation</th>
+                            <th class="px-6 py-3.5">Office / Gram Panchayat</th>
+                            <th class="px-6 py-3.5">Contact</th>
+                            <th class="px-6 py-3.5">Enrolled Batches</th>
+                            <th class="px-6 py-3.5 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 text-slate-700">
+                        @forelse($participants as $p)
+                        <tr class="hover:bg-slate-50 transition {{ $p->trashed() ? 'bg-rose-50/20' : '' }}">
+                            <td class="px-6 py-4 text-slate-500 font-medium whitespace-nowrap">
+                                {{ $participants->firstItem() ? ($participants->firstItem() + $loop->index) : $loop->iteration }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-bold text-slate-900">{{ $p->name }}</span>
+                                    @if($p->trashed())
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700">Deleted</span>
+                                    @elseif(!$p->is_active)
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-500">Inactive</span>
+                                    @endif
+                                </div>
+                                <div class="text-[11px] text-slate-400 flex items-center space-x-1.5 mt-0.5">
+                                    <span>{{ $p->department ?? 'General Administration' }}</span>
+                                    @if($p->creator)
+                                        <span class="text-slate-300">&bull;</span>
+                                        <span class="text-slate-400 font-medium">Added by {{ $p->creator->name }}</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                                    {{ $p->designation ?? 'Trainee' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="font-medium text-slate-800">{{ $p->office_name }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap font-mono text-[11px] text-slate-600">
+                                <div>{{ $p->phone ?? $p->phone_masked ?? 'No phone' }}</div>
+                                @if($p->email)
+                                <div class="text-slate-400 text-[10px]">{{ $p->email }}</div>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-wrap gap-1.5">
+                                    @forelse($p->batches as $batch)
+                                    <a href="{{ route('participants.index', ['batch_id' => $batch->id]) }}" class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition">
+                                        {{ $batch->batch_code }} ({{ $batch->district?->name }})
+                                    </a>
+                                    @empty
+                                    <span class="text-slate-400 text-[11px]">Not enrolled in active batch</span>
+                                    @endforelse
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <div class="flex items-center justify-end space-x-1.5">
+                                    @if($p->trashed())
+                                        @can('restore', $p)
+                                        <button type="button"
+                                            @click="openRestore('{{ addslashes($p->name) }}', '{{ route('participants.restore', $p->id) }}')"
+                                            class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs border border-emerald-200 transition flex items-center space-x-1 shadow-2xs" title="Restore this participant">
+                                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                            <span>Restore</span>
+                                        </button>
+                                        @endcan
+                                    @else
+                                        @can('update', $p)
+                                        <button type="button"
+                                            @click="openEdit({{ json_encode($p) }}, '{{ route('participants.update', $p) }}')"
+                                            class="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition" title="Edit Participant">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        </button>
+                                        @endcan
+
+                                        @can('delete', $p)
+                                        <button type="button"
+                                            @click="openDelete('{{ addslashes($p->name) }}', '{{ route('participants.destroy', $p) }}')"
+                                            class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition" title="Delete Participant">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                        @endcan
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+                                @if($status === 'trashed')
+                                    No soft-deleted participants found in Trash.
+                                @elseif($selectedBatch)
+                                    No participants enrolled in batch {{ $selectedBatch->batch_code }} yet.
+                                    @unless(auth()->user()->hasRole('super-admin'))
+                                        Click "+ Add Participant" or "Bulk Upload (Excel)" to enroll participants.
+                                    @endunless
+                                @else
+                                    No participants found matching your criteria.
+                                    @unless(auth()->user()->hasRole('super-admin'))
+                                        Use "+ Add Participant" or "Bulk Upload (Excel)" to register participants.
+                                    @endunless
+                                @endif
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            @if($participants->hasPages())
+            <div class="p-4 border-t border-slate-200">
+                {{ $participants->links() }}
+            </div>
+            @endif
+        </div>
+    @endif
 
     <!-- Add Single Participant Modal -->
     <div x-show="createModalOpen"
@@ -356,7 +649,9 @@
 
                         <div>
                             <label class="block font-semibold text-slate-700 mb-1">Contact Phone <span class="text-slate-400 font-normal">(Optional)</span></label>
-                            <input type="tel" name="phone" x-model="createForm.phone" placeholder="e.g. 9861012345" maxlength="20"
+                            <input type="tel" name="phone" x-model="createForm.phone" placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
+                                pattern="[6-9][0-9]{9}" title="Must be a valid 10-digit mobile number starting with 6, 7, 8, or 9"
+                                @input="createForm.phone = createForm.phone.replace(/[^0-9]/g, '').slice(0, 10)"
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
                         </div>
 
@@ -366,18 +661,18 @@
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
                         </div>
 
-                        <!-- Target Training Batch (Optional) -->
+                        <!-- Target Training Batch (Mandatory) -->
                         <div class="sm:col-span-2">
                             <label class="block font-semibold text-slate-700 mb-1">
-                                Target Training Batch <span class="text-slate-400 font-normal">(Optional instant enrollment)</span>
+                                Target Training Batch <span class="text-rose-500">*</span>
                             </label>
                             <div class="relative">
-                                <select name="batch_id" x-model="createForm.batch_id"
+                                <select name="batch_id" x-model="createForm.batch_id" required
                                     class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition">
-                                    <option value="">-- General Roster (No specific batch) --</option>
+                                    <option value="" disabled :selected="!createForm.batch_id">-- Select Target Training Batch (Mandatory) --</option>
                                     @foreach($batches as $b)
                                         <option value="{{ $b->id }}">
-                                            {{ $b->batch_code }} &bull; {{ $b->district?->name }} ({{ $b->scheduled_date->format('d/m/Y') }})
+                                            {{ $b->batch_code }} &bull; {{ $b->district?->name }} ({{ $b->scheduled_date ? $b->scheduled_date->format('d/m/Y') : 'TBD' }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -473,8 +768,10 @@
                         </div>
 
                         <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Contact Phone</label>
-                            <input type="text" name="phone" x-model="editForm.phone" placeholder="e.g. 9861012345"
+                            <label class="block font-semibold text-slate-700 mb-1">Contact Phone <span class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input type="tel" name="phone" x-model="editForm.phone" placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
+                                pattern="[6-9][0-9]{9}" title="Must be a valid 10-digit mobile number starting with 6, 7, 8, or 9"
+                                @input="editForm.phone = editForm.phone.replace(/[^0-9]/g, '').slice(0, 10)"
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                         </div>
 
@@ -482,6 +779,27 @@
                             <label class="block font-semibold text-slate-700 mb-1">Email ID</label>
                             <input type="email" name="email" x-model="editForm.email" placeholder="e.g. trainee@gov.in"
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        </div>
+
+                        <!-- Assigned Training Batch Selection -->
+                        <div class="sm:col-span-2">
+                            <label class="block font-semibold text-slate-700 mb-1">
+                                Assigned Training Batch <span class="text-slate-400 font-normal">(Optional batch enrollment)</span>
+                            </label>
+                            <div class="relative">
+                                <select name="batch_id" x-model="editForm.batch_id"
+                                    class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition">
+                                    <option value="">-- General Roster (No specific batch) --</option>
+                                    @foreach($batches as $b)
+                                        <option value="{{ $b->id }}">
+                                            {{ $b->batch_code }} &bull; {{ $b->district?->name }} ({{ $b->scheduled_date->format('d/m/Y') }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="sm:col-span-2 pt-1">
@@ -682,17 +1000,17 @@
                         </a>
                     </div>
 
-                    <!-- Target Training Batch (Optional) -->
+                    <!-- Target Training Batch (Mandatory) -->
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1.5">
-                            Target Training Batch <span class="text-slate-400 font-normal">(Optional enrollment)</span>
+                            Target Training Batch <span class="text-rose-500">*</span>
                         </label>
                         <div class="relative">
-                            <select name="batch_id" class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition">
-                                <option value="">-- General Roster (No specific batch) --</option>
+                            <select name="batch_id" required class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition">
+                                <option value="" disabled {{ empty($selectedBatch?->id ?? request('batch_id')) ? 'selected' : '' }}>-- Select Target Training Batch (Mandatory) --</option>
                                 @foreach($batches as $b)
-                                    <option value="{{ $b->id }}" {{ request('batch_id') == $b->id ? 'selected' : '' }}>
-                                        {{ $b->batch_code }} &bull; {{ $b->district?->name }} ({{ $b->scheduled_date->format('d/m/Y') }})
+                                    <option value="{{ $b->id }}" {{ ($selectedBatch?->id ?? request('batch_id')) == $b->id ? 'selected' : '' }}>
+                                        {{ $b->batch_code }} &bull; {{ $b->district?->name }} ({{ $b->scheduled_date ? $b->scheduled_date->format('d/m/Y') : 'TBD' }})
                                     </option>
                                 @endforeach
                             </select>

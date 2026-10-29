@@ -149,16 +149,11 @@ class ParticipantImportService
                     $officeName = $batch ? ($batch->block?->name ?? $batch->district?->name ?? 'District Office') : 'General';
                 }
 
-                $phone = $rowData['phone'] ?? null;
-                $phoneMasked = null;
+                $phone = !empty($rowData['phone']) ? trim((string) $rowData['phone']) : null;
+                $cleanPhone = null;
                 if (!empty($phone)) {
-                    // Extract digits
-                    $digits = preg_replace('/[^0-9]/', '', $phone);
-                    if (strlen($digits) >= 10) {
-                        $phoneMasked = substr($digits, 0, 2) . '******' . substr($digits, -2);
-                    } else {
-                        $phoneMasked = $phone;
-                    }
+                    $digits = preg_replace('/[^0-9+]/', '', $phone);
+                    $cleanPhone = !empty($digits) ? $digits : $phone;
                 }
 
                 $email = !empty($rowData['email']) ? strtolower(trim($rowData['email'])) : null;
@@ -176,7 +171,7 @@ class ParticipantImportService
                         'designation' => $designation,
                         'department' => $department,
                         'office_name' => $officeName,
-                        'phone_masked' => $phoneMasked,
+                        'phone_masked' => $cleanPhone,
                         'email' => $email,
                         'is_active' => true,
                         'created_by' => $user?->id ?? Auth::id(),
@@ -189,7 +184,7 @@ class ParticipantImportService
                     $participant->update([
                         'designation' => $designation ?: $participant->designation,
                         'department' => $department ?: $participant->department,
-                        'phone_masked' => $phoneMasked ?: $participant->phone_masked,
+                        'phone_masked' => $cleanPhone ?: $participant->phone_masked,
                         'email' => $email ?: $participant->email,
                     ]);
                 }
