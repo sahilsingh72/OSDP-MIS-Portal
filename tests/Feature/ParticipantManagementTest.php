@@ -849,4 +849,116 @@ class ParticipantManagementTest extends TestCase
 
         $this->assertEquals(0, BatchParticipant::where('participant_id', $participant->id)->count());
     }
+
+    /**
+     * Test Participants Directory shows batches first before a batch is selected.
+     */
+    public function test_participants_directory_shows_batches_first_before_batch_is_selected(): void
+    {
+        $batch = TrainingBatch::first();
+        $this->assertNotNull($batch);
+
+        $response = $this->actingAs($this->superAdmin)->get('/participants');
+        $response->assertOk();
+        $response->assertViewHas('showBatchesFirst', true);
+        $response->assertSee('Step 1: Choose a Training Batch');
+        $response->assertSee('Select Batch & View Trainees', false);
+        $response->assertSee($batch->batch_code);
+    }
+
+    /**
+     * Test selecting a batch shows participants roster for that specific batch.
+     */
+    public function test_selecting_batch_shows_participants_for_that_batch(): void
+    {
+        $batch = TrainingBatch::first();
+        $this->assertNotNull($batch);
+
+        $uid = uniqid();
+        $participant = Participant::create([
+            'name' => "Batch Specific Trainee {$uid}",
+            'designation' => 'Panchayat Officer',
+            'office_name' => 'Khurda GP Office',
+            'phone_masked' => '9856565677',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+
+        BatchParticipant::create([
+            'training_batch_id' => $batch->id,
+            'participant_id' => $participant->id,
+            'serial_number' => 1,
+        ]);
+
+        $response = $this->actingAs($this->superAdmin)->get("/participants?batch_id={$batch->id}");
+        $response->assertOk();
+        $response->assertViewHas('showBatchesFirst', false);
+        $response->assertSee('Active Batch Roster');
+        $response->assertSee('Switch Batch');
+        $response->assertSee("Batch Specific Trainee {$uid}");
+    }
+
+    /**
+     * Test viewing all participants via all_participants parameter shows master roster.
+     */
+    public function test_view_all_participants_shows_master_roster(): void
+    {
+        $response = $this->actingAs($this->superAdmin)->get('/participants?all_participants=1');
+        $response->assertOk();
+        $response->assertViewHas('showBatchesFirst', false);
+        $response->assertSee('All Participants Directory (General Master Roster)');
+    }
+
+    /**
+     * Test soft-deleted participants are not included in the enrolled trainees count.
+     */
+    public function test_deleted_participants_are_not_included_in_enrolled_trainees_count(): void
+    {
+        $batch = TrainingBatch::first();
+        $this->assertNotNull($batch);
+
+        // Clear existing participants in this batch for deterministic count test
+        $batch->batchParticipants()->delete();
+
+        // Create 2 active participants
+        $p1 = Participant::create([
+            'name' => 'Active Trainee 1',
+            'designation' => 'Staff',
+            'office_name' => 'GP Office',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+        $p2 = Participant::create([
+            'name' => 'Active Trainee 2',
+            'designation' => 'Staff',
+            'office_name' => 'GP Office',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+
+        // Create 1 deleted participant
+        $p3 = Participant::create([
+            'name' => 'Deleted Trainee 3',
+            'designation' => 'Staff',
+            'office_name' => 'GP Office',
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+
+        BatchParticipant::create(['training_batch_id' => $batch->id, 'participant_id' => $p1->id, 'serial_number' => 1]);
+        BatchParticipant::create(['training_batch_id' => $batch->id, 'participant_id' => $p2->id, 'serial_number' => 2]);
+        BatchParticipant::create(['training_batch_id' => $batch->id, 'participant_id' => $p3->id, 'serial_number' => 3]);
+
+        // Soft-delete participant 3
+        $p3->delete();
+
+        $response = $this->actingAs($this->superAdmin)->get('/participants');
+        $response->assertOk();
+
+        // Batches view must report 2 active participants, NOT 3
+        $batches = $response->viewData('batches');
+        $testedBatch = $batches->firstWhere('id', $batch->id);
+        $this->assertNotNull($testedBatch);
+        $this->assertEquals(2, $testedBatch->batch_participants_count);
+    }
 }

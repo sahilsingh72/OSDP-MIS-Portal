@@ -61,6 +61,46 @@ class ParticipantController extends Controller
             $trashedCount = $user->hasRole('ocac') ? 0 : Participant::onlyTrashed()->count();
         }
 
+        // Batches query for batch selection screen and dropdowns
+        $batchQuery = TrainingBatch::forUserScope($user)
+            ->with(['district', 'block', 'tier', 'venue'])
+            ->withCount(['activeBatchParticipants as batch_participants_count']);
+
+        if ($request->filled('batch_search')) {
+            $bSearch = $request->input('batch_search');
+            $batchQuery->where(function ($q) use ($bSearch) {
+                $q->where('batch_code', 'like', "%{$bSearch}%")
+                  ->orWhereHas('district', fn($d) => $d->where('name', 'like', "%{$bSearch}%"))
+                  ->orWhereHas('block', fn($bl) => $bl->where('name', 'like', "%{$bSearch}%"))
+                  ->orWhereHas('venue', fn($v) => $v->where('name', 'like', "%{$bSearch}%"));
+            });
+        }
+
+        if ($request->filled('tier_id')) {
+            $batchQuery->where('training_tier_id', $request->input('tier_id'));
+        }
+
+        $batches = (clone $batchQuery)->orderByDesc('scheduled_date')->get();
+
+        // Selected batch detection
+        $selectedBatchId = $request->input('batch_id');
+        $selectedBatch = null;
+        if (!empty($selectedBatchId)) {
+            $selectedBatch = TrainingBatch::forUserScope($user)
+                ->with(['district', 'block', 'tier', 'venue'])
+                ->withCount(['activeBatchParticipants as batch_participants_count'])
+                ->find($selectedBatchId);
+        }
+
+        // Determine if batch selection should be presented first
+        // Shows batches first when:
+        // 1. No batch is selected
+        // 2. Not explicitly viewing all participants (?all_participants=1)
+        // 3. Not searching participants directly (?search=...)
+        // 4. Not viewing trashed participants (?status=trashed)
+        $isAllView = $request->boolean('all_participants') || ($request->filled('search') && empty($selectedBatchId));
+        $showBatchesFirst = empty($selectedBatch) && !$isAllView && $status !== 'trashed';
+
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
@@ -71,7 +111,11 @@ class ParticipantController extends Controller
             });
         }
 
-        if ($request->filled('batch_id')) {
+        if ($selectedBatch) {
+            $query->whereHas('batches', function ($q) use ($selectedBatch) {
+                $q->where('training_batches.id', $selectedBatch->id);
+            });
+        } elseif ($request->filled('batch_id')) {
             $query->whereHas('batches', function ($q) use ($request) {
                 $q->where('training_batches.id', $request->input('batch_id'));
             });
@@ -79,12 +123,19 @@ class ParticipantController extends Controller
 
         $participants = $query->orderByRaw('LOWER(name) ASC')->paginate(20)->withQueryString();
 
-        $batches = TrainingBatch::forUserScope($user)
-            ->orderByDesc('scheduled_date')
-            ->limit(100)
-            ->get();
+        $tiers = \App\Models\TrainingTier::orderBy('id')->get();
 
-        return view('participants.index', compact('participants', 'batches', 'activeCount', 'trashedCount', 'status'));
+        return view('participants.index', compact(
+            'participants',
+            'batches',
+            'selectedBatch',
+            'showBatchesFirst',
+            'isAllView',
+            'tiers',
+            'activeCount',
+            'trashedCount',
+            'status'
+        ));
     }
 
     /**
