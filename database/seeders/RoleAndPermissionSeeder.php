@@ -49,6 +49,8 @@ class RoleAndPermissionSeeder extends Seeder
             'reports.view',
             'reports.export',
             'audit-logs.view',
+            'feedback.view',
+            'feedback.manage',
             'settings.manage',
         ];
 
@@ -71,6 +73,7 @@ class RoleAndPermissionSeeder extends Seeder
             'evidence.view',
             'evidence.download',
             'field-verifications.view',
+            'feedback.view',
             'reports.view',
             'reports.export',
             'audit-logs.view',
@@ -95,6 +98,8 @@ class RoleAndPermissionSeeder extends Seeder
             'participants.manage',
             'attendance.view',
             'attendance.manage',
+            'feedback.view',
+            'feedback.manage',
             'evidence.view',
             'evidence.upload',
             'evidence.download',
@@ -119,6 +124,8 @@ class RoleAndPermissionSeeder extends Seeder
             'participants.manage',
             'attendance.view',
             'attendance.manage',
+            'feedback.view',
+            'feedback.manage',
             'evidence.view',
             'evidence.upload',
             'evidence.download',
@@ -137,6 +144,8 @@ class RoleAndPermissionSeeder extends Seeder
             'participants.manage',
             'attendance.view',
             'attendance.manage',
+            'feedback.view',
+            'feedback.manage',
             'evidence.view',
             'evidence.upload',
             'evidence.download',
@@ -155,6 +164,7 @@ class RoleAndPermissionSeeder extends Seeder
             'evidence.download',
             'field-verifications.view',
             'field-verifications.create',
+            'feedback.view',
             'reports.view',
         ]);
 

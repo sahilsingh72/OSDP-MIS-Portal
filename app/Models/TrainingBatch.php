@@ -145,6 +145,11 @@ class TrainingBatch extends Model
         return $this->hasOne(BatchFeedback::class);
     }
 
+    public function participantFeedback(): HasMany
+    {
+        return $this->hasMany(ParticipantFeedback::class);
+    }
+
     public function reviews(): HasMany
     {
         return $this->hasMany(BatchReview::class)->latest();

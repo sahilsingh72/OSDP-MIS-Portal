@@ -52,6 +52,18 @@
         </a>
         @endcan
 
+        <!-- Participant Feedback (Form 1) -->
+        @can('feedback.view')
+        @php $isFeedback = request()->routeIs('feedback.*'); @endphp
+        <a href="{{ route('feedback.index') }}"
+            class="group flex items-center px-3 py-2 rounded-xl font-medium transition {{ $isFeedback ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/90 shadow-2xs' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}">
+            <svg class="w-4 h-4 mr-3 flex-shrink-0 {{ $isFeedback ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600' }} transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+            </svg>
+            <span>Participant Feedback</span>
+        </a>
+        @endcan
+
         <!-- Review Queue -->
         @if(auth()->user()->can('reviews.manage') || auth()->user()->can('evidence.review'))
         @php $isReviews = request()->routeIs('reviews.*'); @endphp

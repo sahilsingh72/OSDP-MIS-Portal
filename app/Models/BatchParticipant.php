@@ -40,4 +40,9 @@ class BatchParticipant extends Model
     {
         return $this->hasOne(AttendanceRecord::class);
     }
+
+    public function feedback(): HasOne
+    {
+        return $this->hasOne(ParticipantFeedback::class);
+    }
 }
