@@ -299,6 +299,7 @@ class ParticipantManagementTest extends TestCase
             'name' => $name,
             'designation' => 'Panchayat Officer',
             'office_name' => 'Khurda Sadar GP',
+            'department' => 'PR & DW',
             'phone' => '9861099887',
             'email' => $email,
         ]);
@@ -622,7 +623,7 @@ class ParticipantManagementTest extends TestCase
             'office_name' => '',
         ]);
 
-        $response->assertSessionHasErrors(['name', 'designation', 'office_name', 'batch_id']);
+        $response->assertSessionHasErrors(['name', 'designation', 'office_name', 'department', 'batch_id', 'phone', 'email']);
     }
 
     /**
@@ -633,13 +634,15 @@ class ParticipantManagementTest extends TestCase
         $batch = TrainingBatch::first();
 
         // 1. Valid numbers starting with 6, 7, 8, 9 pass
-        $validPhones = ['9856565677', '8765432109', '7012345678', '6234567890'];
+        $validPhones = ['985' . rand(1000000, 9999999), '876' . rand(1000000, 9999999), '701' . rand(1000000, 9999999), '623' . rand(1000000, 9999999)];
         foreach ($validPhones as $phone) {
             $response = $this->actingAs($this->superAdmin)->post('/participants', [
                 'name' => 'Valid Phone ' . uniqid(),
                 'designation' => 'Staff',
                 'office_name' => 'GP Office',
+                'department' => 'IT',
                 'phone' => $phone,
+                'email' => 'valid_' . uniqid() . '@example.com',
                 'batch_id' => $batch->id,
             ]);
             $response->assertSessionHasNoErrors();
@@ -656,7 +659,9 @@ class ParticipantManagementTest extends TestCase
                 'name' => 'Invalid Phone ' . uniqid(),
                 'designation' => 'Staff',
                 'office_name' => 'GP Office',
+                'department' => 'IT',
                 'phone' => $badPhone,
+                'email' => 'invalid_' . uniqid() . '@example.com',
                 'batch_id' => $batch->id,
             ]);
             $response->assertSessionHasErrors('phone');
@@ -735,6 +740,7 @@ class ParticipantManagementTest extends TestCase
             'name' => "Unmasked Trainee {$uid}",
             'designation' => 'Panchayat Officer',
             'office_name' => 'Khurda GP',
+            'department' => 'PR & DW',
             'phone' => '9856565677',
             'email' => "unmasked_{$uid}@test.com",
             'batch_id' => $batch->id,
@@ -804,11 +810,14 @@ class ParticipantManagementTest extends TestCase
         $this->assertNotNull($batch2);
 
         $uid = uniqid();
+        $uniquePhone = '99' . rand(10000000, 99999999);
+        $uniqueEmail = "batch_move_{$uid}@odisha.gov.in";
         $participant = Participant::create([
             'name' => "Batch Move Trainee {$uid}",
             'designation' => 'PEO',
             'office_name' => 'Block Office',
-            'phone_masked' => '9856565677',
+            'phone_masked' => $uniquePhone,
+            'email' => $uniqueEmail,
             'is_active' => true,
             'created_by' => $this->superAdmin->id,
         ]);
@@ -818,7 +827,8 @@ class ParticipantManagementTest extends TestCase
             'name' => $participant->name,
             'designation' => $participant->designation,
             'office_name' => $participant->office_name,
-            'phone' => '9856565677',
+            'phone' => $uniquePhone,
+            'email' => $uniqueEmail,
             'batch_id' => $batch1->id,
             'is_active' => 1,
         ]);
@@ -833,7 +843,8 @@ class ParticipantManagementTest extends TestCase
             'name' => $participant->name,
             'designation' => $participant->designation,
             'office_name' => $participant->office_name,
-            'phone' => '9856565677',
+            'phone' => $uniquePhone,
+            'email' => $uniqueEmail,
             'batch_id' => $batch2->id,
             'is_active' => 1,
         ]);
@@ -1030,5 +1041,300 @@ class ParticipantManagementTest extends TestCase
         $coordAttendanceResp->assertSee('Single Entry');
         $coordAttendanceResp->assertSee('Import & Enroll', false);
         $coordAttendanceResp->assertSee('Add & Enroll', false);
+    }
+
+    /**
+     * Test single participant fails when phone or email already exists in database (including soft-deleted).
+     */
+    public function test_single_participant_fails_when_phone_or_email_already_exists(): void
+    {
+        $batch = TrainingBatch::first();
+        $this->creatorUser->assignedDistricts()->sync([$batch->district_id]);
+
+        $existingPhone = '98' . rand(10000000, 99999999);
+        $existingEmail = 'existing_' . uniqid() . '@example.com';
+
+        // 1. Create an existing active participant
+        Participant::create([
+            'name' => 'Existing Active Person',
+            'designation' => 'Officer',
+            'office_name' => 'District Office',
+            'phone_masked' => $existingPhone,
+            'email' => $existingEmail,
+            'is_active' => true,
+            'created_by' => $this->creatorUser->id,
+        ]);
+
+        // 2. Try single add with duplicate phone
+        $dupPhoneResp = $this->actingAs($this->creatorUser)->post('/participants', [
+            'name' => 'New Duplicate Phone Person',
+            'designation' => 'Staff',
+            'office_name' => 'Block Office',
+            'department' => 'IT',
+            'phone' => $existingPhone,
+            'email' => 'unique_email_' . uniqid() . '@example.com',
+            'batch_id' => $batch->id,
+        ]);
+        $dupPhoneResp->assertSessionHasErrors([
+            'phone' => 'Participant already existed with same phone num.',
+        ]);
+
+        // 3. Try single add with duplicate email (case-insensitive)
+        $dupEmailResp = $this->actingAs($this->creatorUser)->post('/participants', [
+            'name' => 'New Duplicate Email Person',
+            'designation' => 'Staff',
+            'office_name' => 'Block Office',
+            'department' => 'IT',
+            'phone' => '98' . rand(10000000, 99999999),
+            'email' => strtoupper($existingEmail),
+            'batch_id' => $batch->id,
+        ]);
+        $dupEmailResp->assertSessionHasErrors([
+            'email' => 'Participant already existed with same email.',
+        ]);
+
+        // 4. Create a soft-deleted participant
+        $deletedPhone = '98' . rand(10000000, 99999999);
+        $deletedEmail = 'deleted_' . uniqid() . '@example.com';
+        $trashed = Participant::create([
+            'name' => 'Trashed Person',
+            'designation' => 'Staff',
+            'office_name' => 'Block Office',
+            'phone_masked' => $deletedPhone,
+            'email' => $deletedEmail,
+            'is_active' => false,
+            'created_by' => $this->creatorUser->id,
+        ]);
+        $trashed->delete();
+
+        // 5. Try single add with phone of soft-deleted participant
+        $dupDeletedPhoneResp = $this->actingAs($this->creatorUser)->post('/participants', [
+            'name' => 'Trying Trashed Phone',
+            'designation' => 'Staff',
+            'office_name' => 'Block Office',
+            'department' => 'IT',
+            'phone' => $deletedPhone,
+            'email' => 'brand_new_' . uniqid() . '@example.com',
+            'batch_id' => $batch->id,
+        ]);
+        $dupDeletedPhoneResp->assertSessionHasErrors([
+            'phone' => 'Participant already existed with same phone num.',
+        ]);
+
+        // 6. Try single add with email of soft-deleted participant
+        $dupDeletedEmailResp = $this->actingAs($this->creatorUser)->post('/participants', [
+            'name' => 'Trying Trashed Email',
+            'designation' => 'Staff',
+            'office_name' => 'Block Office',
+            'department' => 'IT',
+            'phone' => '98' . rand(10000000, 99999999),
+            'email' => $deletedEmail,
+            'batch_id' => $batch->id,
+        ]);
+        $dupDeletedEmailResp->assertSessionHasErrors([
+            'email' => 'Participant already existed with same email.',
+        ]);
+
+        // 7. Add with truly unique phone and email succeeds
+        $validPhone = '98' . rand(10000000, 99999999);
+        $validEmail = 'truly_unique_' . uniqid() . '@example.com';
+        $successResp = $this->actingAs($this->creatorUser)->post('/participants', [
+            'name' => 'Unique Valid Trainee',
+            'designation' => 'Staff',
+            'office_name' => 'Block Office',
+            'department' => 'PR & DW',
+            'phone' => $validPhone,
+            'email' => $validEmail,
+            'batch_id' => $batch->id,
+        ]);
+        $successResp->assertRedirect();
+        $this->assertDatabaseHas('participants', [
+            'phone_masked' => $validPhone,
+            'email' => $validEmail,
+        ]);
+    }
+
+    /**
+     * Test single participant requires department, phone and email as mandatory fields.
+     */
+    public function test_single_participant_requires_phone_and_email_as_mandatory(): void
+    {
+        $batch = TrainingBatch::first();
+        $this->creatorUser->assignedDistricts()->sync([$batch->district_id]);
+
+        // Missing department
+        $noDeptResp = $this->actingAs($this->creatorUser)->post('/participants', [
+            'name' => 'No Dept Person',
+            'designation' => 'Staff',
+            'office_name' => 'Block Office',
+            'phone' => '98' . rand(10000000, 99999999),
+            'email' => 'some_email_' . uniqid() . '@example.com',
+            'batch_id' => $batch->id,
+        ]);
+        $noDeptResp->assertSessionHasErrors([
+            'department' => 'Department is mandatory.',
+        ]);
+
+        // Missing phone
+        $noPhoneResp = $this->actingAs($this->creatorUser)->post('/participants', [
+            'name' => 'No Phone Person',
+            'designation' => 'Staff',
+            'office_name' => 'Block Office',
+            'department' => 'IT',
+            'email' => 'some_email_' . uniqid() . '@example.com',
+            'batch_id' => $batch->id,
+        ]);
+        $noPhoneResp->assertSessionHasErrors([
+            'phone' => 'Contact phone number is mandatory.',
+        ]);
+
+        // Missing email
+        $noEmailResp = $this->actingAs($this->creatorUser)->post('/participants', [
+            'name' => 'No Email Person',
+            'designation' => 'Staff',
+            'office_name' => 'Block Office',
+            'department' => 'IT',
+            'phone' => '98' . rand(10000000, 99999999),
+            'batch_id' => $batch->id,
+        ]);
+        $noEmailResp->assertSessionHasErrors([
+            'email' => 'Email address is mandatory.',
+        ]);
+    }
+
+    /**
+     * Test bulk upload skips rows with duplicate phone or email and enforces mandatory phone, email, and department.
+     */
+    public function test_bulk_upload_skips_duplicate_phone_or_email_and_enforces_mandatory_fields(): void
+    {
+        $batch = TrainingBatch::first();
+        $this->creatorUser->assignedDistricts()->sync([$batch->district_id]);
+
+        $existingPhone = '98' . rand(10000000, 99999999);
+        $existingEmail = 'bulk_existing_' . uniqid() . '@example.com';
+
+        // Existing participant in DB
+        Participant::create([
+            'name' => 'Pre-existing Trainee',
+            'designation' => 'Officer',
+            'office_name' => 'Collectorate',
+            'department' => 'Administration',
+            'phone_masked' => $existingPhone,
+            'email' => $existingEmail,
+            'is_active' => true,
+            'created_by' => $this->creatorUser->id,
+        ]);
+
+        $uniquePhone1 = '97' . rand(10000000, 99999999);
+        $uniqueEmail1 = 'bulk_unique1_' . uniqid() . '@example.com';
+        $uniquePhone2 = '97' . rand(10000000, 99999999);
+        $uniqueEmail2 = 'bulk_unique2_' . uniqid() . '@example.com';
+
+        // CSV content:
+        // Row 1 (Header): Name,Designation,Office Name,Department,Mobile No,Email ID
+        // Row 2: Valid unique participant
+        // Row 3: Duplicate phone (matches existingPhone)
+        // Row 4: Duplicate email (matches existingEmail)
+        // Row 5: Missing phone
+        // Row 6: Missing email
+        // Row 7: Missing department
+        // Row 8: Duplicate phone within the same sheet (same as Row 2)
+        $csvContent = implode("\n", [
+            'Participant Name,Designation,Office Name,Department,Mobile No,Email ID',
+            "Valid Person One,Executive,Collectorate,IT,{$uniquePhone1},{$uniqueEmail1}",
+            "Duplicate Phone Person,Executive,Collectorate,IT,{$existingPhone},{$uniqueEmail2}",
+            "Duplicate Email Person,Executive,Collectorate,IT,{$uniquePhone2},{$existingEmail}",
+            "Missing Phone Person,Executive,Collectorate,IT,,missing_phone@example.com",
+            "Missing Email Person,Executive,Collectorate,IT,9611112222,",
+            "Missing Dept Person,Executive,Collectorate,,9622223333,missing_dept@example.com",
+            "Sheet Duplicate Phone Person,Executive,Collectorate,IT,{$uniquePhone1},different_email@example.com",
+        ]);
+
+        $file = \Illuminate\Http\UploadedFile::fake()->createWithContent('bulk_participants.csv', $csvContent);
+
+        $importService = new \App\Services\ParticipantImportService();
+        $result = $importService->importFromExcel($file, $batch, $this->creatorUser);
+
+        // 1 imported, 6 skipped
+        $this->assertEquals(1, $result['imported']);
+        $this->assertEquals(6, $result['skipped']);
+        $this->assertCount(6, $result['errors']);
+
+        // Check error messages
+        $errorString = implode(' | ', $result['errors']);
+        $this->assertStringContainsString("Participant already existed with same phone num ({$existingPhone})", $errorString);
+        $this->assertStringContainsString("Participant already existed with same email ({$existingEmail})", $errorString);
+        $this->assertStringContainsString("Contact phone number is mandatory", $errorString);
+        $this->assertStringContainsString("Email address is mandatory", $errorString);
+        $this->assertStringContainsString("Department is mandatory", $errorString);
+        $this->assertStringContainsString("Participant already existed with same phone num ({$uniquePhone1})", $errorString);
+
+        // Ensure only the valid participant was created in the database
+        $this->assertDatabaseHas('participants', [
+            'phone_masked' => $uniquePhone1,
+            'email' => $uniqueEmail1,
+        ]);
+        $this->assertDatabaseMissing('participants', [
+            'name' => 'Duplicate Phone Person',
+        ]);
+        $this->assertDatabaseMissing('participants', [
+            'name' => 'Duplicate Email Person',
+        ]);
+        $this->assertDatabaseMissing('participants', [
+            'name' => 'Missing Dept Person',
+        ]);
+    }
+
+    /**
+     * Test searching participants by phone number and email address.
+     */
+    public function test_search_participants_by_phone_and_email(): void
+    {
+        $batch = TrainingBatch::first();
+        $uid = uniqid();
+        $targetPhone = '98' . rand(10000000, 99999999);
+        $targetEmail = "searchable_{$uid}@odisha.gov.in";
+        $targetName = "Searchable Trainee {$uid}";
+
+        $participant = Participant::create([
+            'name' => $targetName,
+            'designation' => 'Technical Officer',
+            'office_name' => 'State Portal Division',
+            'department' => 'E & IT',
+            'phone_masked' => $targetPhone,
+            'email' => $targetEmail,
+            'is_active' => true,
+            'created_by' => $this->superAdmin->id,
+        ]);
+
+        \App\Models\BatchParticipant::create([
+            'training_batch_id' => $batch->id,
+            'participant_id' => $participant->id,
+            'serial_number' => 999,
+        ]);
+
+        // 1. Search by full phone number
+        $phoneResp = $this->actingAs($this->superAdmin)->get("/participants?search={$targetPhone}");
+        $phoneResp->assertOk();
+        $phoneResp->assertSee($targetName);
+        $phoneResp->assertSee($targetPhone);
+
+        // 2. Search by partial phone number (middle 5 digits)
+        $partialPhone = substr($targetPhone, 3, 5);
+        $partialPhoneResp = $this->actingAs($this->superAdmin)->get("/participants?search={$partialPhone}");
+        $partialPhoneResp->assertOk();
+        $partialPhoneResp->assertSee($targetName);
+
+        // 3. Search by full email address
+        $emailResp = $this->actingAs($this->superAdmin)->get("/participants?search={$targetEmail}");
+        $emailResp->assertOk();
+        $emailResp->assertSee($targetName);
+        $emailResp->assertSee($targetEmail);
+
+        // 4. Search by partial email prefix
+        $partialEmail = "searchable_{$uid}";
+        $partialEmailResp = $this->actingAs($this->superAdmin)->get("/participants?search={$partialEmail}");
+        $partialEmailResp->assertOk();
+        $partialEmailResp->assertSee($targetName);
     }
 }

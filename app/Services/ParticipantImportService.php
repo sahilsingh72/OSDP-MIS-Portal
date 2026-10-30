@@ -95,6 +95,8 @@ class ParticipantImportService
             &$totalRows
         ) {
             $currentSerial = $batch ? $batch->batchParticipants()->count() : 0;
+            $seenPhones = [];
+            $seenEmails = [];
 
             for ($row = $headerRow + 1; $row <= $highestRow; $row++) {
                 $rowData = [];
@@ -149,45 +151,77 @@ class ParticipantImportService
                     $officeName = $batch ? ($batch->block?->name ?? $batch->district?->name ?? 'District Office') : 'General';
                 }
 
-                $phone = !empty($rowData['phone']) ? trim((string) $rowData['phone']) : null;
-                $cleanPhone = null;
-                if (!empty($phone)) {
-                    $digits = preg_replace('/[^0-9+]/', '', $phone);
-                    $cleanPhone = !empty($digits) ? $digits : $phone;
+                // Phone is strictly mandatory
+                $rawPhone = trim((string) ($rowData['phone'] ?? ''));
+                $cleanPhone = preg_replace('/[^0-9]/', '', $rawPhone);
+                if (empty($cleanPhone)) {
+                    $errors[] = "Row {$row} ({$name}): Contact phone number is mandatory.";
+                    $skipped++;
+                    continue;
+                }
+                if (!preg_match('/^[6-9]\d{9}$/', $cleanPhone)) {
+                    $errors[] = "Row {$row} ({$name}): Contact phone number must be a valid 10-digit mobile number starting with 6, 7, 8, or 9.";
+                    $skipped++;
+                    continue;
                 }
 
-                $email = !empty($rowData['email']) ? strtolower(trim($rowData['email'])) : null;
-                $department = !empty($rowData['department']) ? trim($rowData['department']) : null;
-
-                // Create or find master Participant
-                $participant = Participant::withTrashed()
-                    ->where('name', $name)
-                    ->where('office_name', $officeName)
-                    ->first();
-
-                if (!$participant) {
-                    $participant = Participant::create([
-                        'name' => $name,
-                        'designation' => $designation,
-                        'department' => $department,
-                        'office_name' => $officeName,
-                        'phone_masked' => $cleanPhone,
-                        'email' => $email,
-                        'is_active' => true,
-                        'created_by' => $user?->id ?? Auth::id(),
-                    ]);
-                } else {
-                    if ($participant->trashed()) {
-                        $participant->restore();
-                    }
-                    // Update any missing details
-                    $participant->update([
-                        'designation' => $designation ?: $participant->designation,
-                        'department' => $department ?: $participant->department,
-                        'phone_masked' => $cleanPhone ?: $participant->phone_masked,
-                        'email' => $email ?: $participant->email,
-                    ]);
+                // Email is strictly mandatory
+                $rawEmail = strtolower(trim((string) ($rowData['email'] ?? '')));
+                if (empty($rawEmail)) {
+                    $errors[] = "Row {$row} ({$name}): Email address is mandatory.";
+                    $skipped++;
+                    continue;
                 }
+                if (!filter_var($rawEmail, FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = "Row {$row} ({$name}): Email ID must be a valid email address.";
+                    $skipped++;
+                    continue;
+                }
+
+                // Check duplicate phone
+                $phoneExistsInDb = Participant::withTrashed()
+                    ->where('phone_masked', $cleanPhone)
+                    ->exists();
+
+                if ($phoneExistsInDb || in_array($cleanPhone, $seenPhones, true)) {
+                    $errors[] = "Row {$row} ({$name}): Participant already existed with same phone num ({$cleanPhone}).";
+                    $skipped++;
+                    continue;
+                }
+
+                // Check duplicate email
+                $emailExistsInDb = Participant::withTrashed()
+                    ->whereRaw('LOWER(email) = ?', [$rawEmail])
+                    ->exists();
+
+                if ($emailExistsInDb || in_array($rawEmail, $seenEmails, true)) {
+                    $errors[] = "Row {$row} ({$name}): Participant already existed with same email ({$rawEmail}).";
+                    $skipped++;
+                    continue;
+                }
+
+                // Department is strictly mandatory
+                $department = trim((string) ($rowData['department'] ?? ''));
+                if (empty($department)) {
+                    $errors[] = "Row {$row} ({$name}): Department is mandatory.";
+                    $skipped++;
+                    continue;
+                }
+
+                // Create master Participant
+                $participant = Participant::create([
+                    'name' => $name,
+                    'designation' => $designation,
+                    'department' => $department,
+                    'office_name' => $officeName,
+                    'phone_masked' => $cleanPhone,
+                    'email' => $rawEmail,
+                    'is_active' => true,
+                    'created_by' => $user?->id ?? Auth::id(),
+                ]);
+
+                $seenPhones[] = $cleanPhone;
+                $seenEmails[] = $rawEmail;
 
                 // If batch context, enroll participant into batch
                 if ($batch) {
@@ -286,9 +320,9 @@ class ParticipantImportService
             'A1' => 'Participant Name *',
             'B1' => 'Designation *',
             'C1' => 'Office / Gram Panchayat *',
-            'D1' => 'Department',
-            'E1' => 'Mobile No',
-            'F1' => 'Email ID',
+            'D1' => 'Department *',
+            'E1' => 'Mobile No *',
+            'F1' => 'Email ID *',
         ];
 
         foreach ($headers as $cell => $text) {
