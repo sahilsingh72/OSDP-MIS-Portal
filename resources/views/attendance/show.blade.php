@@ -18,7 +18,7 @@
             @can('feedback.view')
             <a href="{{ route('feedback.batch', $batch) }}" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 font-semibold text-xs border border-amber-200 transition flex items-center space-x-1.5 shadow-2xs">
                 <span>★</span>
-                <span>Form 1 Feedback</span>
+                <span>Feedback</span>
             </a>
             @endcan
             <a href="{{ route('batches.show', $batch) }}" class="text-xs font-semibold text-slate-600 hover:text-slate-900">
@@ -58,6 +58,22 @@
             </div>
         </div>
     </div>
+
+    @if(session('import_errors') && count(session('import_errors')) > 0)
+    <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-2 shadow-2xs">
+        <div class="font-bold flex items-center space-x-2 text-amber-800">
+            <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>Notice: Some participant rows were skipped during bulk import:</span>
+        </div>
+        <ul class="list-disc pl-5 space-y-1 text-[11px] text-amber-800 max-h-48 overflow-y-auto">
+            @foreach(session('import_errors') as $err)
+                <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 
     <!-- Participant Enrollment (Bulk Excel Upload & Manual Transcription) -->
     @unless(auth()->user()->hasRole('super-admin'))
@@ -188,7 +204,7 @@
 
         <!-- Manual Single Entry Form -->
         <div x-show="mode === 'manual'" class="pt-4" style="display: none;">
-            <form action="{{ route('batches.participants.store', $batch) }}" method="POST" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+            <form action="{{ route('batches.participants.store', $batch) }}" method="POST" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-7 gap-3 text-xs">
                 @csrf
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1">Participant Name <span class="text-rose-500">*</span></label>
@@ -206,15 +222,20 @@
                         class="w-full rounded-xl border border-slate-200 bg-slate-50/60 p-2.5 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Phone <span class="text-slate-400 font-normal">(Optional)</span></label>
-                    <input type="tel" name="phone" placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
+                    <label class="block font-semibold text-slate-700 mb-1">Department <span class="text-rose-500">*</span></label>
+                    <input type="text" name="department" required placeholder="e.g. PR & DW"
+                        class="w-full rounded-xl border border-slate-200 bg-slate-50/60 p-2.5 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Phone <span class="text-rose-500">*</span></label>
+                    <input type="tel" name="phone" required placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
                         pattern="[6-9][0-9]{9}" title="Must be a valid 10-digit mobile number starting with 6, 7, 8, or 9"
                         oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
                         class="w-full rounded-xl border border-slate-200 bg-slate-50/60 p-2.5 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Email ID (Optional)</label>
-                    <input type="email" name="email" placeholder="e.g. trainee@gov.in"
+                    <label class="block font-semibold text-slate-700 mb-1">Email ID <span class="text-rose-500">*</span></label>
+                    <input type="email" name="email" required placeholder="e.g. trainee@gov.in"
                         class="w-full rounded-xl border border-slate-200 bg-slate-50/60 p-2.5 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none">
                 </div>
                 <div class="flex items-end">

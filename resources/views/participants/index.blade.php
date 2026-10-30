@@ -132,6 +132,22 @@
         </div>
     </div>
 
+    @if(session('import_errors') && count(session('import_errors')) > 0)
+    <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-2 shadow-2xs">
+        <div class="font-bold flex items-center space-x-2 text-amber-800">
+            <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>Notice: Some participant rows were skipped during bulk import:</span>
+        </div>
+        <ul class="list-disc pl-5 space-y-1 text-[11px] text-amber-800 max-h-48 overflow-y-auto">
+            @foreach(session('import_errors') as $err)
+                <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
     <!-- Status Tabs (Active vs Trashed) -->
     <div class="flex items-center space-x-2 border-b border-slate-200 pb-2">
         <a href="{{ route('participants.index', array_merge(request()->except(['status', 'page']), ['status' => 'active'])) }}"
@@ -301,7 +317,7 @@
                     <div class="flex items-center justify-between text-[11px] pt-0.5">
                         <a href="{{ route('batches.attendance.show', $b) }}" class="text-slate-500 hover:text-blue-600 font-medium transition inline-flex items-center space-x-1">
                             <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            <span>Form 2 Attendance</span>
+                            <span>Mark Attendance</span>
                         </a>
 
                         @unless(auth()->user()->hasRole('super-admin'))
@@ -377,7 +393,7 @@
                             <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                             </svg>
-                            <span>Form 2 Attendance</span>
+                            <span>Attendance</span>
                         </a>
                     </div>
                 </div>
@@ -428,7 +444,7 @@
 
                 <div class="sm:col-span-2 relative">
                     <input type="text" name="search" value="{{ request('search') }}"
-                        placeholder="Search participant by name, designation, or Gram Panchayat..."
+                        placeholder="Search participant by name, phone, email, designation, or Gram Panchayat..."
                         class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50/60 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:outline-none">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -642,23 +658,32 @@
                         </div>
 
                         <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Department <span class="text-slate-400 font-normal">(Optional)</span></label>
-                            <input type="text" name="department" x-model="createForm.department" placeholder="e.g. PR & DW"
-                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+                            <label class="block font-semibold text-slate-700 mb-1">Department <span class="text-rose-500">*</span></label>
+                            <input type="text" name="department" x-model="createForm.department" required placeholder="e.g. PR & DW"
+                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition @error('department') border-rose-500 @enderror">
+                            @error('department')
+                                <p class="text-rose-600 text-[11px] mt-1 font-medium">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Contact Phone <span class="text-slate-400 font-normal">(Optional)</span></label>
-                            <input type="tel" name="phone" x-model="createForm.phone" placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
+                            <label class="block font-semibold text-slate-700 mb-1">Contact Phone <span class="text-rose-500">*</span></label>
+                            <input type="tel" name="phone" x-model="createForm.phone" required placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
                                 pattern="[6-9][0-9]{9}" title="Must be a valid 10-digit mobile number starting with 6, 7, 8, or 9"
                                 @input="createForm.phone = createForm.phone.replace(/[^0-9]/g, '').slice(0, 10)"
-                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition @error('phone') border-rose-500 @enderror">
+                            @error('phone')
+                                <p class="text-rose-600 text-[11px] mt-1 font-medium">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="sm:col-span-2">
-                            <label class="block font-semibold text-slate-700 mb-1">Email ID <span class="text-slate-400 font-normal">(Optional)</span></label>
-                            <input type="email" name="email" x-model="createForm.email" placeholder="e.g. trainee@odisha.gov.in"
-                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+                            <label class="block font-semibold text-slate-700 mb-1">Email ID <span class="text-rose-500">*</span></label>
+                            <input type="email" name="email" x-model="createForm.email" required placeholder="e.g. trainee@odisha.gov.in"
+                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition @error('email') border-rose-500 @enderror">
+                            @error('email')
+                                <p class="text-rose-600 text-[11px] mt-1 font-medium">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- Target Training Batch (Mandatory) -->
@@ -762,22 +787,22 @@
                         </div>
 
                         <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Department</label>
-                            <input type="text" name="department" x-model="editForm.department"
+                            <label class="block font-semibold text-slate-700 mb-1">Department <span class="text-rose-500">*</span></label>
+                            <input type="text" name="department" x-model="editForm.department" required placeholder="e.g. PR & DW"
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                         </div>
 
                         <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Contact Phone <span class="text-slate-400 font-normal">(Optional)</span></label>
-                            <input type="tel" name="phone" x-model="editForm.phone" placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
+                            <label class="block font-semibold text-slate-700 mb-1">Contact Phone <span class="text-rose-500">*</span></label>
+                            <input type="tel" name="phone" x-model="editForm.phone" required placeholder="10-digit mobile (e.g. 9856565677)" maxlength="10"
                                 pattern="[6-9][0-9]{9}" title="Must be a valid 10-digit mobile number starting with 6, 7, 8, or 9"
                                 @input="editForm.phone = editForm.phone.replace(/[^0-9]/g, '').slice(0, 10)"
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                         </div>
 
                         <div class="sm:col-span-2">
-                            <label class="block font-semibold text-slate-700 mb-1">Email ID</label>
-                            <input type="email" name="email" x-model="editForm.email" placeholder="e.g. trainee@gov.in"
+                            <label class="block font-semibold text-slate-700 mb-1">Email ID <span class="text-rose-500">*</span></label>
+                            <input type="email" name="email" x-model="editForm.email" required placeholder="e.g. trainee@gov.in"
                                 class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                         </div>
 
@@ -1090,20 +1115,20 @@
                             </div>
                             <div class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
                                 <span class="font-medium text-slate-600">Department</span>
-                                <span class="text-[10px] text-slate-400 font-medium">opt</span>
+                                <span class="text-[10px] text-rose-500 font-bold">*</span>
                             </div>
                             <div class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
                                 <span class="font-medium text-slate-600">Mobile No</span>
-                                <span class="text-[10px] text-slate-400 font-medium">opt</span>
+                                <span class="text-[10px] text-rose-500 font-bold">*</span>
                             </div>
                             <div class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
                                 <span class="font-medium text-slate-600">Email ID</span>
-                                <span class="text-[10px] text-slate-400 font-medium">opt</span>
+                                <span class="text-[10px] text-rose-500 font-bold">*</span>
                             </div>
                         </div>
                         <div class="text-[11px] text-amber-700/90 flex items-center space-x-1.5 pt-0.5">
                             <svg class="w-3.5 h-3.5 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
-                            <span>Attendance is not imported; it must be recorded manually on Form 2.</span>
+                            <span>Attendance is not imported; it must be recorded manually in paper or in portal.</span>
                         </div>
                     </div>
 

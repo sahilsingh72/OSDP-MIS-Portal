@@ -102,12 +102,19 @@ class ParticipantController extends Controller
         $showBatchesFirst = empty($selectedBatch) && !$isAllView && $status !== 'trashed';
 
         if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
+            $search = trim($request->input('search'));
+            $cleanNumeric = preg_replace('/[^0-9]/', '', $search);
+            $query->where(function ($q) use ($search, $cleanNumeric) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('designation', 'like', "%{$search}%")
                   ->orWhere('office_name', 'like', "%{$search}%")
-                  ->orWhere('department', 'like', "%{$search}%");
+                  ->orWhere('department', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone_masked', 'like', "%{$search}%");
+
+                if (!empty($cleanNumeric)) {
+                    $q->orWhere('phone_masked', 'like', "%{$cleanNumeric}%");
+                }
             });
         }
 
@@ -149,14 +156,18 @@ class ParticipantController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'designation' => ['required', 'string', 'max:255'],
             'office_name' => ['required', 'string', 'max:255'],
-            'department' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'regex:/^[6-9]\d{9}$/'],
-            'email' => ['nullable', 'email', 'max:255'],
+            'department' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'regex:/^[6-9]\d{9}$/'],
+            'email' => ['required', 'email', 'max:255'],
             'batch_id' => ['required', 'exists:training_batches,id'],
             'is_active' => ['nullable', 'boolean'],
         ], [
+            'department.required' => 'Department is mandatory.',
             'batch_id.required' => 'Target training batch selection is mandatory.',
+            'phone.required' => 'Contact phone number is mandatory.',
             'phone.regex' => 'Contact phone number must be a valid 10-digit mobile number starting with 6, 7, 8, or 9.',
+            'email.required' => 'Email address is mandatory.',
+            'email.email' => 'Please provide a valid email address.',
         ]);
 
         $batch = TrainingBatch::findOrFail($validated['batch_id']);
@@ -165,15 +176,28 @@ class ParticipantController extends Controller
         $name = trim($validated['name']);
         $designation = trim($validated['designation']);
         $officeName = trim($validated['office_name']);
-        $department = !empty($validated['department']) ? trim($validated['department']) : null;
-        $email = !empty($validated['email']) ? strtolower(trim($validated['email'])) : null;
+        $department = trim($validated['department']);
+        $cleanEmail = strtolower(trim($validated['email']));
+        $cleanPhone = preg_replace('/[^0-9]/', '', $validated['phone']);
         $isActive = $request->has('is_active') ? $request->boolean('is_active') : true;
 
-        $phone = !empty($validated['phone']) ? trim($validated['phone']) : null;
-        $cleanPhone = null;
-        if (!empty($phone)) {
-            $digits = preg_replace('/[^0-9+]/', '', $phone);
-            $cleanPhone = !empty($digits) ? $digits : $phone;
+        $phoneExists = Participant::withTrashed()
+            ->where('phone_masked', $cleanPhone)
+            ->exists();
+
+        $emailExists = Participant::withTrashed()
+            ->whereRaw('LOWER(email) = ?', [$cleanEmail])
+            ->exists();
+
+        if ($phoneExists || $emailExists) {
+            $duplicateErrors = [];
+            if ($phoneExists) {
+                $duplicateErrors['phone'] = 'Participant already existed with same phone num.';
+            }
+            if ($emailExists) {
+                $duplicateErrors['email'] = 'Participant already existed with same email.';
+            }
+            return back()->withInput()->withErrors($duplicateErrors);
         }
 
         $enrollmentStatus = '';
@@ -184,76 +208,45 @@ class ParticipantController extends Controller
             $officeName,
             $department,
             $cleanPhone,
-            $email,
+            $cleanEmail,
             $isActive,
             $batch,
             &$enrollmentStatus
         ) {
-            $participant = Participant::withTrashed()
-                ->where('name', $name)
-                ->where('office_name', $officeName)
-                ->first();
+            $participant = Participant::create([
+                'name' => $name,
+                'designation' => $designation,
+                'department' => $department,
+                'office_name' => $officeName,
+                'phone_masked' => $cleanPhone,
+                'email' => $cleanEmail,
+                'is_active' => $isActive,
+                'created_by' => Auth::id(),
+            ]);
 
-            if (!$participant) {
-                $participant = Participant::create([
-                    'name' => $name,
-                    'designation' => $designation,
-                    'department' => $department,
-                    'office_name' => $officeName,
-                    'phone_masked' => $cleanPhone,
-                    'email' => $email,
-                    'is_active' => $isActive,
-                    'created_by' => Auth::id(),
-                ]);
-
-                AuditLog::record('participant_created', $participant, null, $participant->toArray());
-                $enrollmentStatus = "Participant '{$participant->name}' added successfully";
-            } else {
-                if ($participant->trashed()) {
-                    $participant->restore();
-                }
-
-                $oldData = $participant->toArray();
-                $participant->update([
-                    'designation' => $designation ?: $participant->designation,
-                    'department' => $department ?: $participant->department,
-                    'phone_masked' => $cleanPhone ?: $participant->phone_masked,
-                    'email' => $email ?: $participant->email,
-                    'is_active' => $isActive,
-                ]);
-
-                AuditLog::record('participant_updated', $participant, $oldData, $participant->getChanges());
-                $enrollmentStatus = "Participant '{$participant->name}' record updated";
-            }
+            AuditLog::record('participant_created', $participant, null, $participant->toArray());
+            $enrollmentStatus = "Participant '{$participant->name}' added successfully";
 
             if ($batch) {
-                $alreadyEnrolled = BatchParticipant::where('training_batch_id', $batch->id)
-                    ->where('participant_id', $participant->id)
-                    ->first();
+                $nextSerial = $batch->batchParticipants()->count() + 1;
 
-                if (!$alreadyEnrolled) {
-                    $nextSerial = $batch->batchParticipants()->count() + 1;
+                $bp = BatchParticipant::create([
+                    'training_batch_id' => $batch->id,
+                    'participant_id' => $participant->id,
+                    'serial_number' => $nextSerial,
+                ]);
 
-                    $bp = BatchParticipant::create([
-                        'training_batch_id' => $batch->id,
-                        'participant_id' => $participant->id,
-                        'serial_number' => $nextSerial,
-                    ]);
+                AttendanceRecord::create([
+                    'training_batch_id' => $batch->id,
+                    'batch_participant_id' => $bp->id,
+                    'morning_present' => false,
+                    'afternoon_present' => false,
+                    'remarks' => null,
+                    'marked_by' => null,
+                ]);
 
-                    AttendanceRecord::create([
-                        'training_batch_id' => $batch->id,
-                        'batch_participant_id' => $bp->id,
-                        'morning_present' => false,
-                        'afternoon_present' => false,
-                        'remarks' => null,
-                        'marked_by' => null,
-                    ]);
-
-                    $batch->recalculateCounts();
-                    $enrollmentStatus .= " and enrolled into batch {$batch->batch_code}";
-                } else {
-                    $enrollmentStatus .= " (already enrolled in batch {$batch->batch_code})";
-                }
+                $batch->recalculateCounts();
+                $enrollmentStatus .= " and enrolled into batch {$batch->batch_code}";
             }
 
             return $participant;
@@ -273,13 +266,15 @@ class ParticipantController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'designation' => ['required', 'string', 'max:255'],
             'office_name' => ['required', 'string', 'max:255'],
-            'department' => ['nullable', 'string', 'max:255'],
+            'department' => $request->has('department') ? ['required', 'string', 'max:255'] : ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'regex:/^[6-9]\d{9}$/'],
             'email' => ['nullable', 'email', 'max:255'],
             'batch_id' => ['nullable', 'exists:training_batches,id'],
             'is_active' => ['nullable', 'boolean'],
         ], [
+            'department.required' => 'Department is mandatory.',
             'phone.regex' => 'Contact phone number must be a valid 10-digit mobile number starting with 6, 7, 8, or 9.',
+            'email.email' => 'Please provide a valid email address.',
         ]);
 
         $newBatch = null;
@@ -288,25 +283,44 @@ class ParticipantController extends Controller
             $this->authorize('update', $newBatch);
         }
 
-        $phone = !empty($validated['phone']) ? trim($validated['phone']) : null;
-        $cleanPhone = $participant->phone_masked;
-        if (!empty($phone) && !str_contains($phone, '*')) {
-            $digits = preg_replace('/[^0-9+]/', '', $phone);
-            $cleanPhone = !empty($digits) ? $digits : $phone;
-        } elseif (empty($phone)) {
-            $cleanPhone = null;
+        $cleanPhone = !empty($validated['phone']) ? preg_replace('/[^0-9]/', '', $validated['phone']) : $participant->phone_masked;
+        $cleanEmail = !empty($validated['email']) ? strtolower(trim($validated['email'])) : $participant->email;
+
+        $duplicateErrors = [];
+        if (!empty($cleanPhone)) {
+            $phoneExists = Participant::withTrashed()
+                ->where('id', '!=', $participant->id)
+                ->where('phone_masked', $cleanPhone)
+                ->exists();
+            if ($phoneExists) {
+                $duplicateErrors['phone'] = 'Participant already existed with same phone num.';
+            }
+        }
+
+        if (!empty($cleanEmail)) {
+            $emailExists = Participant::withTrashed()
+                ->where('id', '!=', $participant->id)
+                ->whereRaw('LOWER(email) = ?', [$cleanEmail])
+                ->exists();
+            if ($emailExists) {
+                $duplicateErrors['email'] = 'Participant already existed with same email.';
+            }
+        }
+
+        if (!empty($duplicateErrors)) {
+            return back()->withInput()->withErrors($duplicateErrors);
         }
 
         $oldData = $participant->toArray();
 
-        DB::transaction(function () use ($participant, $validated, $cleanPhone, $request, $newBatch, $oldData) {
+        DB::transaction(function () use ($participant, $validated, $cleanPhone, $cleanEmail, $request, $newBatch, $oldData) {
             $participant->update([
                 'name' => $validated['name'],
                 'designation' => $validated['designation'],
                 'office_name' => $validated['office_name'],
-                'department' => $validated['department'] ?? null,
+                'department' => $request->has('department') ? trim($validated['department']) : $participant->department,
                 'phone_masked' => $cleanPhone,
-                'email' => !empty($validated['email']) ? strtolower(trim($validated['email'])) : null,
+                'email' => $cleanEmail,
                 'is_active' => $request->has('is_active') ? $request->boolean('is_active') : $participant->is_active,
             ]);
 
@@ -429,11 +443,16 @@ class ParticipantController extends Controller
                 $msg .= " and enrolled into batch {$batch->batch_code}";
             }
             if ($result['skipped'] > 0) {
-                $msg .= " ({$result['skipped']} duplicates/empty skipped)";
+                $msg .= " ({$result['skipped']} duplicates/skipped)";
             }
             $msg .= '.';
 
-            return back()->with('status', $msg);
+            $redirect = back()->with('status', $msg);
+            if (!empty($result['errors'])) {
+                $redirect->with('import_errors', $result['errors']);
+            }
+
+            return $redirect;
         } catch (\Throwable $e) {
             return back()->withErrors(['file' => 'Import failed: ' . $e->getMessage()]);
         }

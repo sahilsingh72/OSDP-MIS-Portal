@@ -54,53 +54,55 @@ class AttendanceController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'designation' => ['required', 'string', 'max:255'],
-            'department' => ['nullable', 'string', 'max:255'],
+            'department' => ['required', 'string', 'max:255'],
             'office_name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'regex:/^[6-9]\d{9}$/'],
-            'email' => ['nullable', 'email', 'max:255'],
+            'phone' => ['required', 'string', 'regex:/^[6-9]\d{9}$/'],
+            'email' => ['required', 'email', 'max:255'],
         ], [
+            'department.required' => 'Department is mandatory.',
+            'phone.required' => 'Contact phone number is mandatory.',
             'phone.regex' => 'Contact phone number must be a valid 10-digit mobile number starting with 6, 7, 8, or 9.',
+            'email.required' => 'Email address is mandatory.',
+            'email.email' => 'Please provide a valid email address.',
         ]);
 
         $name = trim($validated['name']);
         $officeName = trim($validated['office_name']);
         $designation = trim($validated['designation']);
-        $email = !empty($validated['email']) ? strtolower(trim($validated['email'])) : null;
+        $department = trim($validated['department']);
+        $cleanEmail = strtolower(trim($validated['email']));
+        $cleanPhone = preg_replace('/[^0-9]/', '', $validated['phone']);
 
-        $phone = !empty($validated['phone']) ? trim($validated['phone']) : null;
-        $cleanPhone = null;
-        if (!empty($phone)) {
-            $digits = preg_replace('/[^0-9+]/', '', $phone);
-            $cleanPhone = !empty($digits) ? $digits : $phone;
+        $phoneExists = Participant::withTrashed()
+            ->where('phone_masked', $cleanPhone)
+            ->exists();
+
+        $emailExists = Participant::withTrashed()
+            ->whereRaw('LOWER(email) = ?', [$cleanEmail])
+            ->exists();
+
+        if ($phoneExists || $emailExists) {
+            $duplicateErrors = [];
+            if ($phoneExists) {
+                $duplicateErrors['phone'] = 'Participant already existed with same phone num.';
+            }
+            if ($emailExists) {
+                $duplicateErrors['email'] = 'Participant already existed with same email.';
+            }
+            return back()->withInput()->withErrors($duplicateErrors);
         }
 
-        DB::transaction(function () use ($name, $designation, $officeName, $cleanPhone, $email, $batch) {
-            $participant = Participant::withTrashed()
-                ->where('name', $name)
-                ->where('office_name', $officeName)
-                ->first();
-
-            if (!$participant) {
-                $participant = Participant::create([
-                    'name' => $name,
-                    'designation' => $designation,
-                    'department' => null,
-                    'office_name' => $officeName,
-                    'phone_masked' => $cleanPhone,
-                    'email' => $email,
-                    'is_active' => true,
-                    'created_by' => Auth::id(),
-                ]);
-            } else {
-                if ($participant->trashed()) {
-                    $participant->restore();
-                }
-                $participant->update([
-                    'designation' => $designation ?: $participant->designation,
-                    'phone_masked' => $cleanPhone ?: $participant->phone_masked,
-                    'email' => $email ?: $participant->email,
-                ]);
-            }
+        DB::transaction(function () use ($name, $designation, $department, $officeName, $cleanPhone, $cleanEmail, $batch) {
+            $participant = Participant::create([
+                'name' => $name,
+                'designation' => $designation,
+                'department' => $department,
+                'office_name' => $officeName,
+                'phone_masked' => $cleanPhone,
+                'email' => $cleanEmail,
+                'is_active' => true,
+                'created_by' => Auth::id(),
+            ]);
 
             // Check if already enrolled in this batch
             $bp = BatchParticipant::where('training_batch_id', $batch->id)
@@ -152,11 +154,16 @@ class AttendanceController extends Controller
 
             $msg = "Successfully imported {$result['imported']} participants into batch {$batch->batch_code}";
             if ($result['skipped'] > 0) {
-                $msg .= " ({$result['skipped']} duplicates/empty skipped)";
+                $msg .= " ({$result['skipped']} duplicates/skipped)";
             }
             $msg .= ". Total registered: {$batch->fresh()->registered_participants}. Participant details saved; please mark attendance manually below.";
 
-            return back()->with('status', $msg);
+            $redirect = back()->with('status', $msg);
+            if (!empty($result['errors'])) {
+                $redirect->with('import_errors', $result['errors']);
+            }
+
+            return $redirect;
         } catch (\Throwable $e) {
             return back()->withErrors(['file' => 'Excel upload failed: ' . $e->getMessage()]);
         }
