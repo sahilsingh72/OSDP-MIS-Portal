@@ -49,7 +49,7 @@ class AttendanceController extends Controller
      */
     public function addParticipant(Request $request, TrainingBatch $batch): RedirectResponse
     {
-        $this->authorize('update', $batch);
+        $this->authorize('manageParticipants', $batch);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -140,7 +140,7 @@ class AttendanceController extends Controller
      */
     public function bulkUpload(Request $request, TrainingBatch $batch, \App\Services\ParticipantImportService $importService): RedirectResponse
     {
-        $this->authorize('update', $batch);
+        $this->authorize('manageParticipants', $batch);
 
         $request->validate([
             'file' => ['required', 'file', 'mimes:xlsx,xls,csv,txt', 'max:10240'],
@@ -184,7 +184,7 @@ class AttendanceController extends Controller
      */
     public function update(Request $request, TrainingBatch $batch): RedirectResponse
     {
-        $this->authorize('update', $batch);
+        $this->authorize('manageAttendance', $batch);
 
         $validated = $request->validate([
             'attendance' => ['nullable', 'array'],
