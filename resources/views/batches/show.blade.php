@@ -85,6 +85,13 @@
                     <span>Upload Evidence</span>
                 </a>
 
+                @can('feedback.view')
+                <a href="{{ route('feedback.batch', $batch) }}" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs shadow-sm shadow-amber-500/20 transition whitespace-nowrap">
+                    <span>★</span>
+                    <span>Feedback</span>
+                </a>
+                @endcan
+
                 @if(!auth()->user()->hasRole(['super-admin', 'pmu', 'ocac']) && $evidenceStatus['is_complete'] && in_array($batch->status, ['scheduled', 'in_progress', 'awaiting_evidence', 'correction_required']))
                     @can('submit', $batch)
                     <form action="{{ route('batches.submit', $batch) }}" method="POST" class="inline">
@@ -124,7 +131,7 @@
                     'photo_2' => ['name' => '3. Photo 2 (Trainer Teaching)', 'desc' => 'Trainer instructing in progress'],
                     'video' => ['name' => '4. Video Clip (MP4)', 'desc' => '~1 min short clip, landscape mode'],
                     'feedback_forms' => ['name' => '5. Feedback Forms', 'desc' => 'Merged single PDF of all forms'],
-                    'batch_completion_report' => ['name' => '6. Completion Report', 'desc' => 'Form 3 PDF & Training summary'],
+                    'batch_completion_report' => ['name' => '6. Completion Report', 'desc' => 'Training summary'],
                 ];
             @endphp
 
@@ -163,7 +170,7 @@
                                     @endif
                                 </p>
                             @elseif($key === 'batch_completion_report' && $batch->summary)
-                                <p class="text-[10px] text-emerald-700 font-medium mt-0.5">Form 3 Summary recorded</p>
+                                <p class="text-[10px] text-emerald-700 font-medium mt-0.5">Summary recorded</p>
                             @else
                                 <p class="text-[10px] text-slate-400 font-medium mt-0.5 group-hover:text-slate-600 transition">Click to upload ↗</p>
                             @endif

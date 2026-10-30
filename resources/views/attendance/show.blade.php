@@ -15,6 +15,12 @@
             </p>
         </div>
         <div class="flex items-center space-x-3">
+            @can('feedback.view')
+            <a href="{{ route('feedback.batch', $batch) }}" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 font-semibold text-xs border border-amber-200 transition flex items-center space-x-1.5 shadow-2xs">
+                <span>★</span>
+                <span>Form 1 Feedback</span>
+            </a>
+            @endcan
             <a href="{{ route('batches.show', $batch) }}" class="text-xs font-semibold text-slate-600 hover:text-slate-900">
                 ← Back to Batch Details
             </a>

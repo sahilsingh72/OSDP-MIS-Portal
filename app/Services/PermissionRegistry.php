@@ -176,6 +176,18 @@ class PermissionRegistry
             'category' => 'Audit Trail & Security Logs',
         ],
 
+        // Form 1 Participant Feedback
+        'feedback.view' => [
+            'label' => 'View Participant Feedback (Form 1)',
+            'description' => 'Access participant feedback records, session ratings, and qualitative comments for training batches.',
+            'category' => 'Participant Feedback (Form 1)',
+        ],
+        'feedback.manage' => [
+            'label' => 'Transcribe & Manage Feedback (Form 1)',
+            'description' => 'Enter, transcribe from physical Form 1 sheets, and update individual trainee feedback responses.',
+            'category' => 'Participant Feedback (Form 1)',
+        ],
+
         // System Settings
         'settings.manage' => [
             'label' => 'Configure System Settings',
@@ -217,6 +229,10 @@ class PermissionRegistry
         'Attendance & Transcriptions' => [
             'icon' => 'clipboard-check',
             'description' => 'Form 2 physical transcription, daily check-in verification, and locking.',
+        ],
+        'Participant Feedback (Form 1)' => [
+            'icon' => 'chat-alt-2',
+            'description' => 'Transcribe physical Form 1 participant feedback, session satisfaction ratings, and trainee comments.',
         ],
         'Evidence & Document Vault' => [
             'icon' => 'photograph',

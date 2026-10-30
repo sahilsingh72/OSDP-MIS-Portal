@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldVerificationController;
 use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\ParticipantFeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RolePermissionController;
@@ -103,6 +104,12 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     // Form 3 Part C Summary & Form 1 Feedback Metrics
     Route::post('/batches/{batch}/summary', [TrainingUploadController::class, 'saveSummary'])->name('batches.summary.store');
     Route::post('/batches/{batch}/feedback', [TrainingUploadController::class, 'saveFeedback'])->name('batches.feedback.store');
+
+    // Form 1 Participant Feedback Module (Physical Form Transcription)
+    Route::get('/feedback', [ParticipantFeedbackController::class, 'index'])->name('feedback.index');
+    Route::get('/batches/{batch}/feedback-forms', [ParticipantFeedbackController::class, 'showBatch'])->name('feedback.batch');
+    Route::post('/batches/{batch}/participants/{batchParticipant}/feedback', [ParticipantFeedbackController::class, 'store'])->name('feedback.store');
+    Route::delete('/batches/{batch}/feedback-forms/{feedback}', [ParticipantFeedbackController::class, 'destroy'])->name('feedback.destroy');
 
     // Review & Verification Queue
     Route::get('/reviews', [BatchReviewController::class, 'index'])->name('reviews.index');
