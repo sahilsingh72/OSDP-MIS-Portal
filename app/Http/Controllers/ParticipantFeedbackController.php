@@ -168,12 +168,12 @@ class ParticipantFeedbackController extends Controller
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => "Form 1 Feedback for {$participant->name} saved successfully.",
+                'message' => "Feedback for {$participant->name} saved successfully.",
                 'feedback' => $feedback->fresh(),
             ]);
         }
 
-        return back()->with('status', "Form 1 Participant Feedback for {$participant->name} saved successfully.");
+        return back()->with('status', "Participant Feedback for {$participant->name} saved successfully.");
     }
 
     /**

@@ -40,6 +40,18 @@
             <span>Training Batches</span>
         </a>
 
+        <!-- Field Trainers -->
+        @if(auth()->user()->can('trainers.view') || auth()->user()->hasRole(['super-admin', 'pmu', 'district-coordinator', 'ocac']))
+        @php $isTrainers = request()->routeIs('trainers.*'); @endphp
+        <a href="{{ route('trainers.index') }}"
+            class="group flex items-center px-3 py-2 rounded-xl font-medium transition {{ $isTrainers ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/90 shadow-2xs' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}">
+            <svg class="w-4 h-4 mr-3 flex-shrink-0 {{ $isTrainers ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600' }} transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span>Field Trainers</span>
+        </a>
+        @endif
+
         <!-- Participants Directory -->
         @can('participants.view')
         @php $isParticipants = request()->routeIs('participants.*'); @endphp

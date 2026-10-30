@@ -5,6 +5,7 @@ use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BatchReviewController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FieldTrainerController;
 use App\Http\Controllers\FieldVerificationController;
 use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\ParticipantController;
@@ -84,6 +85,14 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     Route::post('/batches/{batch}/participants', [AttendanceController::class, 'addParticipant'])->name('batches.participants.store');
     Route::post('/batches/{batch}/participants/bulk-upload', [AttendanceController::class, 'bulkUpload'])->name('batches.participants.bulk-upload');
     Route::get('/batches/{batch}/participants/template', [AttendanceController::class, 'downloadTemplate'])->name('batches.participants.template');
+
+    // Field Trainer Management (DLC, PMU, Super Admin)
+    Route::get('/trainers', [FieldTrainerController::class, 'index'])->name('trainers.index');
+    Route::get('/trainers/create', [FieldTrainerController::class, 'create'])->name('trainers.create');
+    Route::post('/trainers', [FieldTrainerController::class, 'store'])->name('trainers.store');
+    Route::get('/trainers/{trainer}/edit', [FieldTrainerController::class, 'edit'])->name('trainers.edit');
+    Route::put('/trainers/{trainer}', [FieldTrainerController::class, 'update'])->name('trainers.update');
+    Route::match(['post', 'patch'], '/trainers/{trainer}/toggle-status', [FieldTrainerController::class, 'toggleStatus'])->name('trainers.toggle-status');
 
     // Participants Directory & Registration
     Route::get('/participants', [ParticipantController::class, 'index'])->name('participants.index');

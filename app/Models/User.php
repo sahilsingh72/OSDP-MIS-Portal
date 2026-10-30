@@ -24,6 +24,9 @@ class User extends Authenticatable
         'phone',
         'designation',
         'department',
+        'district_id',
+        'block_id',
+        'gram_panchayat_id',
         'is_active',
         'password',
         'last_login_at',
@@ -53,6 +56,38 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Home district for Field Trainer / Staff
+     */
+    public function district(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(District::class);
+    }
+
+    /**
+     * Home block for Field Trainer / Staff
+     */
+    public function block(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Block::class);
+    }
+
+    /**
+     * Home Gram Panchayat for Field Trainer / Staff
+     */
+    public function gramPanchayat(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(GramPanchayat::class);
+    }
+
+    /**
+     * Dedicated Field Trainer profile record if this user is a trainer.
+     */
+    public function fieldTrainer(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(FieldTrainer::class, 'user_id');
     }
 
     /**
