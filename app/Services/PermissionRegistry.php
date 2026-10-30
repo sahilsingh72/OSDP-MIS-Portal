@@ -92,6 +92,23 @@ class PermissionRegistry
             'category' => 'Training Batches & Operations',
         ],
 
+        // Field Trainers
+        'trainers.view' => [
+            'label' => 'View Field Trainers',
+            'description' => 'Browse field master trainers, contact details, designations, and geographic affiliations.',
+            'category' => 'Field Trainers & Faculty',
+        ],
+        'trainers.create' => [
+            'label' => 'Create Field Trainers',
+            'description' => 'Provision new field master trainer accounts and allocate district, block, and GP jurisdictions.',
+            'category' => 'Field Trainers & Faculty',
+        ],
+        'trainers.manage' => [
+            'label' => 'Manage Field Trainers',
+            'description' => 'Update trainer profiles, geographic allocations, and activate or deactivate accounts.',
+            'category' => 'Field Trainers & Faculty',
+        ],
+
         // Participants
         'participants.view' => [
             'label' => 'View Enrolled Participants',
@@ -217,6 +234,10 @@ class PermissionRegistry
         'Curriculum & Programmes' => [
             'icon' => 'academic-cap',
             'description' => 'Training framework syllabi, tier allocations, and curriculum schedules.',
+        ],
+        'Field Trainers & Faculty' => [
+            'icon' => 'user-check',
+            'description' => 'Field master trainer accounts, identity details, and local jurisdictions.',
         ],
         'Training Batches & Operations' => [
             'icon' => 'calendar',
