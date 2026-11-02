@@ -11,7 +11,11 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable;
+    use HasRoles {
+        assignRole as protected traitAssignRole;
+        syncRoles as protected traitSyncRoles;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +23,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'role_id',
         'name',
         'email',
         'phone',
@@ -32,6 +37,43 @@ class User extends Authenticatable
         'last_login_at',
         'last_login_ip',
     ];
+
+    /**
+     * Assign the given role to the model and sync role_id column.
+     */
+    public function assignRole(...$roles)
+    {
+        $result = $this->traitAssignRole(...$roles);
+        $firstRole = $this->roles()->first();
+        if ($firstRole && $this->role_id !== $firstRole->id) {
+            $this->role_id = $firstRole->id;
+            $this->saveQuietly();
+        }
+        return $result;
+    }
+
+    /**
+     * Remove all existing roles and set the given role, syncing role_id column.
+     */
+    public function syncRoles(...$roles)
+    {
+        $result = $this->traitSyncRoles(...$roles);
+        $firstRole = $this->roles()->first();
+        $newRoleId = $firstRole ? $firstRole->id : null;
+        if ($this->role_id !== $newRoleId) {
+            $this->role_id = $newRoleId;
+            $this->saveQuietly();
+        }
+        return $result;
+    }
+
+    /**
+     * Primary assigned system role.
+     */
+    public function primaryRole(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Spatie\Permission\Models\Role::class, 'role_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
