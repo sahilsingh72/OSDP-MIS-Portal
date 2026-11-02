@@ -186,4 +186,60 @@ class TrainingBatchPolicy
 
         return false;
     }
+
+    /**
+     * Determine whether the user can transcribe and update attendance for the batch.
+     */
+    public function manageAttendance(User $user, TrainingBatch $batch): bool
+    {
+        if (!$user->can('attendance.manage')) {
+            return false;
+        }
+
+        if ($user->hasRole(['super-admin', 'pmu'])) {
+            return true;
+        }
+
+        if ($user->hasRole('district-coordinator')) {
+            return $user->isAssignedToDistrict($batch->district_id);
+        }
+
+        if ($user->hasRole('field-trainer')) {
+            return $user->isAssignedToBatch($batch->id);
+        }
+
+        if ($user->hasRole('field-monitor')) {
+            return $user->isAssignedToDistrict($batch->district_id) || $batch->fieldVerifications()->where('monitor_id', $user->id)->exists();
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can enroll participants into this batch (single or bulk).
+     */
+    public function manageParticipants(User $user, TrainingBatch $batch): bool
+    {
+        if ($user->hasRole(['super-admin', 'pmu'])) {
+            return true;
+        }
+
+        if (!$user->can('participants.manage')) {
+            return false;
+        }
+
+        if ($user->hasRole('district-coordinator')) {
+            return $user->isAssignedToDistrict($batch->district_id);
+        }
+
+        if ($user->hasRole('field-trainer')) {
+            return $user->isAssignedToBatch($batch->id);
+        }
+
+        if ($user->hasRole('field-monitor')) {
+            return $user->isAssignedToDistrict($batch->district_id) || $batch->fieldVerifications()->where('monitor_id', $user->id)->exists();
+        }
+
+        return false;
+    }
 }

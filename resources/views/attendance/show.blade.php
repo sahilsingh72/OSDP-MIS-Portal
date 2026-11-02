@@ -76,6 +76,7 @@
     @endif
 
     <!-- Participant Enrollment (Bulk Excel Upload & Manual Transcription) -->
+    @can('manageParticipants', $batch)
     @unless(auth()->user()->hasRole('super-admin'))
     <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm" x-data="{ mode: 'excel' }">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
@@ -248,6 +249,7 @@
         </div>
     </div>
     @endunless
+    @endcan
 
     <!-- Attendance Transcription Form -->
     <form action="{{ route('batches.attendance.update', $batch) }}" method="POST" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
@@ -297,7 +299,8 @@
                             <label class="inline-flex items-center cursor-pointer">
                                 <input type="checkbox" name="attendance[{{ $idx }}][morning_present]" value="1"
                                     {{ $att && $att->morning_present ? 'checked' : '' }}
-                                    class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300">
+                                    @cannot('manageAttendance', $batch) disabled @endcannot
+                                    class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 disabled:opacity-60">
                             </label>
                         </td>
                         <td class="px-5 py-3 text-center">
@@ -307,23 +310,27 @@
                                 <label class="inline-flex items-center cursor-pointer">
                                     <input type="checkbox" name="attendance[{{ $idx }}][afternoon_present]" value="1"
                                         {{ $att && $att->afternoon_present ? 'checked' : '' }}
-                                        class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300">
+                                        @cannot('manageAttendance', $batch) disabled @endcannot
+                                        class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 disabled:opacity-60">
                                 </label>
                             @endif
                         </td>
                         <td class="px-5 py-3">
                             <input type="text" name="attendance[{{ $idx }}][remarks]" value="{{ $att?->remarks }}"
                                 placeholder="Optional note"
-                                class="w-full rounded-lg border border-slate-200 px-2.5 py-1 text-xs focus:border-blue-500 focus:outline-none">
+                                @cannot('manageAttendance', $batch) disabled @endcannot
+                                class="w-full rounded-lg border border-slate-200 px-2.5 py-1 text-xs focus:border-blue-500 focus:outline-none disabled:bg-slate-50 disabled:text-slate-400">
                         </td>
                     </tr>
                     @empty
                     <tr>
                         <td colspan="7" class="px-6 py-12 text-center text-slate-400">
                             No active participants enrolled yet.
+                            @can('manageParticipants', $batch)
                             @unless(auth()->user()->hasRole('super-admin'))
                                 Use the enrollment section above to add attendees or import an Excel sheet.
                             @endunless
+                            @endcan
                         </td>
                     </tr>
                     @endforelse
@@ -332,6 +339,7 @@
         </div>
 
         @if($activeBatchParticipants->isNotEmpty())
+        @can('manageAttendance', $batch)
         <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
             <span class="text-xs text-slate-500 font-medium">
                 Note: Updating attendance recalculates total registered and present counts immediately.
@@ -340,6 +348,13 @@
                 Save & Update Attendance
             </button>
         </div>
+        @else
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+            <span class="text-xs text-slate-400 italic">
+                Read-only: You do not have permission to transcribe or update attendance for this batch.
+            </span>
+        </div>
+        @endcan
         @endif
     </form>
 

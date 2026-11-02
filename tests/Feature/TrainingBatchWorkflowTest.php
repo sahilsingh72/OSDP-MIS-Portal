@@ -326,4 +326,128 @@ class TrainingBatchWorkflowTest extends TestCase
         $batch->refresh();
         $this->assertEquals(TrainingBatch::STATUS_UNDER_REVIEW, $batch->status);
     }
+
+    /**
+     * Test field trainer with attendance.manage permission can save attendance.
+     */
+    public function test_field_trainer_with_attendance_permission_can_save_attendance(): void
+    {
+        $batch = TrainingBatch::with(['trainers', 'batchParticipants'])->first();
+        $trainer = $batch->trainers->first();
+        $this->assertNotNull($trainer);
+
+        $trainer->givePermissionTo('attendance.manage');
+
+        $bp = $batch->batchParticipants->first();
+        $this->assertNotNull($bp);
+
+        $response = $this->actingAs($trainer)->post("/batches/{$batch->id}/attendance", [
+            'attendance' => [
+                [
+                    'batch_participant_id' => $bp->id,
+                    'morning_present' => '1',
+                    'afternoon_present' => '1',
+                    'remarks' => 'Present on time',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('status');
+
+        $this->assertDatabaseHas('attendance_records', [
+            'batch_participant_id' => $bp->id,
+            'morning_present' => true,
+            'afternoon_present' => true,
+            'remarks' => 'Present on time',
+        ]);
+    }
+
+    /**
+     * Test field trainer without attendance.manage permission cannot save attendance.
+     */
+    public function test_field_trainer_without_attendance_permission_cannot_save_attendance(): void
+    {
+        $batch = TrainingBatch::with(['trainers', 'batchParticipants'])->first();
+        $trainer = $batch->trainers->first();
+        $this->assertNotNull($trainer);
+
+        // Revoke attendance.manage permission from trainer and its roles
+        $trainer->revokePermissionTo('attendance.manage');
+        foreach ($trainer->roles as $role) {
+            $role->revokePermissionTo('attendance.manage');
+        }
+
+        $bp = $batch->batchParticipants->first();
+        $this->assertNotNull($bp);
+
+        $response = $this->actingAs($trainer)->post("/batches/{$batch->id}/attendance", [
+            'attendance' => [
+                [
+                    'batch_participant_id' => $bp->id,
+                    'morning_present' => '1',
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(403);
+
+        // View attendance page in read-only mode
+        $viewResponse = $this->actingAs($trainer)->get("/batches/{$batch->id}/attendance");
+        $viewResponse->assertOk();
+        $viewResponse->assertDontSee('Save & Update Attendance');
+        $viewResponse->assertSee('Read-only: You do not have permission to transcribe or update attendance');
+    }
+
+    /**
+     * Test Manage Participant Enrollment permission hides or shows enrollment in both Directory and Attendance Register.
+     */
+    public function test_manage_participant_enrollment_permission_controls_visibility_in_both_views(): void
+    {
+        $batch = TrainingBatch::with('trainers')->first();
+        $trainer = $batch->trainers->first();
+        $this->assertNotNull($trainer);
+
+        // 1. With participants.manage permission
+        $trainer->givePermissionTo('participants.manage');
+
+        $attendanceWithPerm = $this->actingAs($trainer)->get("/batches/{$batch->id}/attendance");
+        $attendanceWithPerm->assertOk();
+        $attendanceWithPerm->assertSee('Enroll Participants into Batch');
+        $attendanceWithPerm->assertSee('Bulk Upload (Excel)');
+        $attendanceWithPerm->assertSee('Single Entry');
+
+        $directoryWithPerm = $this->actingAs($trainer)->get('/participants');
+        $directoryWithPerm->assertOk();
+        $directoryWithPerm->assertSee('Add Participant');
+        $directoryWithPerm->assertSee('Bulk Upload (Excel)');
+
+        // 2. Without participants.manage permission (revoked)
+        $trainer->revokePermissionTo('participants.manage');
+        foreach ($trainer->roles as $role) {
+            $role->revokePermissionTo('participants.manage');
+        }
+
+        $attendanceNoPerm = $this->actingAs($trainer)->get("/batches/{$batch->id}/attendance");
+        $attendanceNoPerm->assertOk();
+        $attendanceNoPerm->assertDontSee('Enroll Participants into Batch');
+        $attendanceNoPerm->assertDontSee('Bulk Upload (Excel)');
+        $attendanceNoPerm->assertDontSee('Single Entry');
+
+        $directoryNoPerm = $this->actingAs($trainer)->get('/participants');
+        $directoryNoPerm->assertOk();
+        $directoryNoPerm->assertDontSee('Add Participant');
+        $directoryNoPerm->assertDontSee('Bulk Upload (Excel)');
+
+        // Direct submission is also rejected
+        $postNoPerm = $this->actingAs($trainer)->post("/batches/{$batch->id}/participants", [
+            'name' => 'Unauthorized Participant',
+            'designation' => 'Clerk',
+            'department' => 'Revenue',
+            'office_name' => 'GP Office',
+            'phone' => '9812345678',
+            'email' => 'unauth@gov.in',
+        ]);
+        $postNoPerm->assertStatus(403);
+    }
 }
