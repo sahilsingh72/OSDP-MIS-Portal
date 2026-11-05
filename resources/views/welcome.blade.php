@@ -34,7 +34,7 @@
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
             <!-- Left: Official Authority -->
             <div class="flex items-center space-x-2.5">
-                <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-amber-100 text-amber-700 font-bold text-[9px]">🏛</span>
+                <!-- <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-amber-100 text-amber-700 font-bold text-[9px]"></span> -->
                 <span class="font-bold text-slate-900 tracking-wide uppercase">Government of Odisha</span>
                 <span class="text-slate-300">•</span>
                 <span class="text-slate-600 font-medium">Electronics & Information Technology Department</span>
@@ -184,7 +184,7 @@
                     </span>
                     <span class="inline-flex items-center space-x-1.5 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs">
                         <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-                        <span class="font-medium">Form 2 Signature Transcripts</span>
+                        <span class="font-medium">Attendance Signature Transcripts</span>
                     </span>
                 </div>
             </div>
@@ -218,7 +218,7 @@
                         <span class="font-display text-3xl sm:text-4xl font-extrabold text-purple-600 group-hover:text-purple-700 transition">{{ number_format($totalBatches) }}</span>
                         <span class="text-xs font-semibold text-slate-500">/ {{ number_format($targetBatches) }}</span>
                     </div>
-                    <p class="text-[11px] text-slate-500 mt-1">Master calendar batches tracked via Form 2</p>
+                    <p class="text-[11px] text-slate-500 mt-1">Master calendar batches tracked via Attendance</p>
                 </div>
 
                 <!-- 4. Officials -->
@@ -242,14 +242,14 @@
                     Policy Foundations
                 </span>
                 <h2 class="font-display text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                    Four Strategic Pillars of Data Policy 2.0
+                    Strategic Pillars of Data Policy 2.0
                 </h2>
                 <p class="text-xs sm:text-sm text-slate-600">
                     ODISHA STATE DATA POLICY 2.0 establishes an institutional mandate for data valuation, citizen privacy, and inter-departmental trust.
                 </p>
             </div>
 
-            <div class="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Pillar 1: Classification -->
                 <div class="p-6 rounded-2xl bg-white border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all space-y-3.5 shadow-2xs group">
                     <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center group-hover:scale-105 transition">
@@ -284,31 +284,14 @@
                     </div>
                 </div>
 
-                <!-- Pillar 3: Interoperability -->
-                <div class="p-6 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all space-y-3.5 shadow-2xs group">
-                    <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center group-hover:scale-105 transition">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-base text-slate-900">3. API & Interoperability</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">
-                        Demolishing departmental silos through automated, secure RESTful API exchanges, unified master registries, and common identifier integration.
-                    </p>
-                    <div class="text-[11px] text-indigo-600 font-semibold flex items-center space-x-1 pt-1">
-                        <span>Unified Data Exchange</span>
-                        <span>→</span>
-                    </div>
-                </div>
-
-                <!-- Pillar 4: Grassroots Evidence -->
+                <!-- Pillar 3: Grassroots Evidence -->
                 <div class="p-6 rounded-2xl bg-white border border-slate-200 hover:border-amber-300 hover:shadow-md transition-all space-y-3.5 shadow-2xs group">
                     <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center group-hover:scale-105 transition">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
                     </div>
-                    <h3 class="font-bold text-base text-slate-900">4. Evidence Governance</h3>
+                    <h3 class="font-bold text-base text-slate-900">3. Evidence Governance</h3>
                     <p class="text-xs text-slate-600 leading-relaxed">
                         A rigorous multi-point verification model backed by geo-tagged media and two-stage review by District Coordinators and State PMU before settlement.
                     </p>
@@ -412,7 +395,7 @@
                         </p>
                     </div>
                     <div class="pt-3 border-t border-slate-200 text-[11px] text-slate-600 space-y-1">
-                        <div><strong class="text-slate-800">Focus:</strong> Citizen data collection, Form 2 registers, and grievance data integrity.</div>
+                        <div><strong class="text-slate-800">Focus:</strong> Citizen data collection, attendance registers, and grievance data integrity.</div>
                         <div><strong class="text-slate-800">Audience:</strong> 6,798+ GPs</div>
                     </div>
                 </div>
@@ -526,7 +509,7 @@
                         </svg>
                     </button>
                     <div x-show="openFaq === 3" x-collapse class="px-5 pb-5 text-slate-600 leading-relaxed text-xs sm:text-sm">
-                        Every batch requires Form 2 manual physical signatures (morning and post-lunch), geo-tagged group photo with the official approved banner, classroom teaching photo, 1-minute video clip, participant feedback bundle, and batch completion report uploaded within 48 hours.
+                        Every batch requires attendance manual physical signatures (morning and post-lunch), geo-tagged group photo with the official approved banner, classroom teaching photo, 1-minute video clip, participant feedback bundle, and batch completion report uploaded within 48 hours.
                     </div>
                 </div>
 
@@ -554,19 +537,18 @@
                 <!-- Col 1: Brand & Authority -->
                 <div class="md:col-span-2 space-y-3">
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-blue-500/20">
-                            OD
-                        </div>
+                        <img src="{{ asset('images/ocac-logo.png') }}" alt="OCAC Logo" class="h-11 w-auto object-contain">
                         <div>
-                            <span class="font-display font-extrabold text-base text-slate-900 block leading-tight">OSDP 2.0 MIS Portal</span>
+                            <span class="font-display font-extrabold text-base text-slate-900 block leading-tight">OSDP 2.0 MIS Portal | OCAC</span>
                             <span class="text-[11px] text-slate-500 font-medium">Odisha State Data Policy Management Information System</span>
                         </div>
                     </div>
                     <p class="text-xs text-slate-600 leading-relaxed max-w-md pt-2">
-                        Designed, developed, and maintained by the Odisha Computer Application Centre (OCAC), designated State Nodal Agency under the Electronics & Information Technology Department, Government of Odisha.
+                        Odisha Computer Application Centre (OCAC), the Technical Directorate of Electronics & Information Technology Department, Government of Odisha, has evolved through years as a centre of excellence in IT solutions and e-Governance....<a href="https://www.ocac.in/en/about-ocac" style="color:blue"> read more</a>
+                        <!-- Designed, developed, and maintained by the Odisha Computer Application Centre (OCAC), designated State Nodal Agency under the Electronics & Information Technology Department, Government of Odisha. -->
                     </p>
                     <p class="text-[11px] text-slate-500 font-mono">
-                        RFP Tender Reference: OCAC/OSDP/2026/01 • DPDP Compliance Verified
+                        <!-- RFP Tender Reference: OCAC/OSDP/2026/01 • DPDP Compliance Verified -->
                     </p>
                 </div>
 

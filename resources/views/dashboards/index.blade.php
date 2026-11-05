@@ -4,7 +4,7 @@
 <div class="space-y-6">
 
     <!-- Metric Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 {{ auth()->user()->hasRole(['district-coordinator', 'dlc']) ? 'lg:grid-cols-3 xl:grid-cols-5' : 'lg:grid-cols-4' }} gap-5">
 
         <!-- Total Batches -->
         <a href="{{ route('batches.index') }}" class="group bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:border-blue-400/60 hover:-translate-y-0.5 transition duration-200 block cursor-pointer">
@@ -60,7 +60,30 @@
             </div>
         </a>
 
-        <!-- Overdue SLA & Feedback -->
+        <!-- Field Trainers -->
+        <a href="{{ auth()->user()->can('trainers.view') || auth()->user()->hasRole(['super-admin', 'pmu', 'district-coordinator', 'ocac']) ? route('trainers.index') : route('batches.index') }}" class="group bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:border-amber-400/60 hover:-translate-y-0.5 transition duration-200 block cursor-pointer">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider group-hover:text-amber-600 transition">Field Trainers</span>
+                <span class="p-2 rounded-xl bg-amber-50 text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/>
+                    </svg>
+                </span>
+            </div>
+            <div class="mt-3">
+                <span class="text-3xl font-extrabold text-slate-900 group-hover:text-amber-600 transition">{{ number_format($totalTrainers) }}</span>
+                <span class="text-xs text-slate-500 ml-1">faculty roster</span>
+            </div>
+            <div class="mt-2 text-xs text-slate-500 flex items-center justify-between">
+                <span>{{ number_format($activeTrainers) }} Active</span>
+                <span class="text-amber-600 font-semibold">{{ $totalTrainers - $activeTrainers }} Inactive</span>
+            </div>
+        </a>
+
+        <!-- Overdue SLA & Feedback (Only for DLC / District Coordinator) -->
+        @if(auth()->user()->hasRole(['district-coordinator', 'dlc']))
         <a href="{{ route('batches.index', ['overdue_only' => 1]) }}" class="group bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:border-rose-400/60 hover:-translate-y-0.5 transition duration-200 block cursor-pointer">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider group-hover:text-rose-600 transition">Overdue (>48h)</span>
@@ -85,6 +108,7 @@
                 @endif
             </div>
         </a>
+        @endif
 
     </div>
 
