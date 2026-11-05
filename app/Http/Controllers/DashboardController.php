@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
 use App\Models\District;
+use App\Models\FieldTrainer;
 use App\Models\FieldVerification;
 use App\Models\TrainingBatch;
 use App\Models\TrainingPlan;
@@ -51,6 +52,15 @@ class DashboardController extends Controller
         // Participant counts
         $totalRegistered = (clone $batchQuery)->sum('registered_participants');
         $totalPresent = (clone $batchQuery)->sum('present_participants');
+
+        // Field Trainer metrics scoped to user authority
+        $trainerQuery = FieldTrainer::query();
+        if ($user->hasRole('district-coordinator')) {
+            $assignedDistrictIds = $user->assignedDistricts->pluck('id')->toArray();
+            $trainerQuery->whereIn('district_id', $assignedDistrictIds);
+        }
+        $totalTrainers = (clone $trainerQuery)->count();
+        $activeTrainers = (clone $trainerQuery)->where('is_active', true)->count();
 
         // Recent Batches
         $recentBatches = (clone $batchQuery)
@@ -145,6 +155,8 @@ class DashboardController extends Controller
             'overdueBatches',
             'totalRegistered',
             'totalPresent',
+            'totalTrainers',
+            'activeTrainers',
             'recentBatches',
             'tierStats',
             'districtStats',
