@@ -1,63 +1,7 @@
 @extends('layouts.app', ['title' => 'Edit Field Trainer', 'headerTitle' => 'Field Trainers'])
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6"
-    x-data="{
-        districtId: '{{ old('district_id', $trainer->district_id ?? $trainer->assignedDistricts->first()?->id ?? '') }}',
-        blockId: '{{ old('block_id', $trainer->block_id ?? '') }}',
-        gpId: '{{ old('gram_panchayat_id', $trainer->gram_panchayat_id ?? '') }}',
-        blocks: @json($blocks),
-        gps: @json($gps),
-        loadingBlocks: false,
-        loadingGps: false,
-        async loadBlocks(district, selectedBlock = null) {
-            if (!district) {
-                this.blocks = [];
-                this.gps = [];
-                this.blockId = '';
-                this.gpId = '';
-                return;
-            }
-            this.loadingBlocks = true;
-            try {
-                const res = await fetch(`/api/districts/${district}/blocks`);
-                this.blocks = await res.json();
-                if (selectedBlock) {
-                    this.blockId = String(selectedBlock);
-                    await this.loadGps(selectedBlock, '{{ old('gram_panchayat_id', $trainer->gram_panchayat_id ?? '') }}');
-                } else {
-                    this.blockId = '';
-                    this.gpId = '';
-                    this.gps = [];
-                }
-            } catch (e) {
-                console.error('Failed to load blocks:', e);
-            } finally {
-                this.loadingBlocks = false;
-            }
-        },
-        async loadGps(block, selectedGp = null) {
-            if (!block) {
-                this.gps = [];
-                this.gpId = '';
-                return;
-            }
-            this.loadingGps = true;
-            try {
-                const res = await fetch(`/api/blocks/${block}/gram-panchayats`);
-                this.gps = await res.json();
-                if (selectedGp) {
-                    this.gpId = String(selectedGp);
-                } else {
-                    this.gpId = '';
-                }
-            } catch (e) {
-                console.error('Failed to load gram panchayats:', e);
-            } finally {
-                this.loadingGps = false;
-            }
-        }
-    }">
+<div class="max-w-4xl mx-auto space-y-6">
 
     <!-- Breadcrumb & Header -->
     <div class="flex items-center justify-between">
@@ -195,13 +139,13 @@
                             Assigned District <span class="text-rose-500">*</span>
                         </label>
                         <div class="relative">
-                            <select name="district_id" x-model="districtId"
-                                @change="loadBlocks(districtId)"
-                                required
+                            <select id="district_id" name="district_id" required
                                 class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition @error('district_id') border-rose-500 @enderror">
-                                <option value="" disabled :selected="!districtId">-- Select District --</option>
+                                <option value="">-- Select District --</option>
                                 @foreach($districts as $d)
-                                    <option value="{{ $d->id }}">{{ $d->name }} ({{ $d->code }})</option>
+                                    <option value="{{ $d->id }}" {{ (string)old('district_id', $trainer->district_id) === (string)$d->id ? 'selected' : '' }}>
+                                        {{ $d->name }} ({{ $d->code }})
+                                    </option>
                                 @endforeach
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
@@ -217,18 +161,17 @@
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">
                             Assigned Block <span class="text-rose-500">*</span>
-                            <span x-show="loadingBlocks" class="text-blue-600 text-[10px] font-normal animate-pulse ml-1">(Loading blocks...)</span>
+                            <span id="block_loading" class="hidden text-blue-600 text-[10px] font-normal animate-pulse ml-1">(Loading blocks...)</span>
                         </label>
                         <div class="relative">
-                            <select name="block_id" x-model="blockId"
-                                @change="loadGps(blockId)"
-                                required
-                                :disabled="loadingBlocks || !districtId"
+                            <select id="block_id" name="block_id" required
                                 class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition disabled:bg-slate-50 disabled:text-slate-400 @error('block_id') border-rose-500 @enderror">
-                                <option value="" disabled :selected="!blockId">-- Select Block --</option>
-                                <template x-for="b in blocks" :key="b.id">
-                                    <option :value="b.id" :selected="String(b.id) === String(blockId)" x-text="b.name"></option>
-                                </template>
+                                <option value="">-- Select Block --</option>
+                                @foreach($blocks as $b)
+                                    <option value="{{ $b->id }}" {{ (string)old('block_id', $trainer->block_id) === (string)$b->id ? 'selected' : '' }}>
+                                        {{ $b->name }}
+                                    </option>
+                                @endforeach
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -243,17 +186,17 @@
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">
                             Gram Panchayat <span class="text-rose-500">*</span>
-                            <span x-show="loadingGps" class="text-blue-600 text-[10px] font-normal animate-pulse ml-1">(Loading GPs...)</span>
+                            <span id="gp_loading" class="hidden text-blue-600 text-[10px] font-normal animate-pulse ml-1">(Loading GPs...)</span>
                         </label>
                         <div class="relative">
-                            <select name="gram_panchayat_id" x-model="gpId"
-                                required
-                                :disabled="loadingGps || !blockId"
+                            <select id="gram_panchayat_id" name="gram_panchayat_id" required
                                 class="w-full appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pl-3.5 pr-9 text-xs text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition disabled:bg-slate-50 disabled:text-slate-400 @error('gram_panchayat_id') border-rose-500 @enderror">
-                                <option value="" disabled :selected="!gpId">-- Select Gram Panchayat --</option>
-                                <template x-for="gp in gps" :key="gp.id">
-                                    <option :value="gp.id" :selected="String(gp.id) === String(gpId)" x-text="gp.name"></option>
-                                </template>
+                                <option value="">-- Select Gram Panchayat --</option>
+                                @foreach($gps as $gp)
+                                    <option value="{{ $gp->id }}" {{ (string)old('gram_panchayat_id', $trainer->gram_panchayat_id) === (string)$gp->id ? 'selected' : '' }}>
+                                        {{ $gp->name }}
+                                    </option>
+                                @endforeach
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -294,3 +237,91 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const baseUrl = "{{ url('/') }}";
+    const districtSelect = document.getElementById('district_id');
+    const blockSelect = document.getElementById('block_id');
+    const gpSelect = document.getElementById('gram_panchayat_id');
+    const blockLoading = document.getElementById('block_loading');
+    const gpLoading = document.getElementById('gp_loading');
+
+    districtSelect.addEventListener('change', function () {
+        const districtId = this.value;
+        blockSelect.innerHTML = '<option value="">-- Select Block --</option>';
+        gpSelect.innerHTML = '<option value="">-- Select Gram Panchayat --</option>';
+
+        if (!districtId) return;
+
+        if (blockLoading) blockLoading.classList.remove('hidden');
+
+        fetch(`${baseUrl}/api/districts/${districtId}/blocks`, {
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Failed to load blocks');
+            return res.json();
+        })
+        .then(data => {
+            blockSelect.innerHTML = '<option value="">-- Select Block --</option>';
+            if (!data || data.length === 0) {
+                blockSelect.innerHTML = '<option value="">-- No blocks found --</option>';
+                return;
+            }
+            data.forEach(block => {
+                const opt = document.createElement('option');
+                opt.value = block.id;
+                opt.textContent = block.name;
+                blockSelect.appendChild(opt);
+            });
+        })
+        .catch(err => {
+            console.error('Failed to load blocks:', err);
+            blockSelect.innerHTML = '<option value="">Error loading blocks</option>';
+        })
+        .finally(() => {
+            if (blockLoading) blockLoading.classList.add('hidden');
+        });
+    });
+
+    blockSelect.addEventListener('change', function () {
+        const blockId = this.value;
+        gpSelect.innerHTML = '<option value="">-- Select Gram Panchayat --</option>';
+
+        if (!blockId) return;
+
+        if (gpLoading) gpLoading.classList.remove('hidden');
+
+        fetch(`${baseUrl}/api/blocks/${blockId}/gram-panchayats`, {
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Failed to load GPs');
+            return res.json();
+        })
+        .then(data => {
+            gpSelect.innerHTML = '<option value="">-- Select Gram Panchayat --</option>';
+            if (!data || data.length === 0) {
+                gpSelect.innerHTML = '<option value="">-- No Gram Panchayats found --</option>';
+                return;
+            }
+            data.forEach(gp => {
+                const opt = document.createElement('option');
+                opt.value = gp.id;
+                opt.textContent = gp.name;
+                gpSelect.appendChild(opt);
+            });
+        })
+        .catch(err => {
+            console.error('Failed to load GPs:', err);
+            gpSelect.innerHTML = '<option value="">Error loading Gram Panchayats</option>';
+        })
+        .finally(() => {
+            if (gpLoading) gpLoading.classList.add('hidden');
+        });
+    });
+});
+</script>
+@endpush
