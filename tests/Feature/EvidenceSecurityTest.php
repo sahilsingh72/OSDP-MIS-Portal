@@ -24,6 +24,7 @@ class EvidenceSecurityTest extends TestCase
         })->first();
 
         $batch->update(['status' => TrainingBatch::STATUS_AWAITING_EVIDENCE]);
+        TrainingUpload::where('training_batch_id', $batch->id)->where('evidence_type', 'attendance_sheet')->delete();
 
         $invalidFile = UploadedFile::fake()->create('malicious.php', 100, 'text/x-php');
 
@@ -215,6 +216,49 @@ class EvidenceSecurityTest extends TestCase
 
             $response->assertStatus(403);
         } finally {
+            $batch->update(['status' => $origStatus]);
+        }
+    }
+
+    /**
+     * Test uploading an already uploaded evidence type is locked and rejected with validation error.
+     */
+    public function test_reuploading_existing_evidence_type_is_locked_and_rejected(): void
+    {
+        Storage::fake('evidence');
+        $trainer = User::where('email', 'trainer.mohanty@osdp.gov.in')->first();
+        $batch = TrainingBatch::whereHas('trainers', function ($q) use ($trainer) {
+            $q->where('users.id', $trainer->id);
+        })->first();
+
+        $origStatus = $batch->status;
+        $batch->update(['status' => TrainingBatch::STATUS_AWAITING_EVIDENCE]);
+
+        try {
+            TrainingUpload::where('training_batch_id', $batch->id)->where('evidence_type', 'attendance_sheet')->delete();
+
+            // First upload of attendance_sheet succeeds
+            $file1 = UploadedFile::fake()->create('attendance1.pdf', 500, 'application/pdf');
+            $response1 = $this->actingAs($trainer)->post("/batches/{$batch->id}/evidence", [
+                'evidence_type' => 'attendance_sheet',
+                'file' => $file1,
+            ]);
+            $response1->assertRedirect();
+            $this->assertDatabaseHas('training_uploads', [
+                'training_batch_id' => $batch->id,
+                'evidence_type' => 'attendance_sheet',
+                'is_valid' => true,
+            ]);
+
+            // Second direct upload of attendance_sheet should be locked and rejected
+            $file2 = UploadedFile::fake()->create('attendance2.pdf', 500, 'application/pdf');
+            $response2 = $this->actingAs($trainer)->post("/batches/{$batch->id}/evidence", [
+                'evidence_type' => 'attendance_sheet',
+                'file' => $file2,
+            ]);
+            $response2->assertSessionHasErrors('evidence_type');
+        } finally {
+            TrainingUpload::where('training_batch_id', $batch->id)->where('evidence_type', 'attendance_sheet')->delete();
             $batch->update(['status' => $origStatus]);
         }
     }

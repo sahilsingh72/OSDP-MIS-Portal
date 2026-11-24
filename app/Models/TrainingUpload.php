@@ -39,6 +39,11 @@ class TrainingUpload extends Model
         'version' => 'integer',
     ];
 
+    protected $appends = [
+        'type_label',
+        'formatted_size',
+    ];
+
     public function batch(): BelongsTo
     {
         return $this->belongsTo(TrainingBatch::class, 'training_batch_id');
