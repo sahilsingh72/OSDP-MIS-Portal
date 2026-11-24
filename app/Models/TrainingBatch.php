@@ -165,14 +165,21 @@ class TrainingBatch extends Model
      */
     public function getEvidenceStatusAttribute(): array
     {
-        $types = $this->uploads()->pluck('evidence_type')->toArray();
+        $types = $this->relationLoaded('uploads')
+            ? $this->uploads->pluck('evidence_type')->toArray()
+            : $this->uploads()->pluck('evidence_type')->toArray();
+
+        $hasSummary = $this->relationLoaded('summary')
+            ? $this->summary !== null
+            : $this->summary()->exists();
+
         $required = [
             'attendance_sheet' => in_array('attendance_sheet', $types),
             'photo_1' => in_array('photo_1', $types),
             'photo_2' => in_array('photo_2', $types),
             'video' => in_array('video', $types),
             'feedback_forms' => in_array('feedback_forms', $types),
-            'batch_completion_report' => in_array('batch_completion_report', $types) || $this->summary()->exists(),
+            'batch_completion_report' => in_array('batch_completion_report', $types) || $hasSummary,
         ];
 
         $completedCount = count(array_filter($required));

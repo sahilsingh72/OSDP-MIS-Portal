@@ -68,6 +68,29 @@ class TrainingUploadController extends Controller
             'remarks' => ['nullable', 'string', 'max:500'],
         ]);
 
+        // Enforce evidence locking: once an item is uploaded, it is locked against direct re-upload.
+        // Changes or replacements must be done via the Edit action on that specific item.
+        $existingUpload = TrainingUpload::where('training_batch_id', $batch->id)
+            ->where('evidence_type', $validated['evidence_type'])
+            ->where('is_valid', true)
+            ->first();
+
+        if ($existingUpload) {
+            return back()->withErrors([
+                'evidence_type' => "The evidence item '{$existingUpload->type_label}' has already been uploaded and is locked. If you want to change or replace this file, please click the 'Edit' button on this item in the table below.",
+            ])->withInput();
+        }
+
+        $uploadedCount = TrainingUpload::where('training_batch_id', $batch->id)
+            ->where('is_valid', true)
+            ->count();
+
+        if ($uploadedCount >= 6) {
+            return back()->withErrors([
+                'evidence_type' => "All 6 evidence items have already been uploaded for this batch and new uploads are locked. To replace any file, please use the 'Edit' button in the table below.",
+            ])->withInput();
+        }
+
         $file = $request->file('file');
         $evidenceType = $validated['evidence_type'];
         $originalName = $file->getClientOriginalName();
@@ -95,8 +118,8 @@ class TrainingUploadController extends Controller
             }
         } else {
             // PDF documents (attendance, feedback, completion report)
-            if (!in_array($mimeType, ['application/pdf', 'image/jpeg', 'image/png'])) {
-                return back()->withErrors(['file' => 'Document must be a valid PDF file (or scanned image for attendance sheet).'])->withInput();
+            if (!in_array($mimeType, ['application/pdf'])) {
+                return back()->withErrors(['file' => 'Document must be a valid PDF file (.pdf).'])->withInput();
             }
             if ($fileSize > $maxPdfBytes) {
                 return back()->withErrors(['file' => "Document size exceeds the maximum limit of " . SystemSetting::get('max_pdf_size_mb', 25) . " MB."])->withInput();
@@ -201,8 +224,8 @@ class TrainingUploadController extends Controller
                     return back()->withErrors(['file' => "Video size exceeds the maximum limit of " . SystemSetting::get('max_video_size_mb', 100) . " MB."])->withInput();
                 }
             } else {
-                if (!in_array($mimeType, ['application/pdf', 'image/jpeg', 'image/png'])) {
-                    return back()->withErrors(['file' => 'Document must be a valid PDF file (or scanned image for attendance sheet).'])->withInput();
+                if (!in_array($mimeType, ['application/pdf'])) {
+                    return back()->withErrors(['file' => 'Document must be a valid PDF file (.pdf).'])->withInput();
                 }
                 if ($fileSize > $maxPdfBytes) {
                     return back()->withErrors(['file' => "Document size exceeds the maximum limit of " . SystemSetting::get('max_pdf_size_mb', 25) . " MB."])->withInput();
