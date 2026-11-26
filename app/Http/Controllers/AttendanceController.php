@@ -122,6 +122,7 @@ class AttendanceController extends Controller
                 AttendanceRecord::create([
                     'training_batch_id' => $batch->id,
                     'batch_participant_id' => $bp->id,
+                    'is_present' => false,
                     'morning_present' => false,
                     'afternoon_present' => false,
                     'marked_by' => null,
@@ -189,6 +190,8 @@ class AttendanceController extends Controller
         $validated = $request->validate([
             'attendance' => ['nullable', 'array'],
             'attendance.*.batch_participant_id' => ['required', 'exists:batch_participants,id'],
+            'attendance.*.is_present' => ['nullable'],
+            'attendance.*.present' => ['nullable'],
             'attendance.*.morning_present' => ['nullable'],
             'attendance.*.afternoon_present' => ['nullable'],
             'attendance.*.remarks' => ['nullable', 'string', 'max:255'],
@@ -197,14 +200,20 @@ class AttendanceController extends Controller
         DB::transaction(function () use ($validated, $batch) {
             if (!empty($validated['attendance'])) {
                 foreach ($validated['attendance'] as $entry) {
+                    $isPresent = isset($entry['is_present'])
+                        || isset($entry['present'])
+                        || isset($entry['morning_present'])
+                        || isset($entry['afternoon_present']);
+
                     AttendanceRecord::updateOrCreate(
                         [
                             'training_batch_id' => $batch->id,
                             'batch_participant_id' => $entry['batch_participant_id'],
                         ],
                         [
-                            'morning_present' => isset($entry['morning_present']),
-                            'afternoon_present' => isset($entry['afternoon_present']),
+                            'is_present' => $isPresent,
+                            'morning_present' => $isPresent,
+                            'afternoon_present' => $isPresent,
                             'remarks' => $entry['remarks'] ?? null,
                             'marked_by' => Auth::id(),
                         ]

@@ -13,6 +13,7 @@ class AttendanceRecord extends Model
     protected $fillable = [
         'training_batch_id',
         'batch_participant_id',
+        'is_present',
         'morning_present',
         'afternoon_present',
         'remarks',
@@ -20,9 +21,18 @@ class AttendanceRecord extends Model
     ];
 
     protected $casts = [
+        'is_present' => 'boolean',
         'morning_present' => 'boolean',
         'afternoon_present' => 'boolean',
     ];
+
+    public function getIsPresentAttribute($value): bool
+    {
+        if ($value !== null) {
+            return (bool) $value;
+        }
+        return (bool) ($this->morning_present || $this->afternoon_present);
+    }
 
     public function batch(): BelongsTo
     {

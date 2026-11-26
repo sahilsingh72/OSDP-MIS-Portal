@@ -242,6 +242,7 @@ class ParticipantImportService
                         AttendanceRecord::create([
                             'training_batch_id' => $batch->id,
                             'batch_participant_id' => $bp->id,
+                            'is_present' => false,
                             'morning_present' => false,
                             'afternoon_present' => false,
                             'remarks' => null,
