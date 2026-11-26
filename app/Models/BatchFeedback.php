@@ -20,6 +20,7 @@ class BatchFeedback extends Model
         'q4_handbook_avg',
         'q5_overall_avg',
         'total_forms_analyzed',
+        'comments_suggestions',
         'qualitative_highlights',
         'improvement_suggestions',
         'unanswered_questions',

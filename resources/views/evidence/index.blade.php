@@ -828,153 +828,81 @@ function evidenceManager() {
             </div>
         @endcan
 
-        <!-- Feedback Aggregates Card -->
-        @can('manageSummary', $batch)
-            <!-- Editable Feedback Form (Field Operators) -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-                <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">
-                        Feedback Aggregates Entry
-                    </h3>
-                    <span class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
-                        Field Form 1
-                    </span>
-                </div>
-
-                <form action="{{ route('batches.feedback.store', $batch) }}" method="POST" class="space-y-3 text-xs">
-                    @csrf
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Q1 Clarity (1-5)</label>
-                            <input type="number" step="0.01" min="1" max="5" name="q1_clarity_avg" required value="{{ old('q1_clarity_avg', $batch->feedback?->q1_clarity_avg ?? '4.50') }}"
-                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Q2 Knowledge (1-5)</label>
-                            <input type="number" step="0.01" min="1" max="5" name="q2_knowledge_avg" required value="{{ old('q2_knowledge_avg', $batch->feedback?->q2_knowledge_avg ?? '4.80') }}"
-                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Q3 Relevance (1-5)</label>
-                            <input type="number" step="0.01" min="1" max="5" name="q3_relevance_avg" required value="{{ old('q3_relevance_avg', $batch->feedback?->q3_relevance_avg ?? '4.60') }}"
-                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Q4 Handbook (1-5)</label>
-                            <input type="number" step="0.01" min="1" max="5" name="q4_handbook_avg" required value="{{ old('q4_handbook_avg', $batch->feedback?->q4_handbook_avg ?? '4.70') }}"
-                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Q5 Overall (1-5)</label>
-                            <input type="number" step="0.01" min="1" max="5" name="q5_overall_avg" required value="{{ old('q5_overall_avg', $batch->feedback?->q5_overall_avg ?? '4.75') }}"
-                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-slate-700 mb-1">Forms Count</label>
-                            <input type="number" min="1" name="total_forms_analyzed" required value="{{ old('total_forms_analyzed', $batch->feedback?->total_forms_analyzed ?? $batch->present_participants) }}"
-                                class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Key Qualitative Highlights</label>
-                        <textarea name="qualitative_highlights" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('qualitative_highlights', $batch->feedback?->qualitative_highlights) }}</textarea>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Improvement Suggestions</label>
-                        <textarea name="improvement_suggestions" rows="2" class="w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-blue-500 focus:outline-none">{{ old('improvement_suggestions', $batch->feedback?->improvement_suggestions) }}</textarea>
-                    </div>
-
-                    <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold transition text-center">
-                        Save Feedback Evaluation
-                    </button>
-                </form>
-            </div>
-        @else
-            <!-- Read-Only Feedback View (Admin / PMU / OCAC / Reviewers) -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-                <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <!-- Feedback Aggregates Card (Standardized View) -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                <div class="flex items-center space-x-2.5">
                     <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">
                         Feedback Evaluation
                     </h3>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
-                            Read-Only
-                        </span>
-                        @if($batch->feedback)
-                            <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                                ✓ Submitted
-                            </span>
-                        @else
-                            <span class="text-[11px] font-semibold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
-                                ⏳ Pending Entry
-                            </span>
-                        @endif
-                    </div>
                 </div>
-
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-center text-xs">
-                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q1. Clarity</span>
-                        <span class="text-base font-extrabold text-blue-600">
-                            {{ $batch->feedback ? number_format($batch->feedback->q1_clarity_avg, 2) : '-' }}
+                <div class="flex items-center space-x-2">
+                    @can('feedback.manage')
+                        <a href="{{ route('feedback.batch', $batch) }}"
+                           class="inline-flex items-center px-2.5 py-1 text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition">
+                            <svg class="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Feedback Register
+                        </a>
+                    @endcan
+                    @if($batch->feedback)
+                        <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                            ✓ Submitted
                         </span>
-                    </div>
-                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q2. Knowledge</span>
-                        <span class="text-base font-extrabold text-blue-600">
-                            {{ $batch->feedback ? number_format($batch->feedback->q2_knowledge_avg, 2) : '-' }}
+                    @else
+                        <span class="text-[11px] font-semibold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                            ⏳ Pending Entry
                         </span>
-                    </div>
-                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q3. Relevance</span>
-                        <span class="text-base font-extrabold text-blue-600">
-                            {{ $batch->feedback ? number_format($batch->feedback->q3_relevance_avg, 2) : '-' }}
-                        </span>
-                    </div>
-                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q4. Handbook</span>
-                        <span class="text-base font-extrabold text-blue-600">
-                            {{ $batch->feedback ? number_format($batch->feedback->q4_handbook_avg, 2) : '-' }}
-                        </span>
-                    </div>
-                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Overall (Q5)</span>
-                        <span class="text-base font-extrabold text-emerald-600">
-                            {{ $batch->feedback ? '★ ' . number_format($batch->feedback->q5_overall_avg, 2) : '-' }}
-                        </span>
-                    </div>
-                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-                        <span class="text-slate-500 block text-[11px] mb-1 font-medium">Forms Count</span>
-                        <span class="text-base font-extrabold text-slate-800">
-                            {{ $batch->feedback?->total_forms_analyzed ?? '-' }}
-                        </span>
-                    </div>
+                    @endif
                 </div>
-
-                <div class="space-y-3 text-xs">
-                    <div>
-                        <span class="font-semibold text-slate-700 block mb-1">Key Qualitative Highlights</span>
-                        <p class="text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
-                            {{ $batch->feedback?->qualitative_highlights ?: 'No qualitative highlights recorded yet.' }}
-                        </p>
-                    </div>
-                    <div>
-                        <span class="font-semibold text-slate-700 block mb-1">Improvement Suggestions</span>
-                        <p class="text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
-                            {{ $batch->feedback?->improvement_suggestions ?: 'No suggestions recorded yet.' }}
-                        </p>
-                    </div>
-                </div>
-
-                @if(!$batch->feedback)
-                <div class="pt-2 border-t border-slate-100 text-[11px] text-slate-400 text-center">
-                    Participant feedback aggregate evaluation pending submission by field team.
-                </div>
-                @endif
             </div>
-        @endcan
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-center text-xs">
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q1. Clarity</span>
+                    <span class="text-base font-extrabold text-blue-600">
+                        {{ $batch->feedback ? number_format($batch->feedback->q1_clarity_avg, 2) : '-' }}
+                    </span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q2. Knowledge</span>
+                    <span class="text-base font-extrabold text-blue-600">
+                        {{ $batch->feedback ? number_format($batch->feedback->q2_knowledge_avg, 2) : '-' }}
+                    </span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q3. Relevance</span>
+                    <span class="text-base font-extrabold text-blue-600">
+                        {{ $batch->feedback ? number_format($batch->feedback->q3_relevance_avg, 2) : '-' }}
+                    </span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-slate-500 block text-[11px] mb-1 font-medium">Q4. Manual</span>
+                    <span class="text-base font-extrabold text-blue-600">
+                        {{ $batch->feedback ? number_format($batch->feedback->q4_handbook_avg, 2) : '-' }}
+                    </span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-slate-500 block text-[11px] mb-1 font-medium">Overall (Q5)</span>
+                    <span class="text-base font-extrabold text-emerald-600">
+                        {{ $batch->feedback ? '★ ' . number_format($batch->feedback->q5_overall_avg, 2) : '-' }}
+                    </span>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <span class="text-slate-500 block text-[11px] mb-1 font-medium">Forms Count</span>
+                    <span class="text-base font-extrabold text-slate-800">
+                        {{ $batch->feedback?->total_forms_analyzed ?? '-' }}
+                    </span>
+                </div>
+            </div>
+
+            @if(!$batch->feedback)
+            <div class="pt-2 border-t border-slate-100 text-[11px] text-slate-400 text-center">
+                Participant feedback aggregate evaluation pending submission by field team.
+            </div>
+            @endif
+        </div>
 
     </div>
 

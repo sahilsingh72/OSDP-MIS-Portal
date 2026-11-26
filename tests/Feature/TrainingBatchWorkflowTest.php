@@ -217,11 +217,11 @@ class TrainingBatchWorkflowTest extends TestCase
 
         $this->assertTrue($trainer->can('manageSummary', $batch));
 
-        // Assigned trainer sees the entry forms and save buttons
+        // Assigned trainer sees the summary entry form and standardized feedback evaluation card
         $response = $this->actingAs($trainer)->get("/batches/{$batch->id}/evidence");
         $response->assertOk();
         $response->assertSee('Save Summary');
-        $response->assertSee('Save Feedback Evaluation');
+        $response->assertSee('Feedback Evaluation');
 
         // Trainer can submit training summary
         $summaryPost = $this->actingAs($trainer)->post("/batches/{$batch->id}/summary", [

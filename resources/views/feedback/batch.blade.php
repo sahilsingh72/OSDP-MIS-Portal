@@ -123,7 +123,7 @@
                 </div>
             </div>
             <div class="p-3 rounded-xl bg-slate-50/80 border border-slate-200/80">
-                <span class="text-[11px] font-semibold text-slate-500 block truncate">4. Handbook Use</span>
+                <span class="text-[11px] font-semibold text-slate-500 block truncate">4. Manual Use</span>
                 <div class="flex items-baseline space-x-1 mt-1">
                     <span class="text-base font-extrabold text-slate-900" x-text="q4Average">{{ number_format($stats['q4_avg'], 1) }}</span>
                     <span class="text-[11px] text-slate-400">/ 5.0</span>
@@ -236,7 +236,7 @@
                                 <span class="text-slate-300">|</span>
                                 <span title="3. Work Relevance" class="text-slate-700">R:<strong x-text="getScore({{ $bp->id }}, 'q3_relevance')">{{ $fb?->q3_relevance }}</strong></span>
                                 <span class="text-slate-300">|</span>
-                                <span title="4. Handbook Usefulness" class="text-slate-700">H:<strong x-text="getScore({{ $bp->id }}, 'q4_handbook')">{{ $fb?->q4_handbook }}</strong></span>
+                                <span title="4. Participant Manual Usefulness" class="text-slate-700">M:<strong x-text="getScore({{ $bp->id }}, 'q4_handbook')">{{ $fb?->q4_handbook }}</strong></span>
                                 <span class="text-slate-300">|</span>
                                 <span title="5. Overall Satisfaction" class="text-slate-700">O:<strong x-text="getScore({{ $bp->id }}, 'q5_overall')">{{ $fb?->q5_overall }}</strong></span>
                             </div>
@@ -636,10 +636,10 @@
                                     </template>
                                 </tr>
 
-                                <!-- Row 4: Handbook Usefulness -->
+                                <!-- Row 4: Manual Usefulness -->
                                 <tr class="hover:bg-slate-50/60 transition">
                                     <td class="py-3 px-4 font-semibold text-slate-800">
-                                        4. Usefulness of the Participant Handbook <span class="text-rose-500">*</span>
+                                        4. Usefulness of the Participant Manual <span class="text-rose-500">*</span>
                                     </td>
                                     <template x-for="val in [1, 2, 3, 4, 5]" :key="'q4_' + val">
                                         <td class="py-2 px-1 text-center border-l border-slate-200 transition"
@@ -676,42 +676,22 @@
                     </div>
                 </div>
 
-                <!-- IN YOUR OWN WORDS (3 compact question cards) -->
+                <!-- YOUR COMMENTS AND SUGGESTIONS -->
                 <div>
                     <div class="pb-2 border-b border-slate-200 mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                         <div>
-                            <h3 class="text-xs font-extrabold text-slate-900 tracking-wider uppercase">IN YOUR OWN WORDS</h3>
-                            <p class="text-[11px] text-slate-500">Transcribe open-ended participant answers verbatim</p>
+                            <h3 class="text-xs font-extrabold text-slate-900 tracking-wider uppercase">YOUR COMMENTS AND SUGGESTIONS</h3>
+                            <p class="text-[11px] text-slate-500">Transcribe open-ended participant answers verbatim from feedback form</p>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                        <div class="p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/90 space-y-1.5">
-                            <label class="block font-bold text-slate-800 text-[11px] leading-tight">
-                                What was the most useful part of today's session? <span class="text-rose-500">*</span>
-                            </label>
-                            <textarea name="q6_most_useful" rows="3" x-model="form.q6_most_useful" required
-                                placeholder="E.g. Hands-on data entry examples, policy guidelines..."
-                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none transition"></textarea>
-                        </div>
-
-                        <div class="p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/90 space-y-1.5">
-                            <label class="block font-bold text-slate-800 text-[11px] leading-tight">
-                                What could be improved? <span class="text-rose-500">*</span>
-                            </label>
-                            <textarea name="q7_improvements" rows="3" x-model="form.q7_improvements" required
-                                placeholder="E.g. More practical sessions, pace of presentation..."
-                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none transition"></textarea>
-                        </div>
-
-                        <div class="p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/90 space-y-1.5">
-                            <label class="block font-bold text-slate-800 text-[11px] leading-tight">
-                                Any question that was not answered? <span class="text-rose-500">*</span>
-                            </label>
-                            <textarea name="q8_unanswered" rows="3" x-model="form.q8_unanswered" required
-                                placeholder="E.g. Clarification on Aadhaar masking, data storage..."
-                                class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none transition"></textarea>
-                        </div>
+                    <div class="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/90 space-y-2">
+                        <label class="block font-bold text-slate-800 text-xs leading-normal">
+                            Please share what you found most useful, what could be improved, and any question that was not answered.
+                        </label>
+                        <textarea name="comments_suggestions" rows="4" x-model="form.comments_suggestions"
+                            placeholder="Please share what you found most useful, what could be improved, and any question that was not answered..."
+                            class="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-800 focus:border-blue-500 focus:outline-none transition"></textarea>
                     </div>
                 </div>
 
@@ -794,6 +774,7 @@ function participantFeedbackManager(config) {
             q3_relevance: null,
             q4_handbook: null,
             q5_overall: null,
+            comments_suggestions: '',
             q6_most_useful: '',
             q7_improvements: '',
             q8_unanswered: '',
@@ -891,10 +872,9 @@ function participantFeedbackManager(config) {
             const bp = this.participantsList.find(item => item.id === bpId);
             if (!bp || !bp.feedback) return '—';
             const fb = bp.feedback;
-            if (fb.q6_most_useful) return 'Useful: ' + fb.q6_most_useful;
-            if (fb.q7_improvements) return 'Improve: ' + fb.q7_improvements;
-            if (fb.q8_unanswered) return 'Query: ' + fb.q8_unanswered;
-            return '—';
+            if (fb.comments_suggestions) return fb.comments_suggestions;
+            const legacy = [fb.q6_most_useful, fb.q7_improvements, fb.q8_unanswered].filter(Boolean).join(' | ');
+            return legacy || '—';
         },
 
         showToast(message, type = 'success') {
@@ -918,6 +898,12 @@ function participantFeedbackManager(config) {
             const fb = bp.feedback;
 
             if (fb) {
+                const combinedComments = fb.comments_suggestions || [
+                    fb.q6_most_useful ? 'Useful: ' + fb.q6_most_useful : '',
+                    fb.q7_improvements ? 'Improve: ' + fb.q7_improvements : '',
+                    fb.q8_unanswered ? 'Query: ' + fb.q8_unanswered : ''
+                ].filter(Boolean).join("\n");
+
                 Object.assign(this.form, {
                     session_date: fb.session_date ? fb.session_date.split('T')[0] : this.defaultDate,
                     designation_office_snapshot: fb.designation_office_snapshot || ((p?.designation || '') + ' / ' + (p?.office_name || '')),
@@ -927,6 +913,7 @@ function participantFeedbackManager(config) {
                     q3_relevance: fb.q3_relevance ? Number(fb.q3_relevance) : null,
                     q4_handbook: fb.q4_handbook ? Number(fb.q4_handbook) : null,
                     q5_overall: fb.q5_overall ? Number(fb.q5_overall) : null,
+                    comments_suggestions: combinedComments || '',
                     q6_most_useful: fb.q6_most_useful || '',
                     q7_improvements: fb.q7_improvements || '',
                     q8_unanswered: fb.q8_unanswered || '',
@@ -941,6 +928,7 @@ function participantFeedbackManager(config) {
                     q3_relevance: null,
                     q4_handbook: null,
                     q5_overall: null,
+                    comments_suggestions: '',
                     q6_most_useful: '',
                     q7_improvements: '',
                     q8_unanswered: '',
@@ -994,23 +982,7 @@ function participantFeedbackManager(config) {
                 return;
             }
 
-            // Validate mandatory open-ended questions
-            const useful = (this.form.q6_most_useful || '').trim();
-            const improve = (this.form.q7_improvements || '').trim();
-            const unanswered = (this.form.q8_unanswered || '').trim();
-
-            if (!useful) {
-                alert('Question 6 (What was the most useful part of today\'s session?) is mandatory.');
-                return;
-            }
-            if (!improve) {
-                alert('Question 7 (What could be improved?) is mandatory.');
-                return;
-            }
-            if (!unanswered) {
-                alert('Question 8 (Any question that was not answered during session?) is mandatory.');
-                return;
-            }
+            const comments = (this.form.comments_suggestions || '').trim();
 
             this.saving = true;
             const url = `/batches/${this.batchId}/participants/${this.currentParticipant.id}/feedback`;
@@ -1035,9 +1007,8 @@ function participantFeedbackManager(config) {
                         q3_relevance: this.form.q3_relevance,
                         q4_handbook: this.form.q4_handbook,
                         q5_overall: this.form.q5_overall,
-                        q6_most_useful: useful,
-                        q7_improvements: improve,
-                        q8_unanswered: unanswered,
+                        comments_suggestions: comments,
+                        q6_most_useful: comments,
                     })
                 });
 
@@ -1068,7 +1039,7 @@ function participantFeedbackManager(config) {
                         this.modalOpen = false;
                     }
                 } else {
-                    alert(data.message || 'Error saving feedback. Please ensure all 5 ratings and all 3 open-ended questions are filled.');
+                    alert(data.message || 'Error saving feedback. Please ensure all 5 ratings (1-5) are selected.');
                 }
             } catch (err) {
                 console.error('Save feedback error:', err);

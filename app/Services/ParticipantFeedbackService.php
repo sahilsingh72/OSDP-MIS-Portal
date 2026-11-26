@@ -36,10 +36,10 @@ class ParticipantFeedbackService
         $q4Avg = round((float) $feedbacks->avg('q4_handbook'), 2);
         $q5Avg = round((float) $feedbacks->avg('q5_overall'), 2);
 
-        // Collect unique qualitative highlights
-        $highlights = $feedbacks->pluck('q6_most_useful')->filter(fn($v) => !empty(trim($v)))->unique()->take(8)->implode("\n• ");
-        $improvements = $feedbacks->pluck('q7_improvements')->filter(fn($v) => !empty(trim($v)))->unique()->take(8)->implode("\n• ");
-        $unanswered = $feedbacks->pluck('q8_unanswered')->filter(fn($v) => !empty(trim($v)))->unique()->take(8)->implode("\n• ");
+        // Collect unique qualitative comments and suggestions
+        $comments = $feedbacks->map(function ($fb) {
+            return trim($fb->comments_suggestions ?: trim(($fb->q6_most_useful ?? '') . ' ' . ($fb->q7_improvements ?? '') . ' ' . ($fb->q8_unanswered ?? '')));
+        })->filter(fn($v) => !empty($v))->unique()->take(8)->implode("\n• ");
 
         return BatchFeedback::updateOrCreate(
             ['training_batch_id' => $batch->id],
@@ -50,9 +50,10 @@ class ParticipantFeedbackService
                 'q4_handbook_avg' => $q4Avg,
                 'q5_overall_avg' => $q5Avg,
                 'total_forms_analyzed' => $count,
-                'qualitative_highlights' => $highlights ? '• ' . $highlights : null,
-                'improvement_suggestions' => $improvements ? '• ' . $improvements : null,
-                'unanswered_questions' => $unanswered ? '• ' . $unanswered : null,
+                'comments_suggestions' => $comments ? '• ' . $comments : null,
+                'qualitative_highlights' => $comments ? '• ' . $comments : null,
+                'improvement_suggestions' => null,
+                'unanswered_questions' => null,
             ]
         );
     }

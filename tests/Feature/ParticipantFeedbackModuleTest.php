@@ -177,9 +177,7 @@ class ParticipantFeedbackModuleTest extends TestCase
             'q3_relevance' => 5,
             'q4_handbook' => 4,
             'q5_overall' => 5,
-            'q6_most_useful' => 'Hands-on portal training and GP data entry examples',
-            'q7_improvements' => 'Provide more printed handbooks',
-            'q8_unanswered' => 'How to verify Aadhaar offline?',
+            'comments_suggestions' => 'Hands-on portal training and GP data entry examples. Very helpful session.',
         ]);
 
         $response->assertRedirect();
@@ -197,7 +195,7 @@ class ParticipantFeedbackModuleTest extends TestCase
         $this->assertEquals(4, $feedback->q4_handbook);
         $this->assertEquals(5, $feedback->q5_overall);
         $this->assertEquals(4.60, (float) $feedback->average_rating);
-        $this->assertEquals('Hands-on portal training and GP data entry examples', $feedback->q6_most_useful);
+        $this->assertEquals('Hands-on portal training and GP data entry examples. Very helpful session.', $feedback->comments_suggestions);
         $this->assertEquals($this->coordinator->id, $feedback->entered_by);
 
         // Verify batch_feedback aggregates automatically updated
@@ -207,40 +205,34 @@ class ParticipantFeedbackModuleTest extends TestCase
         $this->assertEquals(4.00, (float) $batchFeedback->q2_knowledge_avg);
         $this->assertEquals(5.00, (float) $batchFeedback->q5_overall_avg);
         $this->assertGreaterThanOrEqual(1, $batchFeedback->total_forms_analyzed);
-        $this->assertStringContainsString('Hands-on portal training', $batchFeedback->qualitative_highlights);
+        $this->assertStringContainsString('Hands-on portal training', $batchFeedback->comments_suggestions);
     }
 
     /**
-     * Test Form 1 ratings Q1-Q5 and IN YOUR OWN WORDS Q6-Q8 are strictly mandatory.
+     * Test Form 1 ratings Q1-Q5 are strictly mandatory and between 1 and 5.
      */
     public function test_form_1_ratings_must_be_between_1_and_5_and_mandatory(): void
     {
-        // 1. Missing ratings and missing open-ended text fail validation
+        // 1. Missing ratings fail validation
         $response = $this->actingAs($this->coordinator)->post("/batches/{$this->batch->id}/participants/{$this->batchParticipant->id}/feedback", [
             'q1_clarity' => '',
             'q2_knowledge' => '',
             'q3_relevance' => '',
             'q4_handbook' => '',
             'q5_overall' => '',
-            'q6_most_useful' => '',
-            'q7_improvements' => '',
-            'q8_unanswered' => '',
         ]);
         $response->assertSessionHasErrors([
-            'q1_clarity', 'q2_knowledge', 'q3_relevance', 'q4_handbook', 'q5_overall',
-            'q6_most_useful', 'q7_improvements', 'q8_unanswered'
+            'q1_clarity', 'q2_knowledge', 'q3_relevance', 'q4_handbook', 'q5_overall'
         ]);
 
-        // 2. Out of range ratings fail validation even if open-ended questions are provided
+        // 2. Out of range ratings fail validation
         $outOfRangeResponse = $this->actingAs($this->coordinator)->post("/batches/{$this->batch->id}/participants/{$this->batchParticipant->id}/feedback", [
             'q1_clarity' => 0,
             'q2_knowledge' => 6,
             'q3_relevance' => 10,
             'q4_handbook' => -1,
             'q5_overall' => 7,
-            'q6_most_useful' => 'Useful',
-            'q7_improvements' => 'None',
-            'q8_unanswered' => 'None',
+            'comments_suggestions' => 'Some feedback',
         ]);
         $outOfRangeResponse->assertSessionHasErrors(['q1_clarity', 'q2_knowledge', 'q3_relevance', 'q4_handbook', 'q5_overall']);
     }

@@ -307,7 +307,7 @@
             <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
                 <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-200 flex items-center justify-between">
                     <span>Participant Feedback Evaluation</span>
-                    <span class="text-xs text-slate-400 font-normal">{{ $batch->feedback->total_forms_analyzed }} Forms Analyzed</span>
+                    <span class="text-xs text-slate-400 font-normal">{{ $batch->feedback->total_forms_analyzed }} Feedback Forms Analyzed</span>
                 </h3>
 
                 <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center text-xs">
@@ -324,7 +324,7 @@
                         <span class="text-base font-extrabold text-blue-600">{{ number_format($batch->feedback->q3_relevance_avg, 2) }}</span>
                     </div>
                     <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                        <span class="text-slate-500 block text-[11px] mb-1">Q4. Handbook</span>
+                        <span class="text-slate-500 block text-[11px] mb-1">Q4. Manual</span>
                         <span class="text-base font-extrabold text-blue-600">{{ number_format($batch->feedback->q4_handbook_avg, 2) }}</span>
                     </div>
                     <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 col-span-2 sm:col-span-1">

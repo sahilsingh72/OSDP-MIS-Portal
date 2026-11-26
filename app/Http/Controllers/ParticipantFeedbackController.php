@@ -117,9 +117,10 @@ class ParticipantFeedbackController extends Controller
             'q3_relevance' => ['required', 'integer', 'between:1,5'],
             'q4_handbook' => ['required', 'integer', 'between:1,5'],
             'q5_overall' => ['required', 'integer', 'between:1,5'],
-            'q6_most_useful' => ['required', 'string', 'max:2000'],
-            'q7_improvements' => ['required', 'string', 'max:2000'],
-            'q8_unanswered' => ['required', 'string', 'max:2000'],
+            'comments_suggestions' => ['nullable', 'string', 'max:3000'],
+            'q6_most_useful' => ['nullable', 'string', 'max:2000'],
+            'q7_improvements' => ['nullable', 'string', 'max:2000'],
+            'q8_unanswered' => ['nullable', 'string', 'max:2000'],
             'participant_name_snapshot' => ['nullable', 'string', 'max:255'],
             'designation_office_snapshot' => ['nullable', 'string', 'max:255'],
             'session_date' => ['nullable', 'date'],
@@ -129,14 +130,23 @@ class ParticipantFeedbackController extends Controller
             'q1_clarity.required' => 'Question 1 (Clarity of content) rating is mandatory (1-5).',
             'q2_knowledge.required' => 'Question 2 (Trainer knowledge) rating is mandatory (1-5).',
             'q3_relevance.required' => 'Question 3 (Relevance to daily work) rating is mandatory (1-5).',
-            'q4_handbook.required' => 'Question 4 (Participant Handbook usefulness) rating is mandatory (1-5).',
+            'q4_handbook.required' => 'Question 4 (Participant Manual usefulness) rating is mandatory (1-5).',
             'q5_overall.required' => 'Question 5 (Overall satisfaction) rating is mandatory (1-5).',
-            'q6_most_useful.required' => 'Question 6 (What was the most useful part) is mandatory.',
-            'q7_improvements.required' => 'Question 7 (What could be improved) is mandatory.',
-            'q8_unanswered.required' => 'Question 8 (Any question not answered) is mandatory.',
         ]);
 
         $participant = $batchParticipant->participant;
+
+        $comments = $validated['comments_suggestions'] ?? null;
+        if (empty($comments)) {
+            $parts = array_filter([
+                $validated['q6_most_useful'] ?? '',
+                $validated['q7_improvements'] ?? '',
+                $validated['q8_unanswered'] ?? '',
+            ]);
+            if (!empty($parts)) {
+                $comments = implode(' ', $parts);
+            }
+        }
 
         $feedback = ParticipantFeedback::updateOrCreate(
             [
@@ -155,7 +165,8 @@ class ParticipantFeedbackController extends Controller
                 'q3_relevance' => $validated['q3_relevance'],
                 'q4_handbook' => $validated['q4_handbook'],
                 'q5_overall' => $validated['q5_overall'],
-                'q6_most_useful' => $validated['q6_most_useful'] ?? null,
+                'comments_suggestions' => $comments,
+                'q6_most_useful' => $comments,
                 'q7_improvements' => $validated['q7_improvements'] ?? null,
                 'q8_unanswered' => $validated['q8_unanswered'] ?? null,
                 'entered_by' => $user->id,
