@@ -27,6 +27,7 @@ class ParticipantFeedback extends Model
         'q4_handbook',
         'q5_overall',
         'average_rating',
+        'comments_suggestions',
         'q6_most_useful',
         'q7_improvements',
         'q8_unanswered',

@@ -393,7 +393,20 @@ class TrainingUploadController extends Controller
             'total_forms_analyzed' => ['required', 'integer', 'min:1'],
             'qualitative_highlights' => ['nullable', 'string', 'max:1000'],
             'improvement_suggestions' => ['nullable', 'string', 'max:1000'],
+            'comments_suggestions' => ['nullable', 'string', 'max:3000'],
         ]);
+
+        if ($request->has('comments_suggestions') || $request->has('qualitative_highlights') || $request->has('improvement_suggestions')) {
+            $comments = $request->input('comments_suggestions');
+            if (empty($comments)) {
+                $parts = array_filter([
+                    $validated['qualitative_highlights'] ?? null,
+                    $validated['improvement_suggestions'] ?? null,
+                ]);
+                $comments = !empty($parts) ? implode("\n", $parts) : null;
+            }
+            $validated['comments_suggestions'] = $comments;
+        }
 
         BatchFeedback::updateOrCreate(
             ['training_batch_id' => $batch->id],
