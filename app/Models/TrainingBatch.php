@@ -260,7 +260,9 @@ class TrainingBatch extends Model
                 $q->whereNull('deleted_at');
             })
             ->where(function ($q) {
-                $q->where('morning_present', true)->orWhere('afternoon_present', true);
+                $q->where('is_present', true)
+                  ->orWhere('morning_present', true)
+                  ->orWhere('afternoon_present', true);
             })
             ->count();
 

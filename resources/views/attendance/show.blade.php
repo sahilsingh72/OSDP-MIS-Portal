@@ -11,7 +11,7 @@
                 <span class="text-xs px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-semibold">{{ $batch->batch_code }}</span>
             </div>
             <p class="text-xs text-slate-500 mt-0.5">
-                Digital transcription of signed paper attendance sheet. Sign on arrival (Morning) and after lunch (Afternoon).
+                Digital transcription of signed paper attendance sheet. Mark attendance status per participant.
             </p>
         </div>
         <div class="flex items-center space-x-3">
@@ -32,7 +32,7 @@
         <div class="border-b border-slate-200 pb-3 flex items-center justify-between">
             <div>
                 <span class="text-xs font-bold text-orange-600 uppercase tracking-wider block">Odisha State Data Policy 2.0</span>
-                <span class="text-sm font-extrabold text-slate-900">ATTENDANCE SHEET (FORM - SIDES 1 & 2)</span>
+                <span class="text-sm font-extrabold text-slate-900">ATTENDANCE SHEET (FORM 2)</span>
             </div>
             <div class="text-right">
                 <span class="text-xs font-bold text-slate-700">Tier: {{ $batch->tier?->name }}</span>
@@ -263,8 +263,16 @@
                         <th class="px-5 py-3">Participant Name</th>
                         <th class="px-5 py-3">Designation</th>
                         <th class="px-5 py-3">Office / Gram Panchayat</th>
-                        <th class="px-5 py-3 text-center w-32">Morning Sign</th>
-                        <th class="px-5 py-3 text-center w-32">Afternoon Sign</th>
+                        <th class="px-5 py-3 text-center w-28">
+                            <div class="inline-flex items-center justify-center space-x-1">
+                                <span>Present</span>
+                                @can('manageAttendance', $batch)
+                                    <input type="checkbox" @change="document.querySelectorAll('.attendance-present-cb').forEach(el => { if(!el.disabled) el.checked = $event.target.checked; })"
+                                        title="Toggle all participants"
+                                        class="w-3.5 h-3.5 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 cursor-pointer ml-1">
+                                @endcan
+                            </div>
+                        </th>
                         <th class="px-5 py-3">Remarks</th>
                     </tr>
                 </thead>
@@ -296,24 +304,12 @@
                             {{ $bp->participant?->office_name ?? 'N/A' }}
                         </td>
                         <td class="px-5 py-3 text-center">
-                            <label class="inline-flex items-center cursor-pointer">
-                                <input type="checkbox" name="attendance[{{ $idx }}][morning_present]" value="1"
-                                    {{ $att && $att->morning_present ? 'checked' : '' }}
+                            <label class="inline-flex items-center justify-center cursor-pointer">
+                                <input type="checkbox" name="attendance[{{ $idx }}][is_present]" value="1"
+                                    {{ $att && ($att->is_present || $att->morning_present || $att->afternoon_present) ? 'checked' : '' }}
                                     @cannot('manageAttendance', $batch) disabled @endcannot
-                                    class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 disabled:opacity-60">
+                                    class="attendance-present-cb w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 disabled:opacity-60 cursor-pointer">
                             </label>
-                        </td>
-                        <td class="px-5 py-3 text-center">
-                            @if($batch->tier?->code === 'gram_panchayat')
-                                <span class="text-slate-400 text-[10px]">Half-Day</span>
-                            @else
-                                <label class="inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" name="attendance[{{ $idx }}][afternoon_present]" value="1"
-                                        {{ $att && $att->afternoon_present ? 'checked' : '' }}
-                                        @cannot('manageAttendance', $batch) disabled @endcannot
-                                        class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 disabled:opacity-60">
-                                </label>
-                            @endif
                         </td>
                         <td class="px-5 py-3">
                             <input type="text" name="attendance[{{ $idx }}][remarks]" value="{{ $att?->remarks }}"
@@ -324,7 +320,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
                             No active participants enrolled yet.
                             @can('manageParticipants', $batch)
                             @unless(auth()->user()->hasRole('super-admin'))
