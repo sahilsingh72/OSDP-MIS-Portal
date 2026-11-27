@@ -64,7 +64,7 @@
 
     <!-- Batch Summary Metadata Card -->
     <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs">
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-xs">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-xs">
             <div>
                 <span class="text-slate-400 block font-medium">District & Block</span>
                 <span class="text-slate-900 font-bold text-sm block truncate">{{ $batch->district?->name }}</span>
@@ -99,14 +99,6 @@
                 <span class="text-slate-500 text-[11px] block">
                     Avg Knowledge: <strong class="text-slate-800" x-text="postAvgScore">{{ number_format($stats['post_avg_score'], 1) }}</strong> / 6.0
                 </span>
-            </div>
-            <div>
-                <span class="text-slate-400 block font-medium">Average Learning Gain</span>
-                <div class="flex items-center space-x-1.5 mt-0.5">
-                    <span class="text-emerald-500 text-base font-bold">▲</span>
-                    <span class="text-slate-900 font-extrabold text-base" x-text="learningGain">{{ number_format($stats['learning_gain'], 1) }}</span>
-                    <span class="text-slate-400 text-xs font-normal">pts gain</span>
-                </div>
             </div>
         </div>
 
@@ -213,7 +205,6 @@
                                 <th class="px-5 py-3">Designation & Office</th>
                                 <th class="px-5 py-3 text-center">Part A (Pre)</th>
                                 <th class="px-5 py-3 text-center">Part B (Post)</th>
-                                <th class="px-5 py-3 text-center">Learning Gain</th>
                                 <th class="px-5 py-3 text-right">Actions</th>
                             </tr>
                         </thead>
@@ -263,21 +254,6 @@
                                         class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200"
                                         style="{{ $ass && $ass->post_completed ? 'display: none;' : '' }}">
                                         Pending Post
-                                    </span>
-                                </td>
-                                <td class="px-5 py-3.5 text-center">
-                                    <span x-show="hasBothCompleted({{ $bp->id }})"
-                                        class="inline-flex items-center space-x-1 font-bold text-xs"
-                                        :class="getGain({{ $bp->id }}) >= 0 ? 'text-emerald-600' : 'text-slate-500'"
-                                        style="{{ $ass && $ass->pre_completed && $ass->post_completed ? '' : 'display: none;' }}">
-                                        <span x-text="getGain({{ $bp->id }}) >= 0 ? '▲ +' + getGain({{ $bp->id }}) : getGain({{ $bp->id }})">
-                                            {{ $ass && $ass->pre_completed && $ass->post_completed ? (($ass->post_score - $ass->pre_score >= 0 ? '▲ +' : '') . ($ass->post_score - $ass->pre_score)) : '-' }}
-                                        </span>
-                                    </span>
-                                    <span x-show="!hasBothCompleted({{ $bp->id }})"
-                                        class="text-slate-400 text-xs italic"
-                                        style="{{ $ass && $ass->pre_completed && $ass->post_completed ? 'display: none;' : '' }}">
-                                        —
                                     </span>
                                 </td>
                                 <td class="px-5 py-3.5 text-right whitespace-nowrap">
@@ -489,15 +465,15 @@
                             <div class="flex items-center space-x-2 flex-shrink-0">
                                 <button type="button"
                                     @click="form.pre_q{{ $qNum }} = true"
-                                    :class="form.pre_q{{ $qNum }} === true ? 'bg-emerald-600 text-white font-bold ring-2 ring-emerald-600/30' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
-                                    class="px-3.5 py-1.5 rounded-lg text-xs transition cursor-pointer">
-                                    ✓ Yes
+                                    :class="form.pre_q{{ $qNum }} === true ? 'btn-pre-yes-active' : 'btn-pre-unselected'"
+                                    class="px-4 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center space-x-1">
+                                    <span>✓ Yes</span>
                                 </button>
                                 <button type="button"
                                     @click="form.pre_q{{ $qNum }} = false"
-                                    :class="form.pre_q{{ $qNum }} === false ? 'bg-slate-700 text-white font-bold ring-2 ring-slate-700/30' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
-                                    class="px-3.5 py-1.5 rounded-lg text-xs transition cursor-pointer">
-                                    ✗ No
+                                    :class="form.pre_q{{ $qNum }} === false ? 'btn-pre-no-active' : 'btn-pre-unselected'"
+                                    class="px-4 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center space-x-1">
+                                    <span>✗ No</span>
                                 </button>
                             </div>
                         </div>
@@ -521,10 +497,10 @@
                                 @foreach($qMeta['options'] as $optKey => $optVal)
                                 <button type="button"
                                     @click="form.post_q{{ $qNum }} = '{{ $optKey }}'"
-                                    :class="form.post_q{{ $qNum }} === '{{ $optKey }}' ? 'bg-indigo-600 text-white font-semibold shadow-xs ring-2 ring-indigo-600/30' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200'"
+                                    :class="form.post_q{{ $qNum }} === '{{ $optKey }}' ? 'opt-card-active' : 'opt-card-default'"
                                     class="p-2.5 rounded-xl text-left transition flex items-start space-x-2 cursor-pointer">
                                     <span class="w-5 h-5 rounded-md flex items-center justify-center font-bold text-[11px] flex-shrink-0"
-                                          :class="form.post_q{{ $qNum }} === '{{ $optKey }}' ? 'bg-indigo-800 text-white' : 'bg-slate-200 text-slate-800'">
+                                          :class="form.post_q{{ $qNum }} === '{{ $optKey }}' ? 'opt-badge-active' : 'opt-badge-default'">
                                         {{ $optKey }}
                                     </span>
                                     <span class="leading-tight">{{ $optVal }}</span>
@@ -628,13 +604,6 @@ function assessmentManager(config) {
             return (sum / list.length).toFixed(1);
         },
 
-        get learningGain() {
-            const pre = parseFloat(this.preAvgScore);
-            const post = parseFloat(this.postAvgScore);
-            if (post === 0) return '0.0';
-            return (post - pre).toFixed(1);
-        },
-
         get activeParticipant() {
             if (!this.activeBatchParticipantId) return null;
             const bp = this.participants.find(p => p.id === this.activeBatchParticipantId);
@@ -711,12 +680,6 @@ function assessmentManager(config) {
         getPostScore(bpId) {
             const bp = this.participants.find(p => p.id === bpId);
             return bp && bp.assessment ? bp.assessment.post_score : 0;
-        },
-
-        getGain(bpId) {
-            const bp = this.participants.find(p => p.id === bpId);
-            if (!bp || !bp.assessment) return 0;
-            return (bp.assessment.post_score || 0) - (bp.assessment.pre_score || 0);
         },
 
         openModalForParticipantId(bpId) {
@@ -845,4 +808,53 @@ function assessmentManager(config) {
     };
 }
 </script>
+
+<style>
+    /* Scoped buttons for Assessment Entry */
+    .btn-pre-yes-active {
+        background-color: #059669 !important; /* Emerald-600 */
+        color: #ffffff !important;
+        border: 1.5px solid #047857 !important;
+        box-shadow: 0 1px 3px 0 rgba(5, 150, 105, 0.4) !important;
+    }
+    .btn-pre-no-active {
+        background-color: #e11d48 !important; /* Rose-600 */
+        color: #ffffff !important;
+        border: 1.5px solid #be123c !important;
+        box-shadow: 0 1px 3px 0 rgba(225, 29, 72, 0.4) !important;
+    }
+    .btn-pre-unselected {
+        background-color: #f1f5f9 !important;
+        color: #475569 !important;
+        border: 1.5px solid #cbd5e1 !important;
+    }
+    .btn-pre-unselected:hover {
+        background-color: #e2e8f0 !important;
+        color: #0f172a !important;
+    }
+
+    .opt-card-active {
+        background-color: #4f46e5 !important; /* Indigo-600 */
+        color: #ffffff !important;
+        border: 1.5px solid #4338ca !important;
+        box-shadow: 0 2px 4px 0 rgba(79, 70, 229, 0.3) !important;
+    }
+    .opt-card-default {
+        background-color: #f8fafc !important;
+        color: #334155 !important;
+        border: 1.5px solid #e2e8f0 !important;
+    }
+    .opt-card-default:hover {
+        background-color: #f1f5f9 !important;
+        border-color: #cbd5e1 !important;
+    }
+    .opt-badge-active {
+        background-color: #312e81 !important; /* Indigo-900 */
+        color: #ffffff !important;
+    }
+    .opt-badge-default {
+        background-color: #e2e8f0 !important;
+        color: #1e293b !important;
+    }
+</style>
 @endsection
