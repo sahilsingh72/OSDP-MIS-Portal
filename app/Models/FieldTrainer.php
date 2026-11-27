@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FieldTrainer extends Model
@@ -84,5 +86,23 @@ class FieldTrainer extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * TOT batch enrollment & 1-day attendance records for this trainer.
+     */
+    public function totEnrollments(): HasMany
+    {
+        return $this->hasMany(TotBatchTrainer::class, 'field_trainer_id');
+    }
+
+    /**
+     * TOT batches attended/enrolled by this trainer.
+     */
+    public function totBatches(): BelongsToMany
+    {
+        return $this->belongsToMany(TotBatch::class, 'tot_batch_trainers')
+            ->withPivot(['id', 'is_present', 'remarks', 'marked_by', 'marked_at'])
+            ->withTimestamps();
     }
 }
