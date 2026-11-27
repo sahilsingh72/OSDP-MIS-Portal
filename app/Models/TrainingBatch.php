@@ -150,6 +150,11 @@ class TrainingBatch extends Model
         return $this->hasMany(ParticipantFeedback::class);
     }
 
+    public function participantAssessments(): HasMany
+    {
+        return $this->hasMany(ParticipantAssessment::class);
+    }
+
     public function reviews(): HasMany
     {
         return $this->hasMany(BatchReview::class)->latest();
@@ -180,14 +185,17 @@ class TrainingBatch extends Model
             'video' => in_array('video', $types),
             'feedback_forms' => in_array('feedback_forms', $types),
             'batch_completion_report' => in_array('batch_completion_report', $types) || $hasSummary,
+            'pre_assessment' => in_array('pre_assessment', $types),
+            'post_assessment' => in_array('post_assessment', $types),
         ];
 
         $completedCount = count(array_filter($required));
+        $totalRequired = count($required);
         return [
             'items' => $required,
             'completed_count' => $completedCount,
-            'total_required' => 6,
-            'is_complete' => $completedCount === 6,
+            'total_required' => $totalRequired,
+            'is_complete' => $completedCount === $totalRequired,
         ];
     }
 

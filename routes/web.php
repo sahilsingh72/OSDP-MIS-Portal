@@ -10,6 +10,7 @@ use App\Http\Controllers\FieldVerificationController;
 use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ParticipantFeedbackController;
+use App\Http\Controllers\ParticipantAssessmentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RolePermissionController;
@@ -119,6 +120,12 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     Route::get('/batches/{batch}/feedback-forms', [ParticipantFeedbackController::class, 'showBatch'])->name('feedback.batch');
     Route::post('/batches/{batch}/participants/{batchParticipant}/feedback', [ParticipantFeedbackController::class, 'store'])->name('feedback.store');
     Route::delete('/batches/{batch}/feedback-forms/{feedback}', [ParticipantFeedbackController::class, 'destroy'])->name('feedback.destroy');
+
+    // Pre & Post Assessment Module (Part A & Part B Transcription)
+    Route::get('/assessments', [ParticipantAssessmentController::class, 'index'])->name('assessments.index');
+    Route::get('/batches/{batch}/assessments', [ParticipantAssessmentController::class, 'showBatch'])->name('assessments.batch');
+    Route::post('/batches/{batch}/participants/{batchParticipant}/assessments', [ParticipantAssessmentController::class, 'store'])->name('assessments.store');
+    Route::delete('/batches/{batch}/assessments/{assessment}', [ParticipantAssessmentController::class, 'destroy'])->name('assessments.destroy');
 
     // Review & Verification Queue
     Route::get('/reviews', [BatchReviewController::class, 'index'])->name('reviews.index');

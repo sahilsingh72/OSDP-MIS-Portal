@@ -56,7 +56,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             @php $ev = $batch->evidence_status; @endphp
                             <span class="px-2 py-0.5 rounded text-[11px] font-semibold {{ $ev['is_complete'] ? 'bg-emerald-100 text-emerald-800' : 'bg-orange-100 text-orange-800' }}">
-                                {{ $ev['completed_count'] }}/6 Items
+                                {{ $ev['completed_count'] }}/{{ $ev['total_required'] }} Items
                             </span>
                         </td>
                         <td class="px-6 py-4 text-right whitespace-nowrap">

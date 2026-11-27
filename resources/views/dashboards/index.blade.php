@@ -895,9 +895,9 @@
                             <div class="flex items-center space-x-1.5">
                                 <div class="w-16 bg-slate-200 rounded-full h-2 overflow-hidden">
                                     <div class="h-2 rounded-full {{ $ev['is_complete'] ? 'bg-emerald-500' : 'bg-blue-500' }}"
-                                         style="width: {{ ($ev['completed_count'] / 6) * 100 }}%"></div>
+                                         style="width: {{ ($ev['completed_count'] / ($ev['total_required'] ?: 8)) * 100 }}%"></div>
                                 </div>
-                                <span class="text-[11px] font-semibold text-slate-600">{{ $ev['completed_count'] }}/6</span>
+                                <span class="text-[11px] font-semibold text-slate-600">{{ $ev['completed_count'] }}/{{ $ev['total_required'] }}</span>
                             </div>
                         </td>
                         <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">

@@ -62,7 +62,7 @@ class TrainingUploadController extends Controller
         $validated = $request->validate([
             'evidence_type' => [
                 'required',
-                'in:attendance_sheet,photo_1,photo_2,video,feedback_forms,batch_completion_report',
+                'in:attendance_sheet,photo_1,photo_2,video,feedback_forms,batch_completion_report,pre_assessment,post_assessment',
             ],
             'file' => ['required', 'file'],
             'remarks' => ['nullable', 'string', 'max:500'],
@@ -85,9 +85,10 @@ class TrainingUploadController extends Controller
             ->where('is_valid', true)
             ->count();
 
-        if ($uploadedCount >= 6) {
+        $totalAllowed = count(TrainingUpload::ALL_TYPES);
+        if ($uploadedCount >= $totalAllowed) {
             return back()->withErrors([
-                'evidence_type' => "All 6 evidence items have already been uploaded for this batch and new uploads are locked. To replace any file, please use the 'Edit' button in the table below.",
+                'evidence_type' => "All {$totalAllowed} evidence items have already been uploaded for this batch and new uploads are locked. To replace any file, please use the 'Edit' button in the table below.",
             ])->withInput();
         }
 
@@ -189,7 +190,7 @@ class TrainingUploadController extends Controller
         $validated = $request->validate([
             'evidence_type' => [
                 'required',
-                'in:attendance_sheet,photo_1,photo_2,video,feedback_forms,batch_completion_report',
+                'in:attendance_sheet,photo_1,photo_2,video,feedback_forms,batch_completion_report,pre_assessment,post_assessment',
             ],
             'file' => ['nullable', 'file'],
             'remarks' => ['nullable', 'string', 'max:500'],
