@@ -143,7 +143,7 @@ class ReportController extends Controller
                             $batch->planned_participants,
                             $batch->registered_participants,
                             $batch->present_participants,
-                            $evidence['is_complete'] ? 'Yes' : 'No (' . $evidence['completed_count'] . '/6)',
+                            $evidence['is_complete'] ? 'Yes' : 'No (' . $evidence['completed_count'] . '/' . ($evidence['total_required'] ?? 8) . ')',
                             $batch->is_overdue ? 'YES' : 'No',
                             $batch->trainers->first()?->name ?? 'Unassigned',
                         ]);

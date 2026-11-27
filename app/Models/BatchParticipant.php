@@ -45,4 +45,9 @@ class BatchParticipant extends Model
     {
         return $this->hasOne(ParticipantFeedback::class);
     }
+
+    public function assessment(): HasOne
+    {
+        return $this->hasOne(ParticipantAssessment::class);
+    }
 }

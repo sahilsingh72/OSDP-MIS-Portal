@@ -205,6 +205,18 @@ class PermissionRegistry
             'category' => 'Participant Feedback (Form 1)',
         ],
 
+        // Pre & Post Assessments
+        'assessments.view' => [
+            'label' => 'View Participant Assessments',
+            'description' => 'Access participant pre- and post-training assessment scores and question-level responses.',
+            'category' => 'Pre & Post Assessments',
+        ],
+        'assessments.manage' => [
+            'label' => 'Transcribe & Manage Assessments',
+            'description' => 'Transcribe physical Part A (Pre) and Part B (Post) assessment responses for batch trainees.',
+            'category' => 'Pre & Post Assessments',
+        ],
+
         // System Settings
         'settings.manage' => [
             'label' => 'Configure System Settings',
@@ -254,6 +266,10 @@ class PermissionRegistry
         'Participant Feedback (Form 1)' => [
             'icon' => 'chat-alt-2',
             'description' => 'Transcribe physical Form 1 participant feedback, session satisfaction ratings, and trainee comments.',
+        ],
+        'Pre & Post Assessments' => [
+            'icon' => 'clipboard-check',
+            'description' => 'Transcribe physical Part A (Pre-Assessment) and Part B (Post-Assessment) questionnaires and evaluate learning gains.',
         ],
         'Evidence & Document Vault' => [
             'icon' => 'photograph',

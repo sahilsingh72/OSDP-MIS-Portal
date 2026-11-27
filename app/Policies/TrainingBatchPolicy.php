@@ -242,4 +242,28 @@ class TrainingBatchPolicy
 
         return false;
     }
+
+    /**
+     * Determine whether the user can transcribe and update assessments for this batch.
+     */
+    public function manageAssessments(User $user, TrainingBatch $batch): bool
+    {
+        if (!$user->can('assessments.manage')) {
+            return false;
+        }
+
+        if ($user->hasRole(['super-admin', 'pmu'])) {
+            return true;
+        }
+
+        if ($user->hasRole('district-coordinator')) {
+            return $user->isAssignedToDistrict($batch->district_id);
+        }
+
+        if ($user->hasRole('field-trainer')) {
+            return $user->isAssignedToBatch($batch->id);
+        }
+
+        return false;
+    }
 }

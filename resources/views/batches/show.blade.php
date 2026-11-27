@@ -107,31 +107,33 @@
         </div>
     </div>
 
-    <!-- Evidence Pack Checklist (The 6 Mandatory Items) -->
+    <!-- Evidence Pack Checklist (The Mandatory Items) -->
     <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
         <div class="flex items-center justify-between pb-4 border-b border-slate-200/80">
             <div>
                 <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">
-                    Evidence Pack Completeness (6 Mandatory Items)
+                    Evidence Pack Completeness ({{ $evidenceStatus['total_required'] }} Mandatory Items)
                 </h2>
                 <p class="text-xs text-slate-500 mt-0.5">As per OSDP MIS Upload Checklist. Submission SLA: within 48 hours of session.</p>
             </div>
             <div class="text-right">
                 <span class="text-xs font-bold {{ $evidenceStatus['is_complete'] ? 'text-emerald-600' : 'text-orange-500' }}">
-                    {{ $evidenceStatus['completed_count'] }} of 6 Attached
+                    {{ $evidenceStatus['completed_count'] }} of {{ $evidenceStatus['total_required'] }} Attached
                 </span>
             </div>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             @php
                 $checklistConfig = [
-                    'attendance_sheet' => ['name' => '1. Attendance Sheet', 'desc' => 'Signed both sides (2 images or 1 PDF)'],
+                    'attendance_sheet' => ['name' => '1. Attendance Sheet', 'desc' => 'Signed attendance sheet (Form 2)'],
                     'photo_1' => ['name' => '2. Photo 1 (Group with Banner)', 'desc' => 'Full room view with 8x5 banner'],
                     'photo_2' => ['name' => '3. Photo 2 (Trainer Teaching)', 'desc' => 'Trainer instructing in progress'],
                     'video' => ['name' => '4. Video Clip (MP4)', 'desc' => '~1 min short clip, landscape mode'],
                     'feedback_forms' => ['name' => '5. Feedback Forms', 'desc' => 'Merged single PDF of all forms'],
-                    'batch_completion_report' => ['name' => '6. Completion Report', 'desc' => 'Training summary'],
+                    'batch_completion_report' => ['name' => '6. Completion Report', 'desc' => 'Training summary (Form 3)'],
+                    'pre_assessment' => ['name' => '7. Pre-Assessment Forms', 'desc' => 'Merged single PDF of all Part A forms'],
+                    'post_assessment' => ['name' => '8. Post-Assessment Forms', 'desc' => 'Merged single PDF of all Part B forms'],
                 ];
             @endphp
 
@@ -471,12 +473,14 @@
                     <label class="block font-semibold text-slate-700 mb-1">Evidence Item Type <span class="text-rose-500">*</span></label>
                     <select name="evidence_type" x-model="editForm.evidence_type" required
                         class="w-full rounded-xl border border-slate-300 p-2.5 text-xs focus:border-blue-500 focus:outline-none">
-                        <option value="attendance_sheet">1. Attendance Sheet (Form - Both Sides)</option>
+                        <option value="attendance_sheet">1. Attendance Sheet (Form 2)</option>
                         <option value="photo_1">2. Photograph 1 (Full Group with 8x5 Banner)</option>
                         <option value="photo_2">3. Photograph 2 (Trainer Teaching)</option>
                         <option value="video">4. Short Video Clip (MP4, ~1 min, landscape)</option>
                         <option value="feedback_forms">5. Feedback Forms (Merged PDF)</option>
-                        <option value="batch_completion_report">6. Batch Completion Report (PDF)</option>
+                        <option value="batch_completion_report">6. Batch Completion Report (Form 3 - PDF)</option>
+                        <option value="pre_assessment">7. Pre-Assessment Forms (Part A - PDF)</option>
+                        <option value="post_assessment">8. Post-Assessment Forms (Part B - PDF)</option>
                     </select>
                 </div>
 

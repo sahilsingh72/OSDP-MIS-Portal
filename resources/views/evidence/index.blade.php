@@ -92,6 +92,23 @@ function evidenceManager() {
                 maxMb: {{ $maxPdfMb }},
                 desc: 'PDF document only (.pdf)',
                 error: 'Batch Completion Report must be a PDF file (.pdf).'
+            },
+            pre_assessment: {
+                label: 'Pre-Assessment Forms (Part A)',
+                category: 'pdf',
+                accept: '.pdf,application/pdf',
+                extensions: ['pdf'],
+                maxMb: {{ $maxPdfMb }},
+                desc: 'PDF document only (.pdf)',
+                error: 'Pre-Assessment Forms must be a PDF file (.pdf).'
+            },
+            post_assessment: {
+                label: 'Post-Assessment Forms (Part B)',
+                category: 'pdf',
+                accept: '.pdf,application/pdf',
+                extensions: ['pdf'],
+                maxMb: {{ $maxPdfMb }},
+                desc: 'Post-Assessment Forms must be a PDF file (.pdf).'
             }
         },
 
@@ -277,7 +294,7 @@ function evidenceManager() {
             <div class="flex items-center space-x-3 mb-1">
                 <span class="text-xl font-extrabold text-slate-900 tracking-tight font-mono">{{ $batch->batch_code }}</span>
                 <span class="text-xs px-2.5 py-0.5 rounded-full font-bold {{ $evidenceStatus['is_complete'] ? 'bg-emerald-100 text-emerald-800' : 'bg-orange-100 text-orange-800' }}">
-                    {{ $evidenceStatus['completed_count'] }}/6 Items Attached
+                    {{ $evidenceStatus['completed_count'] }}/{{ $evidenceStatus['total_required'] }} Items Attached
                 </span>
             </div>
             <p class="text-xs text-slate-500">
@@ -336,16 +353,27 @@ function evidenceManager() {
                 'name' => 'Batch Completion Report (Form 3)',
                 'desc' => 'Form 3 Part C summary signed by DLC/Trainer',
             ],
+            'pre_assessment' => [
+                'number' => 7,
+                'name' => 'Pre-Assessment Forms (Part A)',
+                'desc' => 'Merged single PDF of all participant Part A pre-assessment forms',
+            ],
+            'post_assessment' => [
+                'number' => 8,
+                'name' => 'Post-Assessment Forms (Part B)',
+                'desc' => 'Merged single PDF of all participant Part B post-assessment forms',
+            ],
         ];
 
         $uploadedMap = $batch->uploads->keyBy('evidence_type');
         $uploadedCount = $uploadedMap->count();
-        $allSixUploaded = $uploadedCount >= 6;
+        $totalRequired = count($evidenceTypes);
+        $allUploaded = $uploadedCount >= $totalRequired;
     @endphp
 
     @can('uploadEvidence', $batch)
-        @if($allSixUploaded)
-            <!-- All 6 Uploaded Locked State -->
+        @if($allUploaded)
+            <!-- All Items Uploaded Locked State -->
             <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 rounded-2xl p-6 border border-emerald-200/90 shadow-sm">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="flex items-start space-x-3.5">
@@ -357,14 +385,14 @@ function evidenceManager() {
                         <div class="space-y-1">
                             <div class="flex items-center space-x-2">
                                 <h2 class="text-sm font-bold text-emerald-950 uppercase tracking-wider">
-                                    All 6 Evidence Items Uploaded — Upload Form Locked
+                                    All {{ $totalRequired }} Evidence Items Uploaded — Upload Form Locked
                                 </h2>
                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-200 text-emerald-900 border border-emerald-300">
-                                    6 of 6 Complete
+                                    {{ $totalRequired }} of {{ $totalRequired }} Complete
                                 </span>
                             </div>
                             <p class="text-xs text-emerald-800 leading-relaxed max-w-2xl">
-                                All six mandatory evidence files have been successfully uploaded. 
+                                All {{ $totalRequired }} mandatory evidence files have been successfully uploaded. 
                                 Direct uploading is now <strong>locked</strong>. If you want to replace, update, or change any uploaded file, 
                                 please click the <a href="#uploaded-files-table" class="font-bold underline text-emerald-950 hover:text-emerald-700">Edit</a> button 
                                 next to that file in the table below.
@@ -392,7 +420,7 @@ function evidenceManager() {
                                 Upload Evidence Item
                             </h2>
                             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                                {{ $uploadedCount }}/6 Uploaded
+                                {{ $uploadedCount }}/{{ $totalRequired }} Uploaded
                             </span>
                         </div>
                         <p class="text-xs text-slate-500 mt-0.5">
@@ -404,8 +432,8 @@ function evidenceManager() {
                     </div>
                 </div>
 
-                <!-- 6-Item Status Tracker Cards -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+                <!-- 8-Item Status Tracker Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
                     @foreach($evidenceTypes as $key => $typeInfo)
                         @php $isUploaded = isset($uploadedMap[$key]); @endphp
                         <div class="p-2.5 rounded-xl border text-xs transition {{ $isUploaded ? 'bg-emerald-50/80 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-600' }}">
@@ -427,7 +455,7 @@ function evidenceManager() {
                             </div>
                             <div class="text-[10px] mt-0.5 {{ $isUploaded ? 'text-emerald-700 font-medium' : 'text-slate-400' }}">
                                 @if($isUploaded)
-                                    ✓ Uploaded (Use Edit to replace)
+                                    ✓ Uploaded
                                 @else
                                     Ready to upload
                                 @endif
@@ -585,8 +613,8 @@ function evidenceManager() {
                     Uploaded files are locked from direct re-upload. If you need to change or replace any file, click <strong>Edit / Replace</strong>.
                 </p>
             </div>
-            <span class="text-xs px-2.5 py-1 rounded-full font-bold {{ $batch->uploads->count() >= 6 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700' }}">
-                {{ $batch->uploads->count() }}/6 Active Files
+            <span class="text-xs px-2.5 py-1 rounded-full font-bold {{ $batch->uploads->count() >= $totalRequired ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700' }}">
+                {{ $batch->uploads->count() }}/{{ $totalRequired }} Active Files
             </span>
         </div>
 
@@ -897,7 +925,9 @@ function evidenceManager() {
                 </div>
             </div>
 
-            @if(!$batch->feedback)
+            @if($batch->feedback)
+                
+            @else
             <div class="pt-2 border-t border-slate-100 text-[11px] text-slate-400 text-center">
                 Participant feedback aggregate evaluation pending submission by field team.
             </div>
