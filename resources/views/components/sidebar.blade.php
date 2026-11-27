@@ -40,16 +40,40 @@
             <span>Training Batches</span>
         </a>
 
-        <!-- Field Trainers -->
+        <!-- Field Trainers & TOT Sub-Sidebar -->
         @if(auth()->user()->can('trainers.view') || auth()->user()->hasRole(['super-admin', 'pmu', 'district-coordinator', 'ocac']))
-        @php $isTrainers = request()->routeIs('trainers.*'); @endphp
-        <a href="{{ route('trainers.index') }}"
-            class="group flex items-center px-3 py-2 rounded-xl font-medium transition {{ $isTrainers ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/90 shadow-2xs' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}">
-            <svg class="w-4 h-4 mr-3 flex-shrink-0 {{ $isTrainers ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600' }} transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-            <span>Field Trainers</span>
-        </a>
+        @php
+            $isTrainersSection = request()->routeIs('trainers.*');
+            $isTrainersDirectory = $isTrainersSection && !request()->routeIs('trainers.tot.*');
+            $isTot = request()->routeIs('trainers.tot.*');
+        @endphp
+        <div x-data="{ open: {{ $isTrainersSection ? 'true' : 'false' }} }" class="space-y-0.5">
+            <button type="button" @click="open = !open"
+                class="w-full group flex items-center justify-between px-3 py-2 rounded-xl font-medium transition cursor-pointer {{ $isTrainersSection ? 'bg-blue-50/70 text-blue-700 font-semibold border border-blue-200/70' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}">
+                <span class="flex items-center min-w-0">
+                    <svg class="w-4 h-4 mr-3 flex-shrink-0 {{ $isTrainersSection ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600' }} transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span class="truncate">Field Trainers</span>
+                </span>
+                <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 shrink-0" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+
+            <div x-show="open" x-transition.opacity.duration.150ms class="ml-5 pl-2.5 border-l border-slate-200 space-y-0.5" style="{{ $isTrainersSection ? '' : 'display: none;' }}">
+                <a href="{{ route('trainers.index') }}"
+                    class="flex items-center px-3 py-1.5 rounded-lg text-[12.5px] font-medium transition {{ $isTrainersDirectory ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/80 shadow-2xs' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}">
+                    <span class="w-1.5 h-1.5 rounded-full mr-2.5 {{ $isTrainersDirectory ? 'bg-blue-600' : 'bg-slate-300' }}"></span>
+                    <span>Trainers Directory</span>
+                </a>
+                <a href="{{ route('trainers.tot.index') }}"
+                    class="flex items-center px-3 py-1.5 rounded-lg text-[12.5px] font-medium transition {{ $isTot ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-200/80 shadow-2xs' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }}">
+                    <span class="w-1.5 h-1.5 rounded-full mr-2.5 {{ $isTot ? 'bg-blue-600' : 'bg-slate-300' }}"></span>
+                    <span>TOT</span>
+                </a>
+            </div>
+        </div>
         @endif
 
         <!-- Participants Directory -->

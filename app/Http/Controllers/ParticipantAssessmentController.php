@@ -98,7 +98,6 @@ class ParticipantAssessmentController extends Controller
             'post_pending_count' => max(0, $enrolledCount - $postEnteredCount),
             'post_completion_rate' => $enrolledCount > 0 ? round(($postEnteredCount / $enrolledCount) * 100) : 0,
             'post_avg_score' => $postAvgScore,
-            'learning_gain' => $postAvgScore > 0 ? round($postAvgScore - $preAvgScore, 2) : 0.00,
         ];
 
         $preQuestions = ParticipantAssessment::PRE_QUESTIONS;

@@ -125,6 +125,7 @@
                         <th class="px-5 py-3">Trainer Details</th>
                         <th class="px-5 py-3">Designation & Department</th>
                         <th class="px-5 py-3">Jurisdiction (District &rarr; Block &rarr; GP)</th>
+                        <th class="px-5 py-3 text-center">TOT Status</th>
                         <th class="px-5 py-3 text-center">Batches Assigned</th>
                         <th class="px-5 py-3 text-center">Status</th>
                         <th class="px-5 py-3 text-right">Actions</th>
@@ -168,6 +169,20 @@
                                     <span>GP: <strong class="text-slate-700">{{ $trainer->gramPanchayat?->name ?? 'All GPs' }}</strong></span>
                                 </div>
                             </div>
+                        </td>
+
+                        <td class="px-5 py-3.5 text-center">
+                            @php
+                                $latestTot = $trainer->totEnrollments->sortByDesc('id')->first();
+                            @endphp
+                            @if($latestTot && $latestTot->totBatch)
+                                <a href="{{ route('trainers.tot.show', $latestTot->totBatch) }}"
+                                   class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold {{ $latestTot->is_present ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-blue-700 border border-blue-200' }} hover:underline">
+                                    {{ $latestTot->totBatch->batch_code }} &bull; {{ $latestTot->is_present ? 'Present' : 'Enrolled' }}
+                                </a>
+                            @else
+                                <span class="text-[11px] text-slate-400">Not in TOT</span>
+                            @endif
                         </td>
 
                         <td class="px-5 py-3.5 text-center">
@@ -215,7 +230,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-5 py-12 text-center text-slate-500">
+                        <td colspan="8" class="px-5 py-12 text-center text-slate-500">
                             <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center mb-3">
                                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />

@@ -15,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SystemSettingController;
+use App\Http\Controllers\TotBatchController;
 use App\Http\Controllers\TrainingBatchController;
 use App\Http\Controllers\TrainingModuleController;
 use App\Http\Controllers\TrainingUploadController;
@@ -86,6 +87,16 @@ Route::middleware(['auth', CheckActiveUser::class])->group(function () {
     Route::post('/batches/{batch}/participants', [AttendanceController::class, 'addParticipant'])->name('batches.participants.store');
     Route::post('/batches/{batch}/participants/bulk-upload', [AttendanceController::class, 'bulkUpload'])->name('batches.participants.bulk-upload');
     Route::get('/batches/{batch}/participants/template', [AttendanceController::class, 'downloadTemplate'])->name('batches.participants.template');
+
+    // Field Trainer TOT (Training of Trainers - 1-Day Batch & Attendance)
+    Route::get('/trainers/tot', [TotBatchController::class, 'index'])->name('trainers.tot.index');
+    Route::post('/trainers/tot', [TotBatchController::class, 'store'])->name('trainers.tot.store');
+    Route::get('/trainers/tot/{totBatch}', [TotBatchController::class, 'show'])->name('trainers.tot.show');
+    Route::put('/trainers/tot/{totBatch}', [TotBatchController::class, 'update'])->name('trainers.tot.update');
+    Route::delete('/trainers/tot/{totBatch}', [TotBatchController::class, 'destroy'])->name('trainers.tot.destroy');
+    Route::post('/trainers/tot/{totBatch}/trainers', [TotBatchController::class, 'enrollTrainers'])->name('trainers.tot.enroll');
+    Route::delete('/trainers/tot/{totBatch}/trainers/{fieldTrainer}', [TotBatchController::class, 'removeTrainer'])->name('trainers.tot.remove-trainer');
+    Route::post('/trainers/tot/{totBatch}/attendance', [TotBatchController::class, 'saveAttendance'])->name('trainers.tot.attendance');
 
     // Field Trainer Management (DLC, PMU, Super Admin)
     Route::get('/trainers', [FieldTrainerController::class, 'index'])->name('trainers.index');

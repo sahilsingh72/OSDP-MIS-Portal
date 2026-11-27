@@ -26,7 +26,7 @@ class FieldTrainerController extends Controller
         $this->authorizeAccess($user);
 
         $query = FieldTrainer::with(['user', 'district', 'block', 'gramPanchayat', 'creator'])
-            ->with(['user.trainerBatches']);
+            ->with(['user.trainerBatches', 'totEnrollments.totBatch']);
 
         // District Scoping for DLC (District Coordinator)
         if ($user->hasRole('district-coordinator')) {
